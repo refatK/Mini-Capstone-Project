@@ -3,7 +3,7 @@
 #Team Members
 Team Leader is marked by ⭐
 | Name | ID | Email |
-| ---------------------------------- |----------- | ------------------------------ |
+| ---------------------------------- | ----------- | ------------------------------ |
 | Anthony Iatropoulos⭐ | 40028246 | anthonyiatropoulos@hotmail.com |
 | Michelle Choi | 26307647 | michelle.choi@mail.mcgill.ca |
 | Nirmal Randhawa | 27038461 | nirmal_864@hotmail.com |
