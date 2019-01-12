@@ -1,6 +1,6 @@
-#SOEN 390 Project - K9Mail
+### SOEN 390 Project - K9Mail
 
-#Team Members
+### Team Members
 Team Leader is marked by ⭐
 
 | Name                  	| ID       	| Email                           	|
