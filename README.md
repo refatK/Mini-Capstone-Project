@@ -1,4 +1,4 @@
-### SOEN 390 Project - K9Mail
+### Team North Star - SOEN 390 Project - K9Mail
 
 ### Team Members
 Team Leader is marked by ⭐
