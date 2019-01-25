@@ -17,6 +17,6 @@ android {
         abortOnError false
     }
     defaultConfig {
-        minSdkVersion = 8
+        minSdkVersion  23
     }
 }
