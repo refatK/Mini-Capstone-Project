@@ -11,3 +11,4 @@ Team Leader is marked by ⭐
 | Sean Howard           	| 26346685 	| sean.how0@gmail.com             	|
 | Shawn Guerra-Bautista 	| 40032995 	| shawnguerrabautista@gmail.com   	|
 | Nicholas Iatropoulos  	| 40028021 	| nicholasiatropoulos@hotmail.com 	|
+| Sébastien Deslandres  	| 27042906 	| sebastien.deslandres@mail.concordia.ca 	|
