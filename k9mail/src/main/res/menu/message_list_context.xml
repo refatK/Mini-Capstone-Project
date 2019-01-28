@@ -59,4 +59,9 @@
         android:showAsAction="never"
         android:title="@string/batch_select_all"
     />
+    <item
+        android:id="@+id/select_none"
+        android:title="@string/batch_deselect_all"
+        android:showAsAction="ifRoom"
+     />
 </menu>
