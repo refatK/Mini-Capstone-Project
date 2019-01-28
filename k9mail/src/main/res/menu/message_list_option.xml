@@ -194,6 +194,13 @@
         android:showAsAction="never"
         android:title="@string/batch_select_all"/>
 
+        <!--TODO: give deselect unique icon-->
+    <item
+        android:id="@+id/select_none"
+        android:icon="?attr/iconActionSelectAll"
+        android:showAsAction="never"
+        android:title="@string/batch_deselect_all"/>
+
     <!-- MessageList -->
     <item
         android:id="@+id/mark_all_as_read"
