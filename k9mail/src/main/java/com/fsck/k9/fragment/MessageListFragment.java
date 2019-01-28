@@ -1062,10 +1062,6 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
             selectAll();
             return true;
         }
-        case R.id.select_none: {
-            selectNone();
-            return true;
-        }
         }
 
         if (!singleAccountMode) {
@@ -2290,10 +2286,6 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
 
     public void selectAll() {
         setSelectionState(true);
-    }
-
-    public void selectNone() {
-        setSelectionState(false);
     }
 
     public void onMoveUp() {

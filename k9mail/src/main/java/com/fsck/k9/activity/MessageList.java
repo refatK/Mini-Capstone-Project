@@ -846,10 +846,6 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
                 messageListFragment.selectAll();
                 return true;
             }
-            case R.id.select_none: {
-                messageListFragment.selectNone();
-                return true;
-            }
             case R.id.app_settings: {
                 onEditPrefs();
                 return true;
