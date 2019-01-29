@@ -1,4 +1,4 @@
-### Team North Star - SOEN 390 Project - K9Mail
+### Team North Star - SOEN 390 Project - K9Mail [![Build Status](https://travis-ci.com/aiatro/k9-mail-390.svg?branch=master)](https://travis-ci.com/aiatro/k9-mail-390.svg?branch=master)
 
 ### Team Members
 Team Leader is marked by ⭐
