@@ -2159,6 +2159,10 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
                 selectAll();
                 break;
             }
+            case R.id.select_none: {
+                selectedCount = 0;
+                break;
+            }
 
             // only if the account supports this
             case R.id.archive: {
