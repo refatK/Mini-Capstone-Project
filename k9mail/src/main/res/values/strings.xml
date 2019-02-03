@@ -1268,6 +1268,7 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="crypto_no_provider_message">This email has been encrypted with OpenPGP.\nTo read it, you need to install and configure a compatible OpenPGP App.</string>
     <string name="crypto_no_provider_button">Choose OpenPGP App</string>
 
+    <string name="mailing_lists">Mailing Lists</string>
     <string name="mail_list_widget_text">K-9 Message List</string>
     <string name="mail_list_widget_loading">Loading messages…</string>
     <string name="fetching_folders_failed">Fetching folder list failed</string>
