@@ -1,7 +1,6 @@
 
 package com.fsck.k9;
 
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,6 +49,8 @@ import timber.log.Timber.DebugTree;
 
 
 public class K9 extends Application {
+
+    private DaoSession daoSession;
     /**
      * Components that are interested in knowing when the K9 instance is
      * available and ready (Android invokes Application.onCreate() after other
@@ -520,6 +521,10 @@ public class K9 extends Application {
         fontSizes.save(editor);
     }
 
+    public DaoSession getDaoSession() {
+        return daoSession;
+    }
+
     @Override
     public void onCreate() {
         if (K9.DEVELOPER_MODE) {
@@ -529,6 +534,14 @@ public class K9 extends Application {
         PRNGFixes.apply();
 
         super.onCreate();
+
+        daoSession = new DaoMaster(
+                new DaoMaster.DevOpenHelper(
+                        this,"MailingLists.db").getWritableDb()).newSession();
+
+        if(daoSession.getMailingListDao().loadAll().size() == 0){
+            daoSession.getMailingListDao().insert(new MailingList(1,"MyList1"));
+        }
         app = this;
         Globals.setContext(this);
 
