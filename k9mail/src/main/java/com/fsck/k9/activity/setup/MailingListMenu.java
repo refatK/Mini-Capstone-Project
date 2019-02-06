@@ -66,4 +66,9 @@ public class MailingListMenu extends K9ListActivity {
         }
         return allEmails.substring(0, allEmails.length()-2);
     }
+
+    public void addMailingList(View view)
+    {
+
+    }
 }
