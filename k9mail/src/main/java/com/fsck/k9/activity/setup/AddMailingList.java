@@ -21,7 +21,7 @@ public class AddMailingList extends AppCompatActivity {
     EditText mailingListNameInput;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_mailing_list);
 
@@ -41,6 +41,13 @@ public class AddMailingList extends AppCompatActivity {
                     newMailingList.setName(mailingListNameInput.getText().toString());
                     daoSession.getMailingListDao().insert(newMailingList);
                     daoSession.clear();
+                    Intent i = new Intent(getApplicationContext(), MailingListMenu.class);
+                    i.putExtra("refresh needed", true);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    finish();
+                    startActivity(i);
+
+
                 }
                 finish();
             }
