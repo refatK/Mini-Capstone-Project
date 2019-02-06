@@ -12,12 +12,12 @@ import org.greenrobot.greendao.DaoException;
 public class MailingList {
 
     @Id(autoincrement = true)
-    private long id;
+    private Long id;
 
     @Property(nameInDb = "name")
     private String name;
 
-    @ToMany(referencedJoinProperty = "id")
+    @ToMany(referencedJoinProperty = "mailingListID")
     @Property(nameInDb = "emails")
     private List<EmailAddress> emails;
 
@@ -29,8 +29,8 @@ public class MailingList {
     @Generated(hash = 37244548)
     private transient MailingListDao myDao;
 
-    @Generated(hash = 1529160929)
-    public MailingList(long id, String name) {
+    @Generated(hash = 132289408)
+    public MailingList(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -39,11 +39,11 @@ public class MailingList {
     public MailingList() {
     }
 
-    public long getId() {
+    public Long getId() {
         return this.id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -125,5 +125,4 @@ public class MailingList {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getMailingListDao() : null;
     }
-
 }

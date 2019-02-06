@@ -19,7 +19,7 @@ configurations.all {
 }
 
 dependencies {
-    compileOnly 'org.greenrobot:greendao:3.2.2'
+    implementation 'org.greenrobot:greendao:3.2.2'
     implementation project(':k9mail-library')
     implementation project(':plugins:HoloColorPicker')
     implementation project(':plugins:openpgp-api-lib:openpgp-api')

@@ -540,7 +540,7 @@ public class K9 extends Application {
                         this,"MailingLists.db").getWritableDb()).newSession();
 
         if(daoSession.getMailingListDao().loadAll().size() == 0){
-            daoSession.getMailingListDao().insert(new MailingList(1,"MyList1"));
+            daoSession.getMailingListDao().insert(new MailingList(1L,"MyList1"));
         }
         app = this;
         Globals.setContext(this);
