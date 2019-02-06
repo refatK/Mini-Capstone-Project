@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'org.greenrobot.greendao'
+apply plugin: 'kotlin-android-extensions'
 
 if (!rootProject.optimizeForDevelopment) {
     apply from: '../gradle/plugins/checkstyle-android.gradle'

@@ -1,20 +1,18 @@
 package com.fsck.k9.activity.setup;
 
-import android.app.Application;
-import android.support.v7.app.ActionBar;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.Button;
 
 import com.fsck.k9.DaoSession;
 import com.fsck.k9.EmailAddress;
 import com.fsck.k9.K9;
 import com.fsck.k9.MailingList;
 import com.fsck.k9.R;
-import com.fsck.k9.activity.EmailAddressList;
 import com.fsck.k9.activity.K9ListActivity;
 
 import java.util.ArrayList;
@@ -25,6 +23,7 @@ public class MailingListMenu extends K9ListActivity {
     private List<MailingList> mailingLists;
     private List<String> mailingListNames = new ArrayList<String>();
     private DaoSession daoSession;
+    Button add_mailing_list;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,6 +46,18 @@ public class MailingListMenu extends K9ListActivity {
         ArrayAdapter<String> mailingListAdapter = new ArrayAdapter<String>(
                 this, R.layout.mailing_list_menu_item,  mailingListNames);
         setListAdapter(mailingListAdapter);
+
+        //action when pressing add new mailing list button
+        add_mailing_list = (Button) findViewById(R.id.add_mailing_list);
+        add_mailing_list.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(getApplicationContext(), AddMailingList.class);
+                startActivity(intent);
+            }
+
+        });
         
     }
 
@@ -66,8 +77,4 @@ public class MailingListMenu extends K9ListActivity {
         return allEmails.substring(0, allEmails.length()-2);
     }
 
-    public void addMailingList(View view)
-    {
-
-    }
 }
