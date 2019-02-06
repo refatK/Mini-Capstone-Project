@@ -68,12 +68,15 @@ public class MailingListMenu extends K9ListActivity {
         Toast.makeText(getApplicationContext(),
                 this.allEmailstoString(mailingLists.get(position)), Toast.LENGTH_SHORT ).show();
     }
+
     //this method is to get the string of comma seperated emails.
      private String allEmailstoString(MailingList mailingList){
         String allEmails = "";
         for(EmailAddress e : daoSession.getEmailAddressDao()._queryMailingList_Emails(mailingList.getId())){
             allEmails+=e.getEmail()+", ";
         }
+        if(allEmails.equals(""))
+            return "";
         return allEmails.substring(0, allEmails.length()-2);
     }
 

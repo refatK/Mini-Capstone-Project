@@ -5,13 +5,20 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+
+import com.fsck.k9.DaoSession;
+import com.fsck.k9.K9;
+import com.fsck.k9.MailingList;
 import com.fsck.k9.R;
 
 
 public class AddMailingList extends AppCompatActivity {
 
+    private DaoSession daoSession;
     Button button_add;
     Button cancel;
+    EditText mailingListNameInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,10 +31,18 @@ public class AddMailingList extends AppCompatActivity {
         {
             public void onClick(View v)
             {
-                //add db method to insert mailing list
-                
-                Intent intent = new Intent(getApplicationContext(), MailingListMenu.class);
-                startActivity(intent);
+                mailingListNameInput = findViewById(R.id.mailingListName);
+
+                //Adds new list to the DB if the name is not empty or null
+                if(mailingListNameInput != null &&
+                        !mailingListNameInput.getText().toString().equals("")) {
+                    daoSession = ((K9) getApplication()).getDaoSession();
+                    MailingList newMailingList = new MailingList();
+                    newMailingList.setName(mailingListNameInput.getText().toString());
+                    daoSession.getMailingListDao().insert(newMailingList);
+                    daoSession.clear();
+                }
+                finish();
             }
 
         });
