@@ -67,6 +67,8 @@ public class MailingListMenu extends K9ListActivity {
         for(EmailAddress e : daoSession.getEmailAddressDao()._queryMailingList_Emails(mailingList.getId())){
             allEmails+=e.getEmail()+", ";
         }
+        if(allEmails.equals(""))
+            return "";
         return allEmails.substring(0, allEmails.length()-2);
     }
 }
