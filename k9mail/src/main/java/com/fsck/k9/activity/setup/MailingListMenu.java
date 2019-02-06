@@ -29,6 +29,10 @@ public class MailingListMenu extends K9ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(savedInstanceState != null &&
+                savedInstanceState.getBoolean("refresh needed") == true){
+            recreate();
+        }
         setContentView(R.layout.activity_mailing_list_menu);
         daoSession = ((K9)getApplication()).getDaoSession();
         mailingLists = daoSession.getMailingListDao().loadAll();
