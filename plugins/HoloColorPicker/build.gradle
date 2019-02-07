@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-
 android {
     compileSdkVersion androidCompileSdkVersion.toInteger()
     buildToolsVersion '28.0.3'
@@ -17,6 +16,9 @@ android {
         abortOnError false
     }
     defaultConfig {
-        minSdkVersion  23
+        minSdkVersion 23
     }
+}
+
+dependencies {
 }

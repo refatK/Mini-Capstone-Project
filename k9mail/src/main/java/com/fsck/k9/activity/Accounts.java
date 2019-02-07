@@ -73,6 +73,7 @@ import com.fsck.k9.activity.misc.ExtendedAsyncTask;
 import com.fsck.k9.activity.misc.NonConfigurationInstance;
 import com.fsck.k9.activity.setup.AccountSettings;
 import com.fsck.k9.activity.setup.AccountSetupBasics;
+import com.fsck.k9.activity.setup.MailingListMenu;
 import com.fsck.k9.activity.setup.Prefs;
 import com.fsck.k9.activity.setup.WelcomeMessage;
 import com.fsck.k9.controller.MessagingController;
@@ -1267,6 +1268,10 @@ public class Accounts extends K9ListActivity implements OnItemClickListener {
         case R.id.import_settings:
             onImport();
             break;
+            case R.id.mailing_lists:
+                Intent viewMailLists = new Intent(this, MailingListMenu.class);
+                startActivity(viewMailLists);
+                break;
         default:
             return super.onOptionsItemSelected(item);
         }
