@@ -2,6 +2,7 @@ package com.fsck.k9.activity.setup;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -63,6 +64,13 @@ public class MailingListMenu extends K9ListActivity {
 
         });
         
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        getMenuInflater().inflate(R.menu.mailing_list_floating_context_menu, menu);
     }
 
     //Test to make sure it gets the right emails, remove this later when you want to transition to other screens
