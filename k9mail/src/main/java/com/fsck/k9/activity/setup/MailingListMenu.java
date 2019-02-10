@@ -72,7 +72,7 @@ public class MailingListMenu extends K9ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         Intent intent = new Intent(this, MailingListEmailListMenu.class);
-        intent.putExtra("MailingListId", mailingLists.get(position).getId());
+        intent.putExtra("mailingListId", mailingLists.get(position).getId());
         startActivity(intent);
     }
 

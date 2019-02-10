@@ -22,7 +22,7 @@ public class MailingListEmailListMenu extends K9ListActivity{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.email_address_list);
+        setContentView(R.layout.mailing_list_email_list_menu);
 
         Intent intent = getIntent();
         Long mailingListID = intent.getLongExtra("mailingListId", -1);
@@ -40,6 +40,6 @@ public class MailingListEmailListMenu extends K9ListActivity{
             emailAdressNames.add(eA.getEmail());
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                R.layout.email_address_list_item, emailAdresses);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.mailing_list_email_list_item, emailAdressNames);
+        setListAdapter(adapter);
 }
