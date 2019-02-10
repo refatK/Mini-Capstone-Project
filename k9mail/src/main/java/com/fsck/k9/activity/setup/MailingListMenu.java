@@ -66,13 +66,6 @@ public class MailingListMenu extends K9ListActivity {
         
     }
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-
-        getMenuInflater().inflate(R.menu.mailing_list_floating_context_menu, menu);
-    }
-
     //Test to make sure it gets the right emails, remove this later when you want to transition to other screens
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
