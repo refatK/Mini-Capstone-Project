@@ -6,9 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.fsck.k9.DaoSession;
 import com.fsck.k9.EmailAddress;
+import com.fsck.k9.EmailAddressValidator;
 import com.fsck.k9.K9;
 import com.fsck.k9.R;
 
@@ -33,7 +35,10 @@ public class AddEmailToMailingList extends AppCompatActivity {
             public void onClick(View v) {
                 emailAddressInput = findViewById(R.id.emailAddress);
 
-                if(emailAddressInput != null && !emailAddressInput.getText().toString().equals("")){
+                EmailAddressValidator validator = new EmailAddressValidator();
+
+                if(emailAddressInput != null && !emailAddressInput.getText().toString().equals("")
+                        && validator.isValidAddressOnly(emailAddressInput.getText().toString().trim())) {
                     daoSession = ((K9)getApplication()).getDaoSession();
                     EmailAddress newEmailAddress = new EmailAddress();
                     newEmailAddress.setEmail(emailAddressInput.getText().toString());
@@ -46,6 +51,8 @@ public class AddEmailToMailingList extends AppCompatActivity {
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     finish();
                     startActivity(i);
+                }else{
+                    Toast.makeText(getApplicationContext(), "Invalid Email Address. Please add another one.", Toast.LENGTH_SHORT).show();
                 }
                 finish();
             }
