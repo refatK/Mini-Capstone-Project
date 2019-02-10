@@ -38,6 +38,7 @@ public class MailingListMenu extends K9ListActivity {
         for (MailingList mL : mailingLists) {
             mailingListNames.add(mL.getName());
         }
+        //Test
         /*
         List<EmailAddress> mylist2 = daoSession.getMailingListDao().loadByRowId(1).getEmails();
 
@@ -47,6 +48,7 @@ public class MailingListMenu extends K9ListActivity {
         daoSession.insert(newEmail);
         mylist2.add(newEmail);
         */
+        //Test
         ArrayAdapter<String> mailingListAdapter = new ArrayAdapter<String>(
                 this, R.layout.mailing_list_menu_item,  mailingListNames);
         setListAdapter(mailingListAdapter);
@@ -69,8 +71,9 @@ public class MailingListMenu extends K9ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        Toast.makeText(getApplicationContext(),
-                this.allEmailstoString(mailingLists.get(position)), Toast.LENGTH_SHORT ).show();
+        Intent intent = new Intent(this, MailingListEmailListMenu.class);
+        intent.putExtra("MailingListId", mailingLists.get(position).getId());
+        startActivity(intent);
     }
 
     //this method is to get the string of comma seperated emails.
