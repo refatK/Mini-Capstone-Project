@@ -2,7 +2,10 @@ package com.fsck.k9.activity.setup;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
 
 import com.fsck.k9.DaoSession;
 import com.fsck.k9.EmailAddress;
@@ -16,8 +19,9 @@ import java.util.List;
 public class MailingListEmailListMenu extends K9ListActivity{
 
     private DaoSession daoSession;
-    private List<EmailAddress> emailAdresses;
-    private List<String> emailAdressNames = new ArrayList<>();
+    private List<EmailAddress> emailAddresses;
+    private List<String> emailAddressNames = new ArrayList<>();
+    private Button addEmailButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -25,20 +29,39 @@ public class MailingListEmailListMenu extends K9ListActivity{
         setContentView(R.layout.mailing_list_email_list_menu);
 
         Intent intent = getIntent();
-        Long mailingListID = intent.getLongExtra("mailingListId", -1);
+        final Long mailingListID = intent.getLongExtra("mailingListId", -1);
 
-        if(mailingListID == -1){
+        if (mailingListID == -1) {
             finish();
             return;
         }
 
-        daoSession = ((K9)getApplication()).getDaoSession();
-        emailAdresses = daoSession.getEmailAddressDao()._queryMailingList_Emails(mailingListID);
+        daoSession = ((K9) getApplication()).getDaoSession();
+        emailAddresses = daoSession.getEmailAddressDao()._queryMailingList_Emails(mailingListID);
 
-        for (EmailAddress eA : emailAdresses) {
-            emailAdressNames.add(eA.getEmail());
+        for (EmailAddress eA : emailAddresses) {
+            emailAddressNames.add(eA.getEmail());
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.mailing_list_email_list_item, emailAdressNames);
+        addEmailButton = (Button) findViewById(R.id.mailing_list_add_email);
+        addEmailButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intentButton = new Intent(getApplicationContext(), AddEmailToMailingList.class);
+                intentButton.putExtra("mailingListId", mailingListID);
+                startActivity(intentButton);
+            }
+        });
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.mailing_list_email_list_item, emailAddressNames);
         setListAdapter(adapter);
+    }
+
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+
+        Intent intent = new Intent(this, AddEmailToMailingList.class);
+        startActivity(intent);
+    }
+
 }
