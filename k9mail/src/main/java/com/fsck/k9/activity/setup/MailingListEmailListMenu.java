@@ -35,7 +35,6 @@ public class MailingListEmailListMenu extends K9ListActivity{
         daoSession = ((K9)getApplication()).getDaoSession();
         emailAdresses = daoSession.getEmailAddressDao()._queryMailingList_Emails(mailingListID);
 
-        //Test
         for (EmailAddress eA : emailAdresses) {
             emailAdressNames.add(eA.getEmail());
         }

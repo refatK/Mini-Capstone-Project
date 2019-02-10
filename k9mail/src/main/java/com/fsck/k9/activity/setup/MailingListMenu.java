@@ -67,7 +67,6 @@ public class MailingListMenu extends K9ListActivity {
         
     }
 
-    //Test to make sure it gets the right emails, remove this later when you want to transition to other screens
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
