@@ -31,10 +31,7 @@ public class MailingListEmailListMenu extends K9ListActivity {
         Intent intent = getIntent();
         final Long mailingListID = intent.getLongExtra("mailingListId", -1);
 
-        if(mailingListID == -1){
-            finish();
-            return;
-        }else if(savedInstanceState != null && savedInstanceState.getBoolean("refresh needed") == true){
+        if(savedInstanceState != null && savedInstanceState.getBoolean("refresh needed") == true){
             recreate();
         }
 
