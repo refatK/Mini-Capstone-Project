@@ -119,7 +119,7 @@ public class ContactPictureLoader {
     }
 
     public void loadContactPicture(Recipient recipient, ImageView imageView) {
-        loadContactPicture(recipient.photoThumbnailUri, recipient.address.get(0), imageView);
+        loadContactPicture(recipient.photoThumbnailUri, recipient.addresses.get(0), imageView);
     }
 
     private void loadFallbackPicture(Address address, ImageView imageView) {

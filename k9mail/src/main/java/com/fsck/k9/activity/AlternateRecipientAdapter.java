@@ -147,7 +147,7 @@ public class AlternateRecipientAdapter extends BaseAdapter {
 
         StringBuilder addressText = new StringBuilder();
 
-        for (Address address : recipient.address) {
+        for (Address address : recipient.addresses) {
             addressText.append(", \n").append(address.getAddress());
         }
 

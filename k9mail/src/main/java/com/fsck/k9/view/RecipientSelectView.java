@@ -322,7 +322,7 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
 
         List<Address> addresses = new ArrayList<>();
         for (Recipient recipient : recipients) {
-            addresses.addAll(recipient.address);
+            addresses.addAll(recipient.addresses);
         }
 
         Address[] address = new Address[addresses.size()];
@@ -393,7 +393,7 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
                 if (contactLookupUri != null) {
                     return new RecipientLoader(getContext(), cryptoProvider, contactLookupUri, true);
                 } else {
-                    return new RecipientLoader(getContext(), cryptoProvider, alternatesPopupRecipient.address.get(0)); //TODO REFAT multtiple emails?
+                    return new RecipientLoader(getContext(), cryptoProvider, alternatesPopupRecipient.addresses.get(0)); //TODO REFAT multtiple emails?
                 }
             }
         }
@@ -471,7 +471,7 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
         }
         Recipient currentRecipient = currentRecipients.get(indexOfRecipient);
 
-        currentRecipient.address = alternateAddress.address;
+        currentRecipient.addresses = alternateAddress.addresses;
         currentRecipient.addressLabel = alternateAddress.addressLabel;
         currentRecipient.cryptoStatus = alternateAddress.cryptoStatus;
 
@@ -616,7 +616,7 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
         public final String contactLookupKey;
 
         @NonNull
-        public List<Address> address;
+        public List<Address> addresses;
 
         public String addressLabel;
 
@@ -627,16 +627,16 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
         private RecipientCryptoStatus cryptoStatus;
 
         public Recipient(@NonNull Address address) {
-            this.address = new ArrayList<>();
-            this.address.add(address);
+            this.addresses = new ArrayList<>();
+            this.addresses.add(address);
             this.contactId = null;
             this.cryptoStatus = RecipientCryptoStatus.UNDEFINED;
             this.contactLookupKey = null;
         }
 
         public Recipient(String name, String email, String addressLabel, long contactId, String lookupKey) {
-            this.address = new ArrayList<>();
-            this.address.add(new Address(email, name));
+            this.addresses = new ArrayList<>();
+            this.addresses.add(new Address(email, name));
             this.contactId = contactId;
             this.addressLabel = addressLabel;
             this.cryptoStatus = RecipientCryptoStatus.UNDEFINED;
@@ -644,7 +644,7 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
         }
 
         public Recipient(@NonNull List<Address> addresses) {
-            this.address = addresses;
+            this.addresses = addresses;
             this.contactId = null;
             this.cryptoStatus = RecipientCryptoStatus.UNDEFINED;
             this.contactLookupKey = null;
@@ -657,11 +657,11 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
                 return displayName;
             }
 
-            return address.get(0).getAddress();
+            return addresses.get(0).getAddress();
         }
 
         public boolean isValidEmailAddress() {
-            return (!address.isEmpty());
+            return (!addresses.isEmpty());
         }
 
         public String getDisplayNameOrUnknown(Context context) {
@@ -674,7 +674,7 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
         }
 
         public String getNameOrUnknown(Context context) {
-            String name = address.get(0).getPersonal();
+            String name = addresses.get(0).getPersonal();
             if (name != null) {
                 return name;
             }
@@ -683,11 +683,11 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
         }
 
         private String getDisplayName() {
-            if (TextUtils.isEmpty(address.get(0).getPersonal())) {
+            if (TextUtils.isEmpty(addresses.get(0).getPersonal())) {
                 return null;
             }
 
-            String displayName = address.get(0).getPersonal();
+            String displayName = addresses.get(0).getPersonal();
             if (addressLabel != null) {
                 displayName += " (" + addressLabel + ")";
             }
@@ -716,7 +716,7 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
         @Override
         public boolean equals(Object o) {
             // Equality is entirely up to the address
-            return o instanceof Recipient && address.equals(((Recipient) o).address);
+            return o instanceof Recipient && addresses.equals(((Recipient) o).addresses);
         }
 
         private void writeObject(ObjectOutputStream oos) throws IOException {
