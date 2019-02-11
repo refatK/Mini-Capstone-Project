@@ -29,16 +29,39 @@ public class MailingListMenu extends K9ListActivity {
     private DaoSession daoSession;
     Button add_mailing_list;
 
+    public List<MailingList> getMailingListsForTesting() {
+        return mailingLists;
+    }
+
+    public List<String> getMailingListNamesForTesting() {
+        return mailingListNames;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if(savedInstanceState != null &&
                 savedInstanceState.getBoolean("refresh needed") == true){
+            Bundle noUpdate = new Bundle();
+            noUpdate.putBoolean("refresh needed", false);
+            getIntent().replaceExtras(noUpdate);
             recreate();
         }
+        if(savedInstanceState != null &&
+                savedInstanceState.containsKey("under test") &&
+                    savedInstanceState.getBoolean("under test") == true){
+            mailingLists = new ArrayList<MailingList>();
+            mailingLists.add(new MailingList(null, "TestList1"));
+            mailingLists.add(new MailingList(null, "TestList2"));
+            mailingLists.add(new MailingList(null, "TestList3"));
+        }
+        else{
+            daoSession = ((K9)getApplication()).getDaoSession();
+            mailingLists = daoSession.getMailingListDao().loadAll();
+        }
         setContentView(R.layout.activity_mailing_list_menu);
-        daoSession = ((K9)getApplication()).getDaoSession();
-        mailingLists = daoSession.getMailingListDao().loadAll();
+
         for (MailingList mL : mailingLists) {
             mailingListNames.add(mL.getName());
         }
