@@ -3,7 +3,6 @@ package com.fsck.k9.activity.setup;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
-import android.support.v7.app.AppCompatActivity;
 
 import com.fsck.k9.DaoSession;
 import com.fsck.k9.EmailAddress;
@@ -13,7 +12,7 @@ import com.fsck.k9.R;
 
 import java.util.List;
 
-public class RemoveMailingList extends AppCompatActivity {
+public class RemoveMailingList extends Activity {
 
     private DaoSession daoSession;
     private List<EmailAddress> listOfEmailAddresses;
