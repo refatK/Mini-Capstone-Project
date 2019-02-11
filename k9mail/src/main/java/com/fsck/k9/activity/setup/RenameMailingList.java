@@ -49,8 +49,6 @@ public class RenameMailingList extends AppCompatActivity {
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     finish();
                     startActivity(i);
-
-
                 }
                 finish();
             }
