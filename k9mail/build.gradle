@@ -43,13 +43,13 @@ dependencies {
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    androidTestCompile 'com.android.support.test:runner:0.5',{
+    androidTestCompile 'com.android.support.test:runner:0.5', {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.0'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
-   // androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.2'
+    // androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.2'
     testImplementation "org.robolectric:robolectric:${robolectricVersion}"
     testImplementation "junit:junit:${junitVersion}"
     testImplementation "com.google.truth:truth:${truthVersion}"
@@ -135,4 +135,3 @@ if (project.hasProperty('storeFile')) {
 if (project.hasProperty('storePassword')) {
     android.signingConfigs.release.storePassword = storePassword
 }
-

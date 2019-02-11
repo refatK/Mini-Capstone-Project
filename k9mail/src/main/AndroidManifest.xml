@@ -57,25 +57,23 @@
         android:label="@string/app_name"
         android:resizeableActivity="true"
         android:theme="@style/Theme.K9.Startup">
-
-        <activity android:name=".activity.setup.MailingListEmailListMenu"
-            android:label = "@string/mailing_list_email_list">
-        </activity>
-
         <activity
-            android:name = ".activity.setup.AddEmailToMailingList"
+            android:name=".activity.setup.RemoveMailingList"
+            android:label="@string/title_activity_remove_mailing_list"></activity>
+        <activity
+            android:name=".activity.setup.MailingListEmailListMenu"
+            android:label="@string/mailing_list_email_list"></activity>
+        <activity
+            android:name=".activity.setup.AddEmailToMailingList"
             android:theme="@style/Theme.AppCompat.Light.Dialog.Alert" />
-
         <activity
             android:name=".activity.setup.MailingListMenu"
             android:label="@string/mailing_lists" />
-
         <activity
             android:name=".activity.setup.RenameMailingList"
             android:theme="@style/Theme.AppCompat.Light.Dialog.Alert" />
-
         <activity
-            android:name = ".activity.setup.AddMailingList"
+            android:name=".activity.setup.AddMailingList"
             android:theme="@style/Theme.AppCompat.Light.Dialog.Alert" />
 
         <meta-data
@@ -452,7 +450,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/temp_file_provider_paths" />
         </provider>
-
     </application>
 
 </manifest>
