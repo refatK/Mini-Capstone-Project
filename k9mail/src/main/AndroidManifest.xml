@@ -57,9 +57,22 @@
         android:label="@string/app_name"
         android:resizeableActivity="true"
         android:theme="@style/Theme.K9.Startup">
+
+        <activity android:name=".activity.setup.MailingListEmailListMenu"
+            android:label = "@string/mailing_list_email_list">
+        </activity>
+
+        <activity
+            android:name = ".activity.setup.AddEmailToMailingList"
+            android:theme="@style/Theme.AppCompat.Light.Dialog.Alert" />
+
         <activity
             android:name=".activity.setup.MailingListMenu"
             android:label="@string/mailing_lists" />
+
+        <activity
+            android:name=".activity.setup.RenameMailingList"
+            android:theme="@style/Theme.AppCompat.Light.Dialog.Alert" />
 
         <activity
             android:name = ".activity.setup.AddMailingList"

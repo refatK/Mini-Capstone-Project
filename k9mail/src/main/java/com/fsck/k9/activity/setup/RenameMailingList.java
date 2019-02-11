@@ -1,30 +1,33 @@
-package com.fsck.k9;
+package com.fsck.k9.activity.setup;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.ContextMenu;
+import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.fsck.k9.activity.setup.MailingListMenu;
+import com.fsck.k9.DaoSession;
+import com.fsck.k9.K9;
+import com.fsck.k9.MailingList;
+import com.fsck.k9.R;
 
-public class RenameMailingList extends Activity {
+
+public class RenameMailingList extends AppCompatActivity {
 
     private DaoSession daoSession;
-    Button button_add;
+    Button button_rename;
     Button cancel;
     EditText mailingListNameInput;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_mailing_list);
+        setContentView(R.layout.activity_rename_mailing_list);
 
-        //add button
-        button_add = (Button) findViewById(R.id.button_add);
-        button_add.setOnClickListener(new View.OnClickListener()
+        //rename button
+        button_rename = (Button) findViewById(R.id.button_rename);
+        button_rename.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v)
             {
@@ -64,10 +67,5 @@ public class RenameMailingList extends Activity {
         });
     }
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
 
-        getMenuInflater().inflate(R.menu.mailing_list_floating_context_menu, menu);
-    }
 }

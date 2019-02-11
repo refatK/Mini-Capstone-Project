@@ -2,11 +2,13 @@ package com.fsck.k9.activity.setup;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 import android.widget.Button;
 
 import com.fsck.k9.DaoSession;
@@ -14,6 +16,7 @@ import com.fsck.k9.EmailAddress;
 import com.fsck.k9.K9;
 import com.fsck.k9.MailingList;
 import com.fsck.k9.R;
+import com.fsck.k9.activity.setup.RenameMailingList;
 import com.fsck.k9.activity.K9ListActivity;
 
 import java.util.ArrayList;
@@ -39,6 +42,7 @@ public class MailingListMenu extends K9ListActivity {
         for (MailingList mL : mailingLists) {
             mailingListNames.add(mL.getName());
         }
+        //Test
         /*
         List<EmailAddress> mylist2 = daoSession.getMailingListDao().loadByRowId(1).getEmails();
 
@@ -48,6 +52,7 @@ public class MailingListMenu extends K9ListActivity {
         daoSession.insert(newEmail);
         mylist2.add(newEmail);
         */
+        //Test
         ArrayAdapter<String> mailingListAdapter = new ArrayAdapter<String>(
                 this, R.layout.mailing_list_menu_item,  mailingListNames);
         setListAdapter(mailingListAdapter);
@@ -63,15 +68,41 @@ public class MailingListMenu extends K9ListActivity {
             }
 
         });
-        
+
+        ListView list = (ListView)findViewById(android.R.id.list);
+        registerForContextMenu(list);
     }
 
-    //Test to make sure it gets the right emails, remove this later when you want to transition to other screens
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        Toast.makeText(getApplicationContext(),
-                this.allEmailstoString(mailingLists.get(position)), Toast.LENGTH_SHORT ).show();
+        Intent intent = new Intent(this, MailingListEmailListMenu.class);
+        intent.putExtra("mailingListId", mailingLists.get(position).getId());
+        startActivity(intent);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+
+        getMenuInflater().inflate(R.menu.mailing_list_floating_context_menu, menu);
+        super.onCreateContextMenu(menu, v, menuInfo);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        switch(item.getItemId())
+        {
+            case R.id.rename:{
+                Intent intent = new Intent(this, RenameMailingList.class);
+                intent.putExtra("mailingListId", mailingLists.get(info.position).getId());
+                startActivity(intent);
+            }
+
+        }
+        return super.onContextItemSelected(item);
     }
 
     //this method is to get the string of comma seperated emails.
