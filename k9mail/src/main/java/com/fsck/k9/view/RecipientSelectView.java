@@ -173,18 +173,6 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
     @Override
     protected Recipient defaultObject(String completionText) {
 
-        //System.out.println("MAILINGLISTSSIZEIS "  + this.mailingLists.size());
-
-        //TODO REFAT test, to replace with DB instead
-        //TODO REFAT assure mailing list addition is case insensitive
-//        if(completionText.equals("MailList1")) {
-//            List<Address> testAdd = new ArrayList<>();
-//            testAdd.add(new Address("fexo@netmails.info", "MailList1"));
-//            testAdd.add(new Address("yertedamlo@ezehe.com", "MailList1"));
-//            testAdd.add(new Address("x@y.com", "MailList1"));
-//            testAdd.add(new Address("dsdsds@bnjjhd.com", "MailList1"));
-//            return new Recipient(testAdd);
-//        }
         for (MailingList ml:mailingLists) {
             String name = ml.getName();
             if (completionText.equalsIgnoreCase(name)) {
@@ -205,9 +193,6 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
             setError(getContext().getString(R.string.recipient_error_parse_failed));
             return null;
         }
-
-        //TODO REFAT add check for the message lists
-        //TODO REFAT get the message list db
 
         return new Recipient(parsedAddresses[0]);
     }

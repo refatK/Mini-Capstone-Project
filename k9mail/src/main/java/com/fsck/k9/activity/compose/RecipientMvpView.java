@@ -50,11 +50,11 @@ public class RecipientMvpView implements OnFocusChangeListener, OnClickListener 
     private final ViewAnimator recipientExpanderContainer;
     private final ToolableViewAnimator cryptoSpecialModeIndicator;
     private RecipientPresenter presenter;
-    private  List<MailingList> mailingLists;
+    //private  List<MailingList> mailingLists;
 
     public RecipientMvpView(MessageCompose activity) {
         this.activity = activity;
-        this.mailingLists = null;
+
         toView = (RecipientSelectView) activity.findViewById(R.id.to);
         ccView = (RecipientSelectView) activity.findViewById(R.id.cc);
         bccView = (RecipientSelectView) activity.findViewById(R.id.bcc);
@@ -72,6 +72,8 @@ public class RecipientMvpView implements OnFocusChangeListener, OnClickListener 
         ccView.setOnFocusChangeListener(this);
         bccView.setOnFocusChangeListener(this);
 
+        setMailingLists(activity.getMailingLists());
+
         View recipientExpander = activity.findViewById(R.id.recipient_expander);
         recipientExpander.setOnClickListener(this);
 
@@ -84,12 +86,12 @@ public class RecipientMvpView implements OnFocusChangeListener, OnClickListener 
     }
 
     public void setMailingLists(List<MailingList> mailingLists){
-        this.mailingLists = mailingLists;
+        // this.mailingLists = mailingLists;
 
         // give RecipientSelectViews access to the mailing lists from DB
-        toView.setMailingLists(this.mailingLists);
-        ccView.setMailingLists(this.mailingLists);
-        bccView.setMailingLists(this.mailingLists);
+        toView.setMailingLists(mailingLists);
+        ccView.setMailingLists(mailingLists);
+        bccView.setMailingLists(mailingLists);
 
     }
 

@@ -289,7 +289,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         mailingLists = daoSession.getMailingListDao().loadAll();
 
         RecipientMvpView recipientMvpView = new RecipientMvpView(this);
-        recipientMvpView.setMailingLists(mailingLists);
 
         ComposePgpInlineDecider composePgpInlineDecider = new ComposePgpInlineDecider();
         ComposePgpEnableByDefaultDecider composePgpEnableByDefaultDecider = new ComposePgpEnableByDefaultDecider();
@@ -1401,6 +1400,10 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         updateFrom();
 
         quotedMessagePresenter.processDraftMessage(messageViewInfo, k9identity);
+    }
+
+    public List<MailingList> getMailingLists() {
+        return this.mailingLists;
     }
 
     static class SendMessageTask extends AsyncTask<Void, Void, Void> {
