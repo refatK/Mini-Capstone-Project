@@ -124,6 +124,12 @@ public class MailingListMenu extends K9ListActivity {
                 startActivity(intent);
             }
 
+            case R.id.delete:{
+                Intent intent = new Intent(this, RemoveMailingList.class);
+                intent.putExtra("mailingListId", mailingLists.get(info.position).getId());
+                startActivity(intent);
+            }
+
         }
         return super.onContextItemSelected(item);
     }
