@@ -6,13 +6,17 @@ import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 
 import com.fsck.k9.DaoSession;
+import com.fsck.k9.EmailAddress;
 import com.fsck.k9.K9;
 import com.fsck.k9.MailingList;
 import com.fsck.k9.R;
 
+import java.util.List;
+
 public class RemoveMailingList extends AppCompatActivity {
 
     private DaoSession daoSession;
+    private List<EmailAddress> listOfEmailAddresses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +27,12 @@ public class RemoveMailingList extends AppCompatActivity {
         final Long mailingListID = intent.getLongExtra("mailingListId", -1);
 
         daoSession = ((K9) getApplication()).getDaoSession();
+        listOfEmailAddresses = daoSession.getEmailAddressDao()._queryMailingList_Emails(mailingListID);
+
+        for (EmailAddress ea : listOfEmailAddresses) {
+            daoSession.delete(ea);
+        }
+
         MailingList toDelete = daoSession.getMailingListDao().loadByRowId(mailingListID);
         //toDelete.setName(mailingListNameInput.getText().toString());
         daoSession.getMailingListDao().delete(toDelete);
