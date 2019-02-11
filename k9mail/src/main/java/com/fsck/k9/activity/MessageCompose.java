@@ -46,8 +46,10 @@ import android.widget.Toast;
 
 import com.fsck.k9.Account;
 import com.fsck.k9.Account.MessageFormat;
+import com.fsck.k9.DaoSession;
 import com.fsck.k9.Identity;
 import com.fsck.k9.K9;
+import com.fsck.k9.MailingList;
 import com.fsck.k9.Preferences;
 import com.fsck.k9.R;
 import com.fsck.k9.activity.MessageLoaderHelper.MessageLoaderCallbacks;
@@ -209,6 +211,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     private EolConvertingEditText messageContentView;
     private LinearLayout attachmentsView;
 
+    private DaoSession daoSession;
+    private List<MailingList> mailingLists;
+
     private String referencedMessageIds;
     private String repliedToMessageId;
 
@@ -280,7 +285,12 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         chooseIdentityButton = (TextView) findViewById(R.id.identity);
         chooseIdentityButton.setOnClickListener(this);
 
+        daoSession = ((K9)getApplication()).getDaoSession();
+        mailingLists = daoSession.getMailingListDao().loadAll();
+
         RecipientMvpView recipientMvpView = new RecipientMvpView(this);
+        recipientMvpView.setMailingLists(mailingLists);
+
         ComposePgpInlineDecider composePgpInlineDecider = new ComposePgpInlineDecider();
         ComposePgpEnableByDefaultDecider composePgpEnableByDefaultDecider = new ComposePgpEnableByDefaultDecider();
         recipientPresenter = new RecipientPresenter(getApplicationContext(), getLoaderManager(),

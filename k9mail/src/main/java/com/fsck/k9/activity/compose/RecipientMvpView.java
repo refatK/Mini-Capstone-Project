@@ -16,6 +16,7 @@ import android.widget.Toast;
 import android.widget.ViewAnimator;
 
 import com.fsck.k9.FontSizes;
+import com.fsck.k9.MailingList;
 import com.fsck.k9.R;
 import com.fsck.k9.activity.MessageCompose;
 import com.fsck.k9.mail.Address;
@@ -49,11 +50,11 @@ public class RecipientMvpView implements OnFocusChangeListener, OnClickListener 
     private final ViewAnimator recipientExpanderContainer;
     private final ToolableViewAnimator cryptoSpecialModeIndicator;
     private RecipientPresenter presenter;
-
+    private  List<MailingList> mailingLists;
 
     public RecipientMvpView(MessageCompose activity) {
         this.activity = activity;
-
+        this.mailingLists = null;
         toView = (RecipientSelectView) activity.findViewById(R.id.to);
         ccView = (RecipientSelectView) activity.findViewById(R.id.cc);
         bccView = (RecipientSelectView) activity.findViewById(R.id.bcc);
@@ -80,6 +81,16 @@ public class RecipientMvpView implements OnFocusChangeListener, OnClickListener 
         toLabel.setOnClickListener(this);
         ccLabel.setOnClickListener(this);
         bccLabel.setOnClickListener(this);
+    }
+
+    public void setMailingLists(List<MailingList> mailingLists){
+        this.mailingLists = mailingLists;
+
+        // give RecipientSelectViews access to the mailing lists from DB
+        toView.setMailingLists(this.mailingLists);
+        ccView.setMailingLists(this.mailingLists);
+        bccView.setMailingLists(this.mailingLists);
+
     }
 
     public void setPresenter(final RecipientPresenter presenter) {

@@ -40,6 +40,7 @@ import com.fsck.k9.activity.AlternateRecipientAdapter.AlternateRecipientListener
 import com.fsck.k9.activity.compose.RecipientAdapter;
 import com.fsck.k9.activity.compose.RecipientLoader;
 import com.fsck.k9.mail.Address;
+import com.fsck.k9.MailingList;
 import com.fsck.k9.view.RecipientSelectView.Recipient;
 import com.tokenautocomplete.TokenCompleteTextView;
 import org.apache.james.mime4j.util.CharsetUtil;
@@ -56,6 +57,7 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
     private static final int LOADER_ID_FILTERING = 0;
     private static final int LOADER_ID_ALTERNATES = 1;
 
+    private List<MailingList> mailingLists;
 
     private RecipientAdapter adapter;
     @Nullable
@@ -169,6 +171,8 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
 
     @Override
     protected Recipient defaultObject(String completionText) {
+
+        System.out.println("MAILINGLISTSSIZEIS "  + this.mailingLists.size());
 
         //TODO REFAT test, to replace with DB instead
         //TODO REFAT assure mailing list addition is case insensitive
@@ -532,6 +536,10 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
     public void setTokenListener(TokenListener<Recipient> listener) {
         super.setTokenListener(listener);
         this.listener = listener;
+    }
+
+    public void setMailingLists(List<MailingList> mailingLists) {
+        this.mailingLists = mailingLists;
     }
 
 
