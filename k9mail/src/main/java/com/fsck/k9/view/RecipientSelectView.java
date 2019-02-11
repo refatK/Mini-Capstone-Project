@@ -169,6 +169,15 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
 
     @Override
     protected Recipient defaultObject(String completionText) {
+
+        //TODO REFAT test, to replace with DB instead
+        if(completionText.equals("MailList1")) {
+            List<Address> testAdd = new ArrayList<>();
+            testAdd.add(new Address("fexo@netmails.info", "MailList1"));
+            testAdd.add(new Address("yertedamlo@ezehe.com", "MailList1"));
+            return new Recipient(testAdd);
+        }
+
         Address[] parsedAddresses = Address.parse(completionText);
         if (!CharsetUtil.isASCII(completionText)) {
             setError(getContext().getString(R.string.recipient_error_non_ascii));
@@ -631,7 +640,12 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
             this.contactLookupKey = lookupKey;
         }
 
-        //TODO REFAT multi email constructor
+        public Recipient(@NonNull List<Address> addresses) {
+            this.address = addresses;
+            this.contactId = null;
+            this.cryptoStatus = RecipientCryptoStatus.UNDEFINED;
+            this.contactLookupKey = null;
+        }
 
         public String getDisplayNameOrAddress() {
             final String displayName = K9.showCorrespondentNames() ? getDisplayName() : null;
