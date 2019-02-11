@@ -33,6 +33,7 @@ import android.widget.ListPopupWindow;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.fsck.k9.EmailAddress;
 import com.fsck.k9.K9;
 import com.fsck.k9.R;
 import com.fsck.k9.activity.AlternateRecipientAdapter;
@@ -172,17 +173,27 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
     @Override
     protected Recipient defaultObject(String completionText) {
 
-        System.out.println("MAILINGLISTSSIZEIS "  + this.mailingLists.size());
+        //System.out.println("MAILINGLISTSSIZEIS "  + this.mailingLists.size());
 
         //TODO REFAT test, to replace with DB instead
         //TODO REFAT assure mailing list addition is case insensitive
-        if(completionText.equals("MailList1")) {
-            List<Address> testAdd = new ArrayList<>();
-            testAdd.add(new Address("fexo@netmails.info", "MailList1"));
-            testAdd.add(new Address("yertedamlo@ezehe.com", "MailList1"));
-            testAdd.add(new Address("x@y.com", "MailList1"));
-            testAdd.add(new Address("dsdsds@bnjjhd.com", "MailList1"));
-            return new Recipient(testAdd);
+//        if(completionText.equals("MailList1")) {
+//            List<Address> testAdd = new ArrayList<>();
+//            testAdd.add(new Address("fexo@netmails.info", "MailList1"));
+//            testAdd.add(new Address("yertedamlo@ezehe.com", "MailList1"));
+//            testAdd.add(new Address("x@y.com", "MailList1"));
+//            testAdd.add(new Address("dsdsds@bnjjhd.com", "MailList1"));
+//            return new Recipient(testAdd);
+//        }
+        for (MailingList ml:mailingLists) {
+            String name = ml.getName();
+            if (completionText.equalsIgnoreCase(name)) {
+                List<Address> adresses = new ArrayList<>();
+                for (EmailAddress emailAdress : ml.getEmails()) {
+                    adresses.add(new Address(emailAdress.getEmail(), name));
+                }
+                return new Recipient(adresses);
+            }
         }
 
         Address[] parsedAddresses = Address.parse(completionText);
