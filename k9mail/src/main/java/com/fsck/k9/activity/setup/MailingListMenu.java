@@ -2,7 +2,11 @@ package com.fsck.k9.activity.setup;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Button;
@@ -12,6 +16,7 @@ import com.fsck.k9.EmailAddress;
 import com.fsck.k9.K9;
 import com.fsck.k9.MailingList;
 import com.fsck.k9.R;
+import com.fsck.k9.activity.setup.RenameMailingList;
 import com.fsck.k9.activity.K9ListActivity;
 
 import java.util.ArrayList;
@@ -86,7 +91,9 @@ public class MailingListMenu extends K9ListActivity {
             }
 
         });
-        
+
+        ListView list = (ListView)findViewById(android.R.id.list);
+        registerForContextMenu(list);
     }
 
     @Override
@@ -95,6 +102,30 @@ public class MailingListMenu extends K9ListActivity {
         Intent intent = new Intent(this, MailingListEmailListMenu.class);
         intent.putExtra("mailingListId", mailingLists.get(position).getId());
         startActivity(intent);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+
+        getMenuInflater().inflate(R.menu.mailing_list_floating_context_menu, menu);
+        super.onCreateContextMenu(menu, v, menuInfo);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        switch(item.getItemId())
+        {
+            case R.id.rename:{
+                Intent intent = new Intent(this, RenameMailingList.class);
+                intent.putExtra("mailingListId", mailingLists.get(info.position).getId());
+                startActivity(intent);
+            }
+
+        }
+        return super.onContextItemSelected(item);
     }
 
     //this method is to get the string of comma seperated emails.
