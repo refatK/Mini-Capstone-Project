@@ -89,7 +89,7 @@ public class RecipientAdapter extends BaseAdapter implements Filterable {
 
         holder.name.setText(highlightText(recipient.getDisplayNameOrUnknown(context)));
 
-        String address = recipient.address.getAddress();
+        String address = recipient.address.get(0).getAddress();  //TODO REFAT multiple addresses in view
         holder.email.setText(highlightText(address));
 
         setContactPhotoOrPlaceholder(context, holder.photo, recipient);

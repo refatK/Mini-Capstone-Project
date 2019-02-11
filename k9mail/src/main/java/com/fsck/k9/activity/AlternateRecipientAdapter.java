@@ -144,7 +144,7 @@ public class AlternateRecipientAdapter extends BaseAdapter {
         RecipientTokenHolder holder = (RecipientTokenHolder) view.getTag();
         holder.setShowAsHeader(false);
 
-        String address = recipient.address.getAddress();
+        String address = recipient.address.get(0).getAddress();  //TODO REFAT multiple addresses in view
         holder.itemAddress.setText(address);
         if (!TextUtils.isEmpty(recipient.addressLabel)) {
             holder.itemAddressLabel.setText(recipient.addressLabel);

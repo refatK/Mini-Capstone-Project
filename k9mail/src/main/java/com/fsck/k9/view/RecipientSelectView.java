@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -178,6 +179,9 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
             return null;
         }
 
+        //TODO REFAT add check for the message lists
+        //TODO REFAT get the message list db
+
         return new Recipient(parsedAddresses[0]);
     }
 
@@ -303,9 +307,15 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
 
     public Address[] getAddresses() {
         List<Recipient> recipients = getObjects();
-        Address[] address = new Address[recipients.size()];
+
+        List<Address> addresses = new ArrayList<>();
+        for (Recipient recipient : recipients) {
+            addresses.addAll(recipient.address);
+        }
+
+        Address[] address = new Address[addresses.size()];
         for (int i = 0; i < address.length; i++) {
-            address[i] = recipients.get(i).address;
+            address[i] = addresses.get(i);
         }
 
         return address;
@@ -371,7 +381,7 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
                 if (contactLookupUri != null) {
                     return new RecipientLoader(getContext(), cryptoProvider, contactLookupUri, true);
                 } else {
-                    return new RecipientLoader(getContext(), cryptoProvider, alternatesPopupRecipient.address);
+                    return new RecipientLoader(getContext(), cryptoProvider, alternatesPopupRecipient.address.get(0)); //TODO REFAT multtiple emails?
                 }
             }
         }
@@ -517,7 +527,7 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
         UNDEFINED,
         UNAVAILABLE,
         AVAILABLE_UNTRUSTED,
-        AVAILABLE_TRUSTED;
+        AVAILABLE_TRUSTED
     }
 
     public interface TokenListener<T> extends TokenCompleteTextView.TokenListener<T> {
@@ -594,7 +604,7 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
         public final String contactLookupKey;
 
         @NonNull
-        public Address address;
+        public List<Address> address;
 
         public String addressLabel;
 
@@ -605,19 +615,23 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
         private RecipientCryptoStatus cryptoStatus;
 
         public Recipient(@NonNull Address address) {
-            this.address = address;
+            this.address = new ArrayList<>();
+            this.address.add(address);
             this.contactId = null;
             this.cryptoStatus = RecipientCryptoStatus.UNDEFINED;
             this.contactLookupKey = null;
         }
 
         public Recipient(String name, String email, String addressLabel, long contactId, String lookupKey) {
-            this.address = new Address(email, name);
+            this.address = new ArrayList<>();
+            this.address.add(new Address(email, name));
             this.contactId = contactId;
             this.addressLabel = addressLabel;
             this.cryptoStatus = RecipientCryptoStatus.UNDEFINED;
             this.contactLookupKey = lookupKey;
         }
+
+        //TODO REFAT multi email constructor
 
         public String getDisplayNameOrAddress() {
             final String displayName = K9.showCorrespondentNames() ? getDisplayName() : null;
@@ -626,11 +640,11 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
                 return displayName;
             }
 
-            return address.getAddress();
+            return address.get(0).getAddress();
         }
 
         public boolean isValidEmailAddress() {
-            return (address.getAddress() != null);
+            return (address.get(0).getAddress() != null);
         }
 
         public String getDisplayNameOrUnknown(Context context) {
@@ -643,7 +657,7 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
         }
 
         public String getNameOrUnknown(Context context) {
-            String name = address.getPersonal();
+            String name = address.get(0).getPersonal();
             if (name != null) {
                 return name;
             }
@@ -652,11 +666,11 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
         }
 
         private String getDisplayName() {
-            if (TextUtils.isEmpty(address.getPersonal())) {
+            if (TextUtils.isEmpty(address.get(0).getPersonal())) {
                 return null;
             }
 
-            String displayName = address.getPersonal();
+            String displayName = address.get(0).getPersonal();
             if (addressLabel != null) {
                 displayName += " (" + addressLabel + ")";
             }
