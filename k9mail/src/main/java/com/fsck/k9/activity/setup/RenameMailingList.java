@@ -25,6 +25,9 @@ public class RenameMailingList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rename_mailing_list);
 
+        Intent intent = getIntent();
+        final Long mailingListID = intent.getLongExtra("mailingListId", -1);
+
         //rename button
         button_rename = (Button) findViewById(R.id.button_rename);
         button_rename.setOnClickListener(new View.OnClickListener()
@@ -37,9 +40,9 @@ public class RenameMailingList extends AppCompatActivity {
                 if(mailingListNameInput != null &&
                         !mailingListNameInput.getText().toString().equals("")) {
                     daoSession = ((K9) getApplication()).getDaoSession();
-                    MailingList newMailingList = new MailingList();
-                    newMailingList.setName(mailingListNameInput.getText().toString());
-                    daoSession.getMailingListDao().insert(newMailingList);
+                    MailingList toRename = daoSession.getMailingListDao().loadByRowId(mailingListID);
+                    toRename.setName(mailingListNameInput.getText().toString());
+                    daoSession.getMailingListDao().update(toRename);
                     daoSession.clear();
                     Intent i = new Intent(getApplicationContext(), MailingListMenu.class);
                     i.putExtra("refresh needed", true);
