@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.fsck.k9.R;
 import com.fsck.k9.helper.ContactPicture;
+import com.fsck.k9.mail.Address;
 import com.fsck.k9.view.RecipientSelectView.Recipient;
 import com.fsck.k9.view.RecipientSelectView.RecipientCryptoStatus;
 import com.fsck.k9.view.ThemeUtils;
@@ -89,8 +90,13 @@ public class RecipientAdapter extends BaseAdapter implements Filterable {
 
         holder.name.setText(highlightText(recipient.getDisplayNameOrUnknown(context)));
 
-        String address = recipient.address.get(0).getAddress();  //TODO REFAT multiple addresses in view
-        holder.email.setText(highlightText(address));
+        StringBuilder addressText = new StringBuilder();
+
+        for (Address address : recipient.address) {
+            addressText.append(", \n").append(address.getAddress());
+        }
+
+        holder.email.setText(highlightText(addressText.substring(", \n".length())));
 
         setContactPhotoOrPlaceholder(context, holder.photo, recipient);
 

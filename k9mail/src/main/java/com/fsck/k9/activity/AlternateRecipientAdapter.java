@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.fsck.k9.R;
 import com.fsck.k9.activity.compose.RecipientAdapter;
+import com.fsck.k9.mail.Address;
 import com.fsck.k9.ui.ContactBadge;
 import com.fsck.k9.view.RecipientSelectView.Recipient;
 import com.fsck.k9.view.ThemeUtils;
@@ -144,8 +145,14 @@ public class AlternateRecipientAdapter extends BaseAdapter {
         RecipientTokenHolder holder = (RecipientTokenHolder) view.getTag();
         holder.setShowAsHeader(false);
 
-        String address = recipient.address.get(0).getAddress();  //TODO REFAT multiple addresses in view
-        holder.itemAddress.setText(address);
+        StringBuilder addressText = new StringBuilder();
+
+        for (Address address : recipient.address) {
+            addressText.append(", \n").append(address.getAddress());
+        }
+
+        holder.itemAddress.setText(addressText.substring(", \n".length()));
+
         if (!TextUtils.isEmpty(recipient.addressLabel)) {
             holder.itemAddressLabel.setText(recipient.addressLabel);
             holder.itemAddressLabel.setVisibility(View.VISIBLE);

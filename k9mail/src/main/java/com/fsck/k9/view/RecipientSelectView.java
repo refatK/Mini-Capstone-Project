@@ -171,10 +171,13 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
     protected Recipient defaultObject(String completionText) {
 
         //TODO REFAT test, to replace with DB instead
+        //TODO REFAT assure mailing list addition is case insensitive
         if(completionText.equals("MailList1")) {
             List<Address> testAdd = new ArrayList<>();
             testAdd.add(new Address("fexo@netmails.info", "MailList1"));
             testAdd.add(new Address("yertedamlo@ezehe.com", "MailList1"));
+            testAdd.add(new Address("x@y.com", "MailList1"));
+            testAdd.add(new Address("dsdsds@bnjjhd.com", "MailList1"));
             return new Recipient(testAdd);
         }
 
@@ -658,7 +661,7 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
         }
 
         public boolean isValidEmailAddress() {
-            return (address.get(0).getAddress() != null);
+            return (!address.isEmpty());
         }
 
         public String getDisplayNameOrUnknown(Context context) {
