@@ -102,6 +102,7 @@
             android:layout_weight="1"
             android:paddingLeft="6dip"
             android:paddingRight="6dip"
+            android:paddingBottom="6dip"
             android:ellipsize="end"
             tools:text="address@example.com"
             />
