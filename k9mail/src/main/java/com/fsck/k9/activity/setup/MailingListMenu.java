@@ -63,18 +63,8 @@ public class MailingListMenu extends K9ListActivity {
         for (MailingList mL : mailingLists) {
             mailingListNames.add(mL.getName());
         }
-        //Test
-        /*
-        List<EmailAddress> mylist2 = daoSession.getMailingListDao().loadByRowId(1).getEmails();
 
-        EmailAddress newEmail = new EmailAddress();
-        newEmail.setEmail("a@321.com");
-        newEmail.setMailingListID(daoSession.getMailingListDao().load(1L).getId());
-        daoSession.insert(newEmail);
-        mylist2.add(newEmail);
-        */
-        //Test
-        ArrayAdapter<String> mailingListAdapter = new ArrayAdapter<>(
+        ArrayAdapter<String> mailingListAdapter = new ArrayAdapter<String>(
                 this, R.layout.mailing_list_menu_item,  mailingListNames);
         setListAdapter(mailingListAdapter);
 
