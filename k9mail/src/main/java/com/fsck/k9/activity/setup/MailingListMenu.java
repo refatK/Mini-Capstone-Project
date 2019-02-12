@@ -2,21 +2,19 @@ package com.fsck.k9.activity.setup;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.Button;
+import android.widget.ListView;
 
 import com.fsck.k9.DaoSession;
 import com.fsck.k9.EmailAddress;
 import com.fsck.k9.K9;
 import com.fsck.k9.MailingList;
 import com.fsck.k9.R;
-import com.fsck.k9.activity.setup.RenameMailingList;
 import com.fsck.k9.activity.K9ListActivity;
 
 import java.util.ArrayList;
@@ -25,7 +23,7 @@ import java.util.List;
 public class MailingListMenu extends K9ListActivity {
 
     private List<MailingList> mailingLists;
-    private List<String> mailingListNames = new ArrayList<String>();
+    private List<String> mailingListNames = new ArrayList<>();
     private DaoSession daoSession;
     Button add_mailing_list;
 
@@ -42,7 +40,7 @@ public class MailingListMenu extends K9ListActivity {
         super.onCreate(savedInstanceState);
 
         if(savedInstanceState != null &&
-                savedInstanceState.getBoolean("refresh needed") == true){
+                savedInstanceState.getBoolean("refresh needed")){
             Bundle noUpdate = new Bundle();
             noUpdate.putBoolean("refresh needed", false);
             getIntent().replaceExtras(noUpdate);
@@ -50,8 +48,8 @@ public class MailingListMenu extends K9ListActivity {
         }
         if(savedInstanceState != null &&
                 savedInstanceState.containsKey("under test") &&
-                    savedInstanceState.getBoolean("under test") == true){
-            mailingLists = new ArrayList<MailingList>();
+                    savedInstanceState.getBoolean("under test")){
+            mailingLists = new ArrayList<>();
             mailingLists.add(new MailingList(null, "TestList1"));
             mailingLists.add(new MailingList(null, "TestList2"));
             mailingLists.add(new MailingList(null, "TestList3"));
