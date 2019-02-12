@@ -24,12 +24,8 @@ public class RemoveEmailAddress extends Activity {
         daoSession = ((K9) getApplication()).getDaoSession();
         EmailAddress email = daoSession.getEmailAddressDao().loadByRowId(emailAddressID);
         daoSession.delete(email);
-
-        MailingList toDelete = daoSession.getMailingListDao().loadByRowId(mailingListID);
-        //toDelete.setName(mailingListNameInput.getText().toString());
-        daoSession.getMailingListDao().delete(toDelete);
         daoSession.clear();
-        Intent i = new Intent(getApplicationContext(), MailingListMenu.class);
+        Intent i = new Intent(getApplicationContext(), MailingListEmailListMenu.class);
         i.putExtra("refresh needed", true);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         finish();

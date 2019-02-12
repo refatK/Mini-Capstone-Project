@@ -2,9 +2,13 @@ package com.fsck.k9.activity.setup;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 
 import com.fsck.k9.DaoSession;
 import com.fsck.k9.EmailAddress;
@@ -54,5 +58,33 @@ public class MailingListEmailListMenu extends K9ListActivity {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.mailing_list_email_list_item, emailAddressNames);
         setListAdapter(adapter);
+
+        ListView list = (ListView)findViewById(android.R.id.list);
+        registerForContextMenu(list);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+
+        getMenuInflater().inflate(R.menu.email_address_floating_context_menu, menu);
+        super.onCreateContextMenu(menu, v, menuInfo);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        switch(item.getItemId())
+        {
+            case R.id.delete:{
+                Intent intent = new Intent(this, RemoveEmailAddress.class);
+                intent.putExtra("id", emailAddresses.get(info.position).getId());
+                startActivity(intent);
+                break;
+            }
+
+        }
+        return super.onContextItemSelected(item);
     }
 }
