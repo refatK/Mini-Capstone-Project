@@ -34,9 +34,8 @@ public class MailingListEmailListMenu extends K9ListActivity {
 
 
         if(getIntent().getBooleanExtra("refresh needed", true)){
-            Bundle noUpdate = new Bundle();
-            noUpdate.putBoolean("refresh needed", false);
-            getIntent().replaceExtras(noUpdate);
+            getIntent().removeExtra("refresh needed");
+            getIntent().putExtra("refresh needed", false);
             recreate();
         }
 
