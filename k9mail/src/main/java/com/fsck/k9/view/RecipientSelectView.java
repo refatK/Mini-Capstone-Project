@@ -1,13 +1,6 @@
 package com.fsck.k9.view;
 
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -35,16 +28,25 @@ import android.widget.TextView;
 
 import com.fsck.k9.EmailAddress;
 import com.fsck.k9.K9;
+import com.fsck.k9.MailingList;
 import com.fsck.k9.R;
 import com.fsck.k9.activity.AlternateRecipientAdapter;
 import com.fsck.k9.activity.AlternateRecipientAdapter.AlternateRecipientListener;
 import com.fsck.k9.activity.compose.RecipientAdapter;
 import com.fsck.k9.activity.compose.RecipientLoader;
 import com.fsck.k9.mail.Address;
-import com.fsck.k9.MailingList;
 import com.fsck.k9.view.RecipientSelectView.Recipient;
 import com.tokenautocomplete.TokenCompleteTextView;
+
 import org.apache.james.mime4j.util.CharsetUtil;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import timber.log.Timber;
 
 
@@ -173,14 +175,22 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
     @Override
     protected Recipient defaultObject(String completionText) {
 
-        for (MailingList ml:mailingLists) {
+        for (MailingList ml : mailingLists) {
             String name = ml.getName();
+
             if (completionText.equalsIgnoreCase(name)) {
-                List<Address> adresses = new ArrayList<>();
-                for (EmailAddress emailAdress : ml.getEmails()) {
-                    adresses.add(new Address(emailAdress.getEmail(), name));
+                List<Address> addresses = new ArrayList<>();
+
+                if (ml.getEmails() == null || ml.getEmails().isEmpty()) {
+                    setError(getContext().getString(R.string.recipient_error_empty_mailing_list));
+                    return null;
                 }
-                return new Recipient(adresses);
+
+                for (EmailAddress emailAddress : ml.getEmails()) {
+                    addresses.add(new Address(emailAddress.getEmail(), name));
+                }
+
+                return new Recipient(addresses);
             }
         }
 
@@ -227,7 +237,7 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
      * TokenCompleteTextView removes composing strings, and etc, but leaves internal composition
      * predictions partially constructed. Changing either/or the Selection or Candidate start/end
      * positions, forces the IMM to reset cleaner.
-     */ 
+     */
     @Override
     protected void replaceText(CharSequence text) {
         super.replaceText(text);
@@ -656,7 +666,7 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
 
         public String getDisplayNameOrAddress() {
             final String displayName = K9.showCorrespondentNames() ? getDisplayName() : null;
-    
+
             if (displayName != null) {
                 return displayName;
             }

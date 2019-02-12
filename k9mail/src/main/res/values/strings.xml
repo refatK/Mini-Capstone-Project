@@ -1250,6 +1250,7 @@ Please submit bug reports, contribute new features and ask questions at
 
     <string name="recipient_error_non_ascii">Special characters are currently not supported!</string>
     <string name="recipient_error_parse_failed">Error parsing address!</string>
+    <string name="recipient_error_empty_mailing_list">The mailing list does not contain emails!</string>
     <string name="account_settings_crypto_support_sign_only">Show unencrypted signatures</string>
     <string name="account_settings_crypto_support_sign_only_on">Unencrypted signatures will be displayed</string>
     <string name="account_settings_crypto_support_sign_only_off">Unencrypted signatures will be ignored</string>
