@@ -246,7 +246,7 @@ public class ComposeCryptoStatus {
 
             ArrayList<String> recipientAddresses = new ArrayList<>();
             for (Recipient recipient : recipients) {
-                recipientAddresses.add(recipient.address.getAddress());
+                recipientAddresses.add(recipient.addresses.get(0).getAddress());  //TODO REFAT multi addresses
             }
 
             ComposeCryptoStatus result = new ComposeCryptoStatus();

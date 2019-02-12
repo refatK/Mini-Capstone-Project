@@ -74,8 +74,8 @@ public class RecipientLoaderTest {
         List<Recipient> recipients = recipientLoader.loadInBackground();
 
         assertEquals(2, recipients.size());
-        assertEquals(CONTACT_ADDRESS_1, recipients.get(0).address);
-        assertEquals(CONTACT_ADDRESS_2, recipients.get(1).address);
+        assertEquals(CONTACT_ADDRESS_1, recipients.get(0).addresses.get(0));
+        assertEquals(CONTACT_ADDRESS_2, recipients.get(1).addresses.get(0));
         assertEquals(RecipientCryptoStatus.UNAVAILABLE, recipients.get(0).getCryptoStatus());
     }
 
@@ -89,7 +89,7 @@ public class RecipientLoaderTest {
 
         assertEquals(1, recipients.size());
         Recipient recipient = recipients.get(0);
-        assertEquals(CONTACT_ADDRESS_1, recipient.address);
+        assertEquals(CONTACT_ADDRESS_1, recipient.addresses.get(0));
         assertEquals(RecipientCryptoStatus.UNAVAILABLE, recipient.getCryptoStatus());
     }
 
@@ -103,7 +103,7 @@ public class RecipientLoaderTest {
 
         assertEquals(1, recipients.size());
         Recipient recipient = recipients.get(0);
-        assertEquals(CONTACT_ADDRESS_1, recipient.address);
+        assertEquals(CONTACT_ADDRESS_1, recipient.addresses.get(0));
         assertEquals(RecipientCryptoStatus.AVAILABLE_UNTRUSTED, recipient.getCryptoStatus());
     }
 
@@ -117,7 +117,7 @@ public class RecipientLoaderTest {
 
         assertEquals(1, recipients.size());
         Recipient recipient = recipients.get(0);
-        assertEquals(CONTACT_ADDRESS_1, recipient.address);
+        assertEquals(CONTACT_ADDRESS_1, recipient.addresses.get(0));
         assertEquals(RecipientCryptoStatus.AVAILABLE_TRUSTED, recipient.getCryptoStatus());
     }
 
@@ -131,7 +131,7 @@ public class RecipientLoaderTest {
 
         assertEquals(1, recipients.size());
         Recipient recipient = recipients.get(0);
-        assertEquals(CONTACT_ADDRESS_1, recipient.address);
+        assertEquals(CONTACT_ADDRESS_1, recipient.addresses.get(0));
         assertEquals(RecipientCryptoStatus.AVAILABLE_TRUSTED, recipient.getCryptoStatus());
     }
 
@@ -180,7 +180,7 @@ public class RecipientLoaderTest {
         List<Recipient> recipients = recipientLoader.loadInBackground();
 
         assertEquals(1, recipients.size());
-        assertEquals("bob@host.com", recipients.get(0).address.getAddress());
+        assertEquals("bob@host.com", recipients.get(0).addresses.get(0).getAddress());
         assertEquals(RecipientCryptoStatus.UNAVAILABLE, recipients.get(0).getCryptoStatus());
     }
 
