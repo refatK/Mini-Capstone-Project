@@ -81,6 +81,13 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
         initView(context);
     }
 
+    public RecipientSelectView(Context context, List<MailingList> mailingLists) {
+        super(context);
+        initView(context);
+
+        this.mailingLists = mailingLists;
+    }
+
     public RecipientSelectView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initView(context);
