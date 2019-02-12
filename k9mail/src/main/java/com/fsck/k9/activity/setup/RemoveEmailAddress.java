@@ -20,9 +20,9 @@ public class RemoveEmailAddress extends Activity {
 
         Intent intent = getIntent();
         final Long emailAddressID = intent.getLongExtra("id", -1);
-
+        getIntent().removeExtra("id");
         daoSession = ((K9) getApplication()).getDaoSession();
-        EmailAddress email = daoSession.getEmailAddressDao().loadByRowId(emailAddressID);
+        EmailAddress email = daoSession.getEmailAddressDao().load(emailAddressID);
         daoSession.delete(email);
         daoSession.clear();
         Intent i = new Intent(getApplicationContext(), MailingListEmailListMenu.class);
