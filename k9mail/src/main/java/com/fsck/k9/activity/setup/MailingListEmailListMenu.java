@@ -32,6 +32,15 @@ public class MailingListEmailListMenu extends K9ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mailing_list_email_list_menu);
 
+
+        if(savedInstanceState != null &&
+                savedInstanceState.getBoolean("refresh needed") == true){
+            Bundle noUpdate = new Bundle();
+            noUpdate.putBoolean("refresh needed", false);
+            getIntent().replaceExtras(noUpdate);
+            recreate();
+        }
+
         Intent intent = getIntent();
         final Long mailingListID = intent.getLongExtra("mailingListId", -1);
 
