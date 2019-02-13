@@ -26,15 +26,11 @@ import com.fsck.k9.R;
 public class AddMailingListMenuTest {
 
     @Rule
-    public ActivityTestRule<MailingListMenu> mActivityTestRule = new ActivityTestRule<MailingListMenu>(MailingListMenu.class);
+    public ActivityTestRule<MailingListMenu> mActivityTestRule = new ActivityTestRule<>(MailingListMenu.class);
     private String mailingListName = "mailing list test";
     private String cancelled = "cancelled mailing list";
 
-
-
-
-
-        @Before
+    @Before
     public void setUp() throws Exception {
 
     }

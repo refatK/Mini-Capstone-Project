@@ -42,7 +42,8 @@ public class MailingListEmailListMenu extends K9ListActivity {
         Intent intent = getIntent();
         final Long mailingListID = intent.getLongExtra("mailingListId", -1);
 
-        if(savedInstanceState != null && savedInstanceState.getBoolean("refresh needed") == true){
+        if(savedInstanceState != null &&
+                savedInstanceState.getBoolean("refresh needed") == true){
             recreate();
         }
 
@@ -81,8 +82,9 @@ public class MailingListEmailListMenu extends K9ListActivity {
                 startActivity(intentButton);
             }
         });
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.mailing_list_email_list_item, emailAddressNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                this, R.layout.mailing_list_email_list_item, emailAddressNames
+        );
         setListAdapter(adapter);
 
         ListView list = (ListView)findViewById(android.R.id.list);
@@ -98,6 +100,7 @@ public class MailingListEmailListMenu extends K9ListActivity {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         if(getIntent().getExtras().containsKey("testToggle")
                 && getIntent().getExtras().getBoolean("testToggle") == true){
