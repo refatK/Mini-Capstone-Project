@@ -42,14 +42,28 @@ public class MailingListEmailListMenu extends K9ListActivity {
         Intent intent = getIntent();
         final Long mailingListID = intent.getLongExtra("mailingListId", -1);
 
-        if(savedInstanceState != null && savedInstanceState.getBoolean("refresh needed") == true){
+        if(savedInstanceState != null &&
+                savedInstanceState.getBoolean("refresh needed") == true){
             recreate();
         }
 
-        daoSession = ((K9)getApplication()).getDaoSession();
-        emailAddresses = daoSession.getEmailAddressDao()._queryMailingList_Emails(mailingListID);
+        if(savedInstanceState != null && savedInstanceState.containsKey("testToggle")
+                && savedInstanceState.getBoolean("testToggle") == true){
+            emailAddresses = new ArrayList<>();
+            emailAddresses.add(
+                    new EmailAddress(null, null, "test1@test.com")
+            );
+            emailAddresses.add(
+                    new EmailAddress(null, null, "test2@test.com")
+            );
+            emailAddresses.add(
+                    new EmailAddress(null, null, "test3@test.com")
+            );
+        }else{
+            daoSession = ((K9)getApplication()).getDaoSession();
+            emailAddresses = daoSession.getEmailAddressDao()._queryMailingList_Emails(mailingListID);
+        }
 
-        //Test
         for (EmailAddress eA : emailAddresses) {
             emailAddressNames.add(eA.getEmail());
         }
@@ -62,8 +76,9 @@ public class MailingListEmailListMenu extends K9ListActivity {
                 startActivity(intentButton);
             }
         });
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.mailing_list_email_list_item, emailAddressNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                this, R.layout.mailing_list_email_list_item, emailAddressNames
+        );
         setListAdapter(adapter);
 
         ListView list = (ListView)findViewById(android.R.id.list);
