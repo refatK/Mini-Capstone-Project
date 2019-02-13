@@ -76,6 +76,22 @@ public class MessageComposeTest {
         toSection.check(matches(withText("randomText")));
     }
 
+    @Test
+    public void testTextThatMatchesAnEmailIsAdded() {
+        ViewInteraction toSection = onView(withId(R.id.to));
+
+        // add text that matches an email format
+        toSection.perform(scrollTo(), replaceText("example@domain.com"), closeSoftKeyboard());
+        toSection.check(matches(withText("example@domain.com")));
+
+        // this should cause the email to be added
+        ViewInteraction subject = onView(withId(R.id.subject));
+        subject.perform(click());
+
+        // if the email is added, the text should be gone
+        toSection.check(matches(not(withText(containsString("example@domain.com")))));
+    }
+
     @Ignore
     @Test
     public void testAddMailingList() {
