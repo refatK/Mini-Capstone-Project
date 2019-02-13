@@ -46,10 +46,29 @@ public class MailingListEmailListMenu extends K9ListActivity {
             recreate();
         }
 
-        daoSession = ((K9)getApplication()).getDaoSession();
-        emailAddresses = daoSession.getEmailAddressDao()._queryMailingList_Emails(mailingListID);
+        if(savedInstanceState != null && savedInstanceState.containsKey("testToggle")
+                && savedInstanceState.getBoolean("testToggle") == true ||
+                getIntent().getExtras().containsKey("testToggle")
+                        && getIntent().getExtras().getBoolean("testToggle") == true) {
+            emailAddresses = new ArrayList<>();
+            emailAddresses.add(
+                    new EmailAddress(null, null, "test1@test.com")
+            );
+            emailAddresses.add(
+                    new EmailAddress(null, null, "test2@test.com")
+            );
+            emailAddresses.add(
+                    new EmailAddress(null, null, "test3@test.com")
+            );
+        }else{
+            daoSession = ((K9)getApplication()).getDaoSession();
+            emailAddresses = daoSession.getEmailAddressDao()._queryMailingList_Emails(mailingListID);
+        }
 
-        //Test
+        if(getIntent().getExtras().containsKey("remove")){
+            emailAddresses.remove(getIntent().getIntExtra("remove", -1));
+        }
+
         for (EmailAddress eA : emailAddresses) {
             emailAddressNames.add(eA.getEmail());
         }
@@ -79,21 +98,27 @@ public class MailingListEmailListMenu extends K9ListActivity {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        if(getIntent().getExtras().containsKey("testToggle")
+                && getIntent().getExtras().getBoolean("testToggle") == true){
+            getIntent().putExtra("remove", info.position);
+            recreate();
+            return true;
+        }else{
 
-        switch(item.getItemId())
-        {
-            case R.id.delete:{
-                Intent intent = new Intent(this, RemoveEmailAddress.class);
-                intent.putExtra("id", emailAddresses.get(info.position).getId());
-                intent.putExtra("mailingListId", getIntent().
-                        getLongExtra("mailingListId", -1));
-                startActivity(intent);
-                break;
+            switch(item.getItemId())
+            {
+                case R.id.delete:{
+                    Intent intent = new Intent(this, RemoveEmailAddress.class);
+                    intent.putExtra("id", emailAddresses.get(info.position).getId());
+                    intent.putExtra("mailingListId", getIntent().
+                            getLongExtra("mailingListId", -1));
+                    startActivity(intent);
+                    break;
+                }
+
             }
-
+            return super.onContextItemSelected(item);
         }
-        return super.onContextItemSelected(item);
     }
 }
