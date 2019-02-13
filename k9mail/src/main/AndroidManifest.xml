@@ -58,11 +58,14 @@
         android:resizeableActivity="true"
         android:theme="@style/Theme.K9.Startup">
         <activity
+            android:name=".activity.setup.RemoveEmailAddress"
+            android:label="@string/title_activity_remove_email_address"></activity>
+        <activity
             android:name=".activity.setup.RemoveMailingList"
-            android:label="@string/title_activity_remove_mailing_list"></activity>
+            android:label="@string/title_activity_remove_mailing_list" />
         <activity
             android:name=".activity.setup.MailingListEmailListMenu"
-            android:label="@string/mailing_list_email_list"></activity>
+            android:label="@string/mailing_list_email_list" />
         <activity
             android:name=".activity.setup.AddEmailToMailingList"
             android:theme="@style/Theme.AppCompat.Light.Dialog.Alert" />
