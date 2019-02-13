@@ -60,6 +60,22 @@ public class MessageComposeTest {
         toSection.check(matches(not(withText(containsString("FirstList")))));
     }
 
+    @Test
+    public void testTextThatDoesNotMatchAMailingListIsNotAdded() {
+        ViewInteraction toSection = onView(withId(R.id.to));
+
+        // add text that doesn't match email or an existing mailing list
+        toSection.perform(scrollTo(), replaceText("randomText"), closeSoftKeyboard());
+        toSection.check(matches(withText("randomText")));
+
+        // this action should cause error that leaves the text there
+        ViewInteraction subject = onView(withId(R.id.subject));
+        subject.perform(click());
+
+        // text should stay since the text shouldn't add anything
+        toSection.check(matches(withText("randomText")));
+    }
+
     @Ignore
     @Test
     public void testAddMailingList() {
