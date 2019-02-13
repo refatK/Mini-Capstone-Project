@@ -81,6 +81,12 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
         initView(context);
     }
 
+    public RecipientSelectView(Context context, List<MailingList> mailingLists) {
+        super(context);
+        initView(context);
+        this.mailingLists = mailingLists;
+    }
+
     public RecipientSelectView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initView(context);
@@ -634,7 +640,8 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
 
         public String addressLabel;
 
-        @Nullable // null if the contact has no photo. transient because we serialize this manually, see below.
+        @Nullable
+        // null if the contact has no photo. transient because we serialize this manually, see below.
         public transient Uri photoThumbnailUri;
 
         @NonNull
