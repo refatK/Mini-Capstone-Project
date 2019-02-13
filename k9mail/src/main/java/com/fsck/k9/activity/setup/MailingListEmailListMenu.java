@@ -66,7 +66,7 @@ public class MailingListEmailListMenu extends K9ListActivity {
             emailAddresses = daoSession.getEmailAddressDao()._queryMailingList_Emails(mailingListID);
         }
 
-        if(getIntent().getExtras().containsKey("remove")){
+        if(getIntent().hasExtra("remove") && getIntent().getExtras().containsKey("remove")){
             emailAddresses.remove(getIntent().getIntExtra("remove", -1));
         }
 

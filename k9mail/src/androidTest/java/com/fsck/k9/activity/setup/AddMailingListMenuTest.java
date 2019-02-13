@@ -1,27 +1,26 @@
 package com.fsck.k9.activity.setup;
 
+import android.support.test.espresso.Espresso;
+import android.support.test.rule.ActivityTestRule;
+import android.view.View;
+import android.widget.ListView;
+
+import com.fsck.k9.R;
+
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.hamcrest.TypeSafeMatcher;
-import org.hamcrest.Description;
-import static org.hamcrest.Matchers.anything;
 
-import android.support.test.espresso.Espresso;
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import android.view.View;
-import android.widget.ListView;
-import android.support.test.rule.ActivityTestRule;
-import static org.junit.Assert.*;
-import com.fsck.k9.R;
+import static org.hamcrest.Matchers.anything;
+import static org.junit.Assert.assertEquals;
 
 public class AddMailingListMenuTest {
 
@@ -30,14 +29,14 @@ public class AddMailingListMenuTest {
     private String mailingListName = "mailing list test";
     private String cancelled = "cancelled mailing list";
 
+
     @Before
     public void setUp() throws Exception {
 
     }
 
     @Test
-    public void testAddMailingList()
-    {
+    public void testAddMailingList() {
 
         //find total number of items on mailing list menu and record it in a variable
         final int[] listCount = new int[1];
@@ -78,8 +77,7 @@ public class AddMailingListMenuTest {
     }
 
     @Test
-    public void cancelMailingList()
-    {
+    public void cancelMailingList() {
         //find total number of items on mailing list menu and record it in a variable
         final int[] listCount = new int[1];
         final int[] updatedListCount = new int[1];
@@ -119,7 +117,7 @@ public class AddMailingListMenuTest {
                 ListView listView = (ListView) view;
 
                 //here we assume the adapter has been fully loaded already
-                updatedListCount [0] = listView.getAdapter().getCount();
+                updatedListCount[0] = listView.getAdapter().getCount();
 
                 return true;
             }
