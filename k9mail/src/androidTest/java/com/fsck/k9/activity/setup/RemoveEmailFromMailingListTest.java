@@ -2,13 +2,11 @@ package com.fsck.k9.activity.setup;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.test.espresso.Espresso;
 import android.support.test.rule.ActivityTestRule;
 import android.view.View;
 import android.widget.ListView;
 
 import org.hamcrest.Description;
-import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Rule;
@@ -18,10 +16,8 @@ import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.longClick;
-import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
-import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.anything;
@@ -65,7 +61,6 @@ public class RemoveEmailFromMailingListTest {
         }));
         onData(anything()).inAdapterView(withId(android.R.id.list)).atPosition(0).perform(longClick());
         onView(allOf(withId(android.R.id.title), withText("Delete"))).perform(click());
-
         onView(withId(android.R.id.list)).check(matches(new TypeSafeMatcher<View>(){
             @Override
             public void describeTo(Description description) {
