@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -60,10 +61,46 @@ public class RecipientSelectViewTest {
     }
 
     @Test
-    public void teatInputtingEmailReturnsRecipientWithAddress() {
+    public void testInputtingEmailReturnsRecipientWithAddress() {
         RecipientSelectView.Recipient oneEmailRecipient = recipientSelectView.defaultObject("test@example.com");
 
         assertEquals(1, oneEmailRecipient.addresses.size());
         assertEquals("test@example.com", oneEmailRecipient.addresses.get(0).getAddress());
+
+
+    }
+    @Test
+    public void testInputtingEmptyMailingList(){
+        RecipientSelectView.Recipient emptyMailingListRecipient = recipientSelectView.defaultObject("MailingListEmpty");
+
+        assertNull(emptyMailingListRecipient );
+    }
+
+    @Test
+    public void testInputtingNonEmptyMailingList(){
+        RecipientSelectView.Recipient nonEmptyMailingListRecipient = recipientSelectView.defaultObject("MailingList1");
+
+        assertEquals(1,nonEmptyMailingListRecipient.addresses.size());
+        assertEquals("email1@example.com",nonEmptyMailingListRecipient.addresses.get(0).getAddress());
+
+        nonEmptyMailingListRecipient = recipientSelectView.defaultObject("MailingList2");
+
+        assertEquals(2,nonEmptyMailingListRecipient.addresses.size());
+        assertEquals("email2@example.com",nonEmptyMailingListRecipient.addresses.get(0).getAddress());
+        assertEquals("email3@example.com",nonEmptyMailingListRecipient.addresses.get(1).getAddress());
+    }
+    @Test
+    public void testInputtingMailingListWithWrongCapitalization(){
+        RecipientSelectView.Recipient wrongCapMailingListRecipient = recipientSelectView.defaultObject("mailinglist2");
+
+        assertEquals(2,wrongCapMailingListRecipient.addresses.size());
+        assertEquals("email2@example.com",wrongCapMailingListRecipient.addresses.get(0).getAddress());
+        assertEquals("email3@example.com",wrongCapMailingListRecipient.addresses.get(1).getAddress());
+    }
+    @Test
+    public void testInputtingInvalidMailingList(){
+        RecipientSelectView.Recipient InvalidMailngListRecipient = recipientSelectView.defaultObject("testexample");
+
+        assertNull(InvalidMailngListRecipient);
     }
 }
