@@ -27,6 +27,7 @@ public class RemoveEmailAddress extends Activity {
         daoSession.clear();
         Intent i = new Intent(getApplicationContext(), MailingListEmailListMenu.class);
         i.putExtra("refresh needed", true);
+        i.putExtra("mailingListId", getIntent().getLongExtra("mailingListId", -1));
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         finish();
         startActivity(i);

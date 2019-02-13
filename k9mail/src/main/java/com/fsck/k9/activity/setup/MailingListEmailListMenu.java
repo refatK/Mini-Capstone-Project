@@ -33,7 +33,7 @@ public class MailingListEmailListMenu extends K9ListActivity {
         setContentView(R.layout.mailing_list_email_list_menu);
 
 
-        if(getIntent().getBooleanExtra("refresh needed", true)){
+        if(getIntent().getBooleanExtra("refresh needed", false)){
             getIntent().removeExtra("refresh needed");
             getIntent().putExtra("refresh needed", false);
             recreate();
@@ -87,6 +87,8 @@ public class MailingListEmailListMenu extends K9ListActivity {
             case R.id.delete:{
                 Intent intent = new Intent(this, RemoveEmailAddress.class);
                 intent.putExtra("id", emailAddresses.get(info.position).getId());
+                intent.putExtra("mailingListId", getIntent().
+                        getLongExtra("mailingListId", -1));
                 startActivity(intent);
                 break;
             }

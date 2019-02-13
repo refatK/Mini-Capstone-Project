@@ -40,7 +40,7 @@ public class MailingListMenu extends K9ListActivity {
         super.onCreate(savedInstanceState);
 
         if(savedInstanceState != null &&
-                savedInstanceState.getBoolean("refresh needed")){
+                savedInstanceState.getBoolean("refresh needed", false)){
             Bundle noUpdate = new Bundle();
             noUpdate.putBoolean("refresh needed", false);
             getIntent().replaceExtras(noUpdate);
