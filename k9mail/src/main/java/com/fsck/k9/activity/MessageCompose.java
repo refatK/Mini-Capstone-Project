@@ -976,7 +976,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             case R.id.send:
                 checkToSendMessage();
                 break;
-            case R.id.sendLater:
+            case R.id.send_later:
                 sendMessageLater();
             case R.id.save:
                 checkToSaveDraftAndSave();
