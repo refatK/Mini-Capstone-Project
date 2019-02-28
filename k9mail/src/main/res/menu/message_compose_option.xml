@@ -16,7 +16,7 @@
     />
     <item
         android:id="@+id/send_later"
-        android:alphabeticShortcut="s"
+        android:alphabeticShortcut="l"
         android:title="@string/send_later_action"
         android:icon="?attr/iconActionSendLater"
         android:showAsAction="always"

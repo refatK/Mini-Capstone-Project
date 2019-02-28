@@ -726,6 +726,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
     private void sendMessageLater(){
         //TODO
+        Toast.makeText(getApplicationContext(), "Sending later button clicked", Toast.LENGTH_SHORT).show();
+        return;
     }
 
     private void checkToSaveDraftAndSave() {
@@ -978,6 +980,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 break;
             case R.id.send_later:
                 sendMessageLater();
+                break;
             case R.id.save:
                 checkToSaveDraftAndSave();
                 break;
