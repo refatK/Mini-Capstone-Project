@@ -117,6 +117,7 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="okay_action">OK</string>
     <string name="cancel_action">Cancel</string>
     <string name="send_action">Send</string>
+    <string name="send_later_action">Send Later</string>
     <string name="send_again_action">Send Again</string>
     <string name="empty_subject">Subject is empty, click again to send anyway</string>
     <string name="select_action">Select</string>
