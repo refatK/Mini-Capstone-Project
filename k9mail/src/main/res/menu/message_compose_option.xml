@@ -15,6 +15,13 @@
         android:showAsAction="always"
     />
     <item
+        android:id="@+id/send_later"
+        android:alphabeticShortcut="l"
+        android:title="@string/send_later_action"
+        android:icon="?attr/iconActionSendLater"
+        android:showAsAction="always"
+        />
+    <item
         android:id="@+id/add_from_contacts"
         android:alphabeticShortcut="a"
         android:title="@string/add_from_contacts"

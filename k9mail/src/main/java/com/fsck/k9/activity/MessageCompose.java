@@ -724,6 +724,12 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         performSendAfterChecks();
     }
 
+    private void sendMessageLater(){
+        //TODO
+        Toast.makeText(getApplicationContext(), "Sending later button clicked", Toast.LENGTH_SHORT).show();
+        return;
+    }
+
     private void checkToSaveDraftAndSave() {
         if (!account.hasDraftsFolder()) {
             Toast.makeText(this, R.string.compose_error_no_draft_folder, Toast.LENGTH_SHORT).show();
@@ -971,6 +977,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 break;
             case R.id.send:
                 checkToSendMessage();
+                break;
+            case R.id.send_later:
+                sendMessageLater();
                 break;
             case R.id.save:
                 checkToSaveDraftAndSave();
