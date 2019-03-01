@@ -1,7 +1,6 @@
 package com.fsck.k9.activity;
 
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +13,7 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -725,8 +725,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     }
 
     private void sendMessageLater(){
-        //TODO
-        Toast.makeText(getApplicationContext(), "Sending later button clicked", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, SetDateAndTime.class);
+        startActivity(intent);
         return;
     }
 

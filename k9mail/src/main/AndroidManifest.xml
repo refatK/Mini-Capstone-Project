@@ -78,6 +78,8 @@
         <activity
             android:name=".activity.setup.AddMailingList"
             android:theme="@style/Theme.AppCompat.Light.Dialog.Alert" />
+        <activity
+            android:name=".activity.SetDateAndTime" />
 
         <meta-data
             android:name="android.app.default_searchable"
