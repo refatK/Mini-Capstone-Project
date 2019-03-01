@@ -1220,7 +1220,13 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
 
         if (folderName.equals(account.getDraftsFolderName())) {
             MessageActions.actionEditDraft(this, messageReference);
-        } else {
+        }
+        else if (folderName.equals(account.getScheduledFolderName()))
+        {
+            MessageActions.actionEditDraft(this, messageReference);
+        }
+
+        else {
             messageViewContainer.removeView(messageViewPlaceHolder);
 
             if (messageListFragment != null) {
