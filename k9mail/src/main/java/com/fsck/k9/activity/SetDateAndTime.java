@@ -53,12 +53,27 @@ public class SetDateAndTime  extends K9Activity implements DatePickerDialog.OnDa
         setDateAndTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-                month = Calendar.getInstance().get(Calendar.MONTH);
-                year = Calendar.getInstance().get(Calendar.YEAR);
-                minute = Calendar.getInstance().get(Calendar.MINUTE);;
-                hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);;
-                Toast.makeText(getApplicationContext(), day + "/" + month + "/" + year + " | "  + hour + ":" + minute, Toast.LENGTH_SHORT).show();
+                int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+                int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
+                int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+                int currentMinute = Calendar.getInstance().get(Calendar.MINUTE);;
+                int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);;
+
+                if(year < currentYear
+                        || (year == currentYear
+                        && ((month < currentMonth) || (month == currentMonth && day < currentDay)))
+                        || ((year == currentYear && month == currentMonth && day == currentDay)
+                        && (hour < currentHour || (hour == currentHour && minute <= currentMinute)))
+                        ){
+                    Toast.makeText(getApplicationContext(), "Pick another date",
+                            Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getApplicationContext(), "Setting time to: " + day + "/"
+                            + (month + 1) + "/" + year + " | "  + hour + ":" + minute,
+                            Toast.LENGTH_SHORT).show();
+                }
+
+
             }
         });
 
@@ -66,12 +81,14 @@ public class SetDateAndTime  extends K9Activity implements DatePickerDialog.OnDa
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        //VERY IMPORTANT
+        //MONTH IS GIVEN STARTING FROM 0
         TextView date = (TextView) findViewById(R.id.send_later_date);
-        String strDate = dayOfMonth + "/" + month + "/" + year;
+        String strDate = (month + 1) + "/" + dayOfMonth + "/" + year;
         date.setText(strDate);
         this.year = year;
         this.month = month;
-        this.day = dayOfMonth
+        this.day = dayOfMonth;
     }
 
     @Override
