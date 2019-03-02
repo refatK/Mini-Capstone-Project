@@ -3,7 +3,6 @@ package com.fsck.k9.activity.compose;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
-
 import com.fsck.k9.Account;
 import com.fsck.k9.Preferences;
 import com.fsck.k9.activity.MessageCompose;
@@ -88,9 +87,12 @@ public class MessageActions {
      * Save will attempt to replace the message in the given folder with the updated version.
      * Discard will delete the message from the given folder.
      */
-    public static void actionEditDraft(Context context, MessageReference messageReference) {
+    public static void actionEditDraft(Context context, MessageReference messageReference, String change) {
+
         Intent i = new Intent(context, MessageCompose.class);
         i.putExtra(MessageCompose.EXTRA_MESSAGE_REFERENCE, messageReference.toIdentityString());
+        //change variable passed from messagelist to messageactions to messagecompose
+        i.putExtra("change",change);
         i.setAction(MessageCompose.ACTION_EDIT_DRAFT);
         context.startActivity(i);
     }

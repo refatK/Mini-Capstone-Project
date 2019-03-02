@@ -30,6 +30,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -227,6 +228,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         if (UpgradeDatabases.actionUpgradeDatabases(this, getIntent())) {
             finish();
@@ -1026,6 +1028,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
+        Log.d("oncreate", "IN oncreate!");
+
         super.onCreateOptionsMenu(menu);
 
         if (isFinishing()) {
@@ -1034,11 +1039,30 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
         getMenuInflater().inflate(R.menu.message_compose_option, menu);
 
+
+        Bundle bundle = getIntent().getExtras();
+        String change = bundle.getString("change");
+
+        //disable scheduled save option if in draft message
+        if(change.equals("disable save scheduled"))
+        {
+            menu.findItem(R.id.save_scheduled).setVisible(false);
+            menu.findItem(R.id.save_scheduled).setEnabled(false);
+        }
+
+        //disable draft save option if in scheduled message
+        if(change.equals("disable save draft"))
+        {
+            menu.findItem(R.id.save).setVisible(false);
+            menu.findItem(R.id.save).setEnabled(false);
+        }
+
         // Disable the 'Save' menu option if Drafts folder is set to -NONE-
         if (!account.hasDraftsFolder()) {
             menu.findItem(R.id.save).setEnabled(false);
         }
 
+        // Hide the 'save scheduled' menu option if in drafts folder or Scheduled folder is set to -NONE-
         if(!account.hasScheduledFolder())
         {
             menu.findItem(R.id.save_scheduled).setVisible(false);
@@ -1046,6 +1070,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         }
         return true;
     }
+
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {

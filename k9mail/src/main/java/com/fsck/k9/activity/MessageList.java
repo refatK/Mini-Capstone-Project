@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import timber.log.Timber;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -1219,11 +1220,14 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
         String folderName = messageReference.getFolderName();
 
         if (folderName.equals(account.getDraftsFolderName())) {
-            MessageActions.actionEditDraft(this, messageReference);
+
+            String change = "disable save scheduled";
+            MessageActions.actionEditDraft(this, messageReference, change);
         }
         else if (folderName.equals(account.getScheduledFolderName()))
         {
-            MessageActions.actionEditDraft(this, messageReference);
+            String change = "disable save draft";
+            MessageActions.actionEditDraft(this, messageReference, change);
         }
 
         else {
@@ -1247,7 +1251,7 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
 
     @Override
     public void onResendMessage(MessageReference messageReference) {
-        MessageActions.actionEditDraft(this, messageReference);
+        MessageActions.actionEditDraft(this, messageReference, "");
     }
 
     @Override
