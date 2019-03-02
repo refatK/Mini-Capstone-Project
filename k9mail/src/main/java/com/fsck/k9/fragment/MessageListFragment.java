@@ -162,7 +162,7 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
     int previewLines = 0;
 
 
-    private MessageListAdapter adapter;
+    private MessageListAdapterType adapter;
     private View footerView;
     private FolderInfoHolder currentFolder;
     private LayoutInflater layoutInflater;
