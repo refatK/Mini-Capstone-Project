@@ -44,7 +44,7 @@ import static com.fsck.k9.fragment.MLFProjectionInfo.TO_LIST_COLUMN;
 import static com.fsck.k9.fragment.MLFProjectionInfo.UID_COLUMN;
 
 
-public class MessageListAdapter extends CursorAdapter {
+public class MessageListAdapter extends CursorAdapter implements MessageListAdapterType {
 
     private final MessageListFragment fragment;
     private Drawable mAttachmentIcon;

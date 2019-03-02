@@ -181,6 +181,7 @@ public class Account implements BaseAccount, StoreConfig {
     private boolean notifySelfNewMail;
     private boolean notifyContactsMailOnly;
     private String inboxFolderName;
+    private String scheduledFolderName;
     private String draftsFolderName;
     private String sentFolderName;
     private String trashFolderName;
@@ -400,6 +401,7 @@ public class Account implements BaseAccount, StoreConfig {
         notifySync = storage.getBoolean(accountUuid + ".notifyMailCheck", false);
         deletePolicy =  DeletePolicy.fromInt(storage.getInt(accountUuid + ".deletePolicy", DeletePolicy.NEVER.setting));
         inboxFolderName = storage.getString(accountUuid + ".inboxFolderName", INBOX);
+        scheduledFolderName = storage.getString(accountUuid + ".scheduledFolderName", "Scheduled");
         draftsFolderName = storage.getString(accountUuid + ".draftsFolderName", "Drafts");
         sentFolderName = storage.getString(accountUuid + ".sentFolderName", "Sent");
         trashFolderName = storage.getString(accountUuid + ".trashFolderName", "Trash");
@@ -518,6 +520,7 @@ public class Account implements BaseAccount, StoreConfig {
         editor.remove(accountUuid + ".notifySelfNewMail");
         editor.remove(accountUuid + ".deletePolicy");
         editor.remove(accountUuid + ".draftsFolderName");
+        editor.remove(accountUuid + ".scheduledFolderName");
         editor.remove(accountUuid + ".sentFolderName");
         editor.remove(accountUuid + ".trashFolderName");
         editor.remove(accountUuid + ".archiveFolderName");
@@ -690,6 +693,7 @@ public class Account implements BaseAccount, StoreConfig {
         editor.putBoolean(accountUuid + ".notifyMailCheck", notifySync);
         editor.putInt(accountUuid + ".deletePolicy", deletePolicy.setting);
         editor.putString(accountUuid + ".inboxFolderName", inboxFolderName);
+        editor.putString(accountUuid + ".scheduledFolderName", scheduledFolderName);
         editor.putString(accountUuid + ".draftsFolderName", draftsFolderName);
         editor.putString(accountUuid + ".sentFolderName", sentFolderName);
         editor.putString(accountUuid + ".trashFolderName", trashFolderName);
@@ -1074,6 +1078,14 @@ public class Account implements BaseAccount, StoreConfig {
         this.deletePolicy = deletePolicy;
     }
 
+    public String getScheduledFolderName() {
+        return scheduledFolderName;
+    }
+
+    public void setScheduledFolderName(String scheduledFolderName) {
+        this.scheduledFolderName = scheduledFolderName;
+    }
+
     public boolean isSpecialFolder(String folderName) {
         return (folderName != null && (folderName.equalsIgnoreCase(getInboxFolderName()) ||
                 folderName.equals(getTrashFolderName()) ||
@@ -1081,7 +1093,8 @@ public class Account implements BaseAccount, StoreConfig {
                 folderName.equals(getArchiveFolderName()) ||
                 folderName.equals(getSpamFolderName()) ||
                 folderName.equals(getOutboxFolderName()) ||
-                folderName.equals(getSentFolderName())));
+                folderName.equals(getSentFolderName()) ||
+                folderName.equals(getScheduledFolderName())));
     }
 
     public synchronized String getDraftsFolderName() {
@@ -1816,6 +1829,7 @@ public class Account implements BaseAccount, StoreConfig {
         excludeSpecialFolder(search, getSpamFolderName());
         excludeSpecialFolder(search, getOutboxFolderName());
         excludeSpecialFolder(search, getSentFolderName());
+        excludeSpecialFolder(search, getScheduledFolderName());
         search.or(new SearchCondition(SearchField.FOLDER, Attribute.EQUALS, getInboxFolderName()));
     }
 
