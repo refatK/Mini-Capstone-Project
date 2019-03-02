@@ -33,6 +33,7 @@ public class SetDateAndTime  extends K9Activity implements DatePickerDialog.OnDa
         setContentView(R.layout.send_later_set_date_and_time);
         setTimeButton = (Button) findViewById(R.id.send_later_set_date_button);
         setDateButton = (Button) findViewById(R.id.send_later_set_time_button);
+        setDateAndTimeButton = (Button) findViewById(R.id.send_later_set_date_and_time_button);
 
 
         setDateButton.setOnClickListener(new View.OnClickListener() {
