@@ -632,6 +632,10 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
             updateFooterView();
         }
 
+        if(folderName.equals(account.getScheduledFolderName())) {
+            adapter = new ScheduledMailAdapter(this);
+        }
+
         listView.setAdapter(adapter);
     }
 

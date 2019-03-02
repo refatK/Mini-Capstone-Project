@@ -180,7 +180,7 @@ public class StoreSchemaDefinitionTest {
                 "text_content TEXT, " +
                 "preview_type TEXT default \"none\", " +
                 "message_part_id INTEGER, " +
-                "scheduled_datetime TEXT"+
+                "scheduled_datetime INTEGER"+
                 ")");
 
         db.execSQL("CREATE TABLE attachments (" +

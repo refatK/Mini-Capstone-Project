@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.icu.text.DateTimePatternGenerator;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.format.DateUtils;
@@ -26,6 +27,13 @@ import com.fsck.k9.mail.Address;
 import com.fsck.k9.mailstore.DatabasePreviewType;
 import com.fsck.k9.ui.ContactBadge;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 import static com.fsck.k9.fragment.MLFProjectionInfo.ANSWERED_COLUMN;
 import static com.fsck.k9.fragment.MLFProjectionInfo.ATTACHMENT_COUNT_COLUMN;
 import static com.fsck.k9.fragment.MLFProjectionInfo.CC_LIST_COLUMN;
@@ -36,6 +44,7 @@ import static com.fsck.k9.fragment.MLFProjectionInfo.FORWARDED_COLUMN;
 import static com.fsck.k9.fragment.MLFProjectionInfo.PREVIEW_COLUMN;
 import static com.fsck.k9.fragment.MLFProjectionInfo.PREVIEW_TYPE_COLUMN;
 import static com.fsck.k9.fragment.MLFProjectionInfo.READ_COLUMN;
+import static com.fsck.k9.fragment.MLFProjectionInfo.SCHEDULED_DATE_TIME_COLUMN;
 import static com.fsck.k9.fragment.MLFProjectionInfo.SENDER_LIST_COLUMN;
 import static com.fsck.k9.fragment.MLFProjectionInfo.SUBJECT_COLUMN;
 import static com.fsck.k9.fragment.MLFProjectionInfo.THREAD_COUNT_COLUMN;
@@ -76,23 +85,21 @@ public class ScheduledMailAdapter extends CursorAdapter implements MessageListAd
             View view = fragment.getK9LayoutInflater().inflate(R.layout.message_list_item_scheduled, parent, false);
 
             MessageViewHolder holder = new MessageViewHolder(fragment);
-            holder.date = (TextView) view.findViewById(R.id.date);
+            holder.date = (TextView) view.findViewById(R.id.scheduled_datetime);
             holder.chip = view.findViewById(R.id.chip);
 
 
             if (fragment.previewLines == 0 && fragment.contactsPictureLoader == null) {
                 view.findViewById(R.id.preview).setVisibility(View.GONE);
                 holder.preview = (TextView) view.findViewById(R.id.sender_compact);
-                holder.flagged = (CheckBox) view.findViewById(R.id.flagged_center_right);
-                view.findViewById(R.id.flagged_bottom_right).setVisibility(View.GONE);
+
 
 
 
             } else {
                 view.findViewById(R.id.sender_compact).setVisibility(View.GONE);
                 holder.preview = (TextView) view.findViewById(R.id.preview);
-                holder.flagged = (CheckBox) view.findViewById(R.id.flagged_bottom_right);
-                view.findViewById(R.id.flagged_center_right).setVisibility(View.GONE);
+
 
             }
 
@@ -124,8 +131,7 @@ public class ScheduledMailAdapter extends CursorAdapter implements MessageListAd
             fontSizes.setViewTextSize(holder.threadCount, fontSizes.getMessageListSubject()); // thread count is next to subject
             view.findViewById(R.id.selected_checkbox_wrapper).setVisibility((fragment.checkboxes) ? View.VISIBLE : View.GONE);
 
-            holder.flagged.setVisibility(fragment.stars ? View.VISIBLE : View.GONE);
-            holder.flagged.setOnClickListener(holder);
+
 
 
             holder.selected = (CheckBox) view.findViewById(R.id.selected_checkbox);
@@ -153,7 +159,18 @@ public class ScheduledMailAdapter extends CursorAdapter implements MessageListAd
             boolean ccMe = fragment.messageHelper.toMe(account, ccAddrs);
 
             CharSequence displayName = fragment.messageHelper.getDisplayName(account, fromAddrs, toAddrs);
-            CharSequence displayDate = DateUtils.getRelativeTimeSpanString(context, cursor.getLong(DATE_COLUMN));
+            CharSequence displayDate = null;
+
+            if(cursor.getString(SCHEDULED_DATE_TIME_COLUMN) != null) {
+                Date myDate = new Date(cursor.getLong(SCHEDULED_DATE_TIME_COLUMN));
+                DateFormat df = new SimpleDateFormat("MMM dd, yyyy @ hh:mm a", Locale.CANADA);
+                displayDate = "To be sent on: " + df.format(myDate);
+            }
+            else {
+                displayDate = "Unscheduled, please delete this email!";
+
+            }
+
 
             Address counterpartyAddress = fetchCounterPartyAddress(fromMe, toAddrs, ccAddrs, fromAddrs);
 
@@ -180,9 +197,7 @@ public class ScheduledMailAdapter extends CursorAdapter implements MessageListAd
             if (fragment.checkboxes) {
                 holder.selected.setChecked(selected);
             }
-            if (fragment.stars) {
-                holder.flagged.setChecked(flagged);
-            }
+
             holder.position = cursor.getPosition();
             if (holder.contactBadge != null) {
                 updateContactBadge(holder, counterpartyAddress);
@@ -230,6 +245,9 @@ public class ScheduledMailAdapter extends CursorAdapter implements MessageListAd
                 }
 
                 holder.subject.setTypeface(Typeface.create(holder.subject.getTypeface(), maybeBoldTypeface));
+                if(subject.length()>20) {
+                    subject = subject.substring(0, 17) + "...";
+                }
                 holder.subject.setText(subject);
             }
             holder.date.setText(displayDate);
