@@ -1039,6 +1039,11 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             menu.findItem(R.id.save).setEnabled(false);
         }
 
+        if(!account.hasScheduledFolder())
+        {
+            menu.findItem(R.id.save_scheduled).setVisible(false);
+            menu.findItem(R.id.save_scheduled).setEnabled(false);
+        }
         return true;
     }
 
