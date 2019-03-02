@@ -27,6 +27,7 @@ public final class MLFProjectionInfo {
             MessageColumns.FOLDER_ID,
             MessageColumns.PREVIEW_TYPE,
             MessageColumns.PREVIEW,
+            MessageColumns.SCHEDULED_DATE_TIME,
             ThreadColumns.ROOT,
             SpecialColumns.ACCOUNT_UUID,
             SpecialColumns.FOLDER_NAME,
@@ -50,10 +51,12 @@ public final class MLFProjectionInfo {
     static final int FOLDER_ID_COLUMN = 13;
     static final int PREVIEW_TYPE_COLUMN = 14;
     static final int PREVIEW_COLUMN = 15;
-    static final int THREAD_ROOT_COLUMN = 16;
-    static final int ACCOUNT_UUID_COLUMN = 17;
-    static final int FOLDER_NAME_COLUMN = 18;
-    static final int THREAD_COUNT_COLUMN = 19;
+    static final int SCHEDULED_DATE_TIME_COLUMN = 16;
+    static final int THREAD_ROOT_COLUMN = 17;
+    static final int ACCOUNT_UUID_COLUMN = 18;
+    static final int FOLDER_NAME_COLUMN = 19;
+    static final int THREAD_COUNT_COLUMN = 20;
+
 
     static final String[] PROJECTION = Arrays.copyOf(THREADED_PROJECTION,
             THREAD_COUNT_COLUMN);
