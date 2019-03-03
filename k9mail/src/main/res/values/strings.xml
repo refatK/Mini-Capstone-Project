@@ -134,7 +134,7 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="refile_action">Refile…</string>
     <string name="done_action">Done</string>
     <string name="discard_action">Discard</string>
-    <string name="save_draft_action">Save as draft</string>
+    <string name="save_draft_action">Save gi</string>
     <string name="save_scheduled_action">Save scheduled message</string>
     <string name="check_mail_action">Check mail</string>
     <string name="send_messages_action">Send messages</string>

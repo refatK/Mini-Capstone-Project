@@ -1094,7 +1094,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         if (changesMadeSinceLastSave && draftIsNotEmpty()) {
             if (!account.hasDraftsFolder()) {
                 showDialog(DIALOG_CONFIRM_DISCARD_ON_BACK);
-            } else {
+            }
+            else {
                 showDialog(DIALOG_SAVE_OR_DISCARD_DRAFT_MESSAGE);
             }
         } else {
