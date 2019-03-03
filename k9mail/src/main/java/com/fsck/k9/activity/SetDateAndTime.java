@@ -72,7 +72,7 @@ public class SetDateAndTime  extends K9Activity implements DatePickerDialog.OnDa
                             Toast.LENGTH_SHORT).show();
                 }else{
                     Toast.makeText(getApplicationContext(), "Setting time to: "
-                                    + chosenDateAndTime.get(Calendar.MONTH) + "/"
+                                    + (chosenDateAndTime.get(Calendar.MONTH) + 1) + "/"
                                     + chosenDateAndTime.get(Calendar.DAY_OF_MONTH) + "/"
                                     + chosenDateAndTime.get(Calendar.YEAR) + " | "
                                     + chosenDateAndTime.get(Calendar.HOUR_OF_DAY) + ":"
