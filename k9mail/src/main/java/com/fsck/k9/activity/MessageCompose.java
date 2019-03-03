@@ -1051,10 +1051,17 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             menu.findItem(R.id.save_scheduled).setEnabled(false);
         }
 
-        //disable draft save option if in scheduled message
+
         if(change.equals("disable save draft"))
         {
+            //disable draft save option if in scheduled message
             menu.findItem(R.id.save).setVisible(false);
+            menu.findItem(R.id.save).setEnabled(false);
+            //disable send option
+            menu.findItem(R.id.send).setVisible(false);
+            menu.findItem(R.id.save).setEnabled(false);
+            //disable send later option
+            menu.findItem(R.id.send).setVisible(false);
             menu.findItem(R.id.save).setEnabled(false);
         }
 

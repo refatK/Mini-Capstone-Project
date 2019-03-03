@@ -37,6 +37,7 @@
         android:alphabeticShortcut="s"
         android:title="@string/save_scheduled_action"
         android:icon="?attr/iconActionSave"
+        android:showAsAction="always"
         />
     <item
         android:id="@+id/discard"
