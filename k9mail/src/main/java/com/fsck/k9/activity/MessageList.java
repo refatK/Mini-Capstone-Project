@@ -3,7 +3,6 @@ package com.fsck.k9.activity;
 
 import java.util.Collection;
 import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.FragmentManager;
@@ -20,7 +19,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import timber.log.Timber;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -1220,7 +1218,6 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
         String folderName = messageReference.getFolderName();
 
         if (folderName.equals(account.getDraftsFolderName())) {
-
             String change = "disable save scheduled";
             MessageActions.actionEditDraft(this, messageReference, change);
         }

@@ -30,7 +30,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -1029,7 +1028,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        Log.d("oncreate", "IN oncreate!");
 
         super.onCreateOptionsMenu(menu);
 
