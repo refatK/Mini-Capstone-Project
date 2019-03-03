@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -128,7 +129,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     public static final String ACTION_FORWARD = "com.fsck.k9.intent.action.FORWARD";
     public static final String ACTION_FORWARD_AS_ATTACHMENT = "com.fsck.k9.intent.action.FORWARD_AS_ATTACHMENT";
     public static final String ACTION_EDIT_DRAFT = "com.fsck.k9.intent.action.EDIT_DRAFT";
-    public static final String ACTION_EDIT_SCHEDULED = "com.fsck.k9.intent.action.EDIT_DRAFT";
+    public static final String ACTION_EDIT_SCHEDULED = "com.fsck.k9.intent.action.EDIT_SCHEDULED";
     private static final String ACTION_AUTOCRYPT_PEER = "org.autocrypt.PEER_ACTION";
 
     public static final String EXTRA_ACCOUNT = "account";
@@ -197,7 +198,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     private RecipientPresenter recipientPresenter;
     private MessageBuilder currentMessageBuilder;
     private boolean finishAfterDraftSaved;
-    private boolean finishAfterScheduledSaved;
     private boolean alreadyNotifiedUserOfEmptySubject = false;
     private boolean changesMadeSinceLastSave = false;
 
@@ -378,7 +378,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             } else if (ACTION_FORWARD_AS_ATTACHMENT.equals(action)) {
                 this.action = Action.FORWARD_AS_ATTACHMENT;
             } else if (ACTION_EDIT_DRAFT.equals(action)) {
-                this.action = Action.EDIT_DRAFT;
             }
               else if (ACTION_EDIT_SCHEDULED.equals(action)){
                   this.action= Action.EDIT_SCHEDULED;
