@@ -23,11 +23,11 @@ public class SetDateAndTime  extends K9Activity implements DatePickerDialog.OnDa
     private Button setDateButton;
     private Button setDateAndTimeButton;
 
-    private int day = 0;
-    private int month = 0;
-    private int year = 0;
-    private int minute = 0;
-    private int hour = 0;
+    private TextView chosenDateTextView;
+    private TextView chosenTimeTextView;
+
+    //Had to create an instance to set the Calendar
+    private Calendar chosenDateAndTime;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -37,6 +37,16 @@ public class SetDateAndTime  extends K9Activity implements DatePickerDialog.OnDa
         setDateButton = (Button) findViewById(R.id.send_later_set_time_button);
         setDateAndTimeButton = (Button) findViewById(R.id.send_later_set_date_and_time_button);
 
+        chosenDateTextView = (TextView) findViewById(R.id.send_later_date);
+        String strDate = "MM/DD/YYYY";
+        chosenDateTextView.setText(strDate);
+
+        chosenTimeTextView = (TextView) findViewById(R.id.send_later_time);
+        String strTime = "hh:mm";
+        chosenTimeTextView.setText(strTime);
+
+        chosenDateAndTime = Calendar.getInstance();
+        chosenDateAndTime.set(0,0,0,0,0,0);
 
         setDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,27 +65,22 @@ public class SetDateAndTime  extends K9Activity implements DatePickerDialog.OnDa
         setDateAndTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-                int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
-                int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-                int currentMinute = Calendar.getInstance().get(Calendar.MINUTE);;
-                int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);;
+                Calendar currentDateAndTime = Calendar.getInstance();
+                long currentDateAndTimeInMilis = currentDateAndTime.getTimeInMillis();
+                long chosenDateAndTimeInMilis = chosenDateAndTime.getTimeInMillis();
 
-                if(year < currentYear
-                        || (year == currentYear
-                        && ((month < currentMonth) || (month == currentMonth && day < currentDay)))
-                        || ((year == currentYear && month == currentMonth && day == currentDay)
-                        && (hour < currentHour || (hour == currentHour && minute <= currentMinute)))
-                        ){
+                if(chosenDateAndTimeInMilis <= currentDateAndTimeInMilis){
                     Toast.makeText(getApplicationContext(), "Pick another date",
                             Toast.LENGTH_SHORT).show();
                 }else{
-                    Toast.makeText(getApplicationContext(), "Setting time to: " + day + "/"
-                            + (month + 1) + "/" + year + " | "  + hour + ":" + minute,
+                    Toast.makeText(getApplicationContext(), "Setting time to: "
+                                    + chosenDateAndTime.get(Calendar.MONTH) + "/"
+                                    + chosenDateAndTime.get(Calendar.DAY_OF_MONTH) + "/"
+                                    + chosenDateAndTime.get(Calendar.YEAR) + " | "
+                                    + chosenDateAndTime.get(Calendar.HOUR_OF_DAY) + ":"
+                                    + chosenDateAndTime.get(Calendar.MINUTE),
                             Toast.LENGTH_SHORT).show();
                 }
-
-
             }
         });
 
@@ -85,20 +90,18 @@ public class SetDateAndTime  extends K9Activity implements DatePickerDialog.OnDa
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         //VERY IMPORTANT
         //MONTH IS GIVEN STARTING FROM 0
-        TextView date = (TextView) findViewById(R.id.send_later_date);
         String strDate = (month + 1) + "/" + dayOfMonth + "/" + year;
-        date.setText(strDate);
-        this.year = year;
-        this.month = month;
-        this.day = dayOfMonth;
+        chosenDateTextView.setText(strDate);
+        this.chosenDateAndTime.set(Calendar.YEAR, year);
+        this.chosenDateAndTime.set(Calendar.MONTH, month);
+        this.chosenDateAndTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        TextView time = (TextView) findViewById(R.id.send_later_time);
-        String strDate = hourOfDay + ":" + minute;
-        time.setText(strDate);
-        this.hour = hourOfDay;
-        this.minute = minute;
+        String strTime = hourOfDay + ":" + ((minute < 10)?("0"+minute):minute);
+        chosenTimeTextView.setText(strTime);
+        this.chosenDateAndTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        this.chosenDateAndTime.set(Calendar.MINUTE, minute);
     }
 }
