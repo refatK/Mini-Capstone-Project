@@ -465,7 +465,7 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
         initializeLayout();
         listView.setVerticalFadingEdgeEnabled(false);
 
-        if(folderName.equals(account.getScheduledFolderName())) {
+        if( account != null && folderName.equals(account.getScheduledFolderName())) {
             adapter = new ScheduledMailAdapter(this);
         }
 
@@ -638,11 +638,11 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
             updateFooterView();
         }
 
-        if(folderName.equals(account.getScheduledFolderName())) {
+        if( account != null && folderName.equals(account.getScheduledFolderName())) {
             adapter = new ScheduledMailAdapter(this);
             footerView.setVisibility(View.GONE);
         }
-        else {
+        else if (footerView != null){
             footerView.setVisibility(View.VISIBLE);
         }
 
@@ -2937,11 +2937,18 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
     }
 
     public boolean isCheckMailSupported() {
+        if (account == null) {
+            return (allAccounts || !isSingleAccountMode() || !isSingleFolderMode() ||
+                    isRemoteFolder());
+        }
         return (allAccounts || !isSingleAccountMode() || !isSingleFolderMode() ||
                 isRemoteFolder() || !account.getScheduledFolderName().equals(folderName));
     }
 
     private boolean isCheckMailAllowed() {
+        if(account == null) {
+            return (!isManualSearch() && isCheckMailSupported());
+        }
         return (!isManualSearch() && isCheckMailSupported() &&
                 !account.getScheduledFolderName().equals(folderName));
     }
