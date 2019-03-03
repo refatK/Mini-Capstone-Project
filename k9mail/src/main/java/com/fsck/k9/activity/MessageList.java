@@ -1218,12 +1218,12 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
         String folderName = messageReference.getFolderName();
 
         if (folderName.equals(account.getDraftsFolderName())) {
-            String change = "disable save scheduled";
+            String change = "drafts";
             MessageActions.actionEditDraft(this, messageReference, change);
         }
         else if (folderName.equals(account.getScheduledFolderName()))
         {
-            String change = "disable save draft";
+            String change = "scheduled";
             MessageActions.actionEditDraft(this, messageReference, change);
         }
 

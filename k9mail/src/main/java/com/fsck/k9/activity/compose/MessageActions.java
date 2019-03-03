@@ -93,7 +93,14 @@ public class MessageActions {
         i.putExtra(MessageCompose.EXTRA_MESSAGE_REFERENCE, messageReference.toIdentityString());
         //change variable passed from messagelist to messageactions to messagecompose
         i.putExtra("change",change);
-        i.setAction(MessageCompose.ACTION_EDIT_DRAFT);
+        if(change.equals("scheduled"))
+        {
+            i.setAction(MessageCompose.ACTION_EDIT_SCHEDULED);
+        }
+        else {
+            i.setAction(MessageCompose.ACTION_EDIT_DRAFT);
+        }
+
         context.startActivity(i);
     }
 }

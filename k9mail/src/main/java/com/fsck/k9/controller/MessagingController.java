@@ -3098,6 +3098,25 @@ public class MessagingController {
         }
     }
 
+    public void deleteScheduled(final Account account, long id) {
+        LocalFolder localFolder = null;
+        try {
+            LocalStore localStore = account.getLocalStore();
+            localFolder = localStore.getFolder(account.getScheduledFolderName());
+            localFolder.open(Folder.OPEN_MODE_RW);
+            String uid = localFolder.getMessageUidById(id);
+            if (uid != null) {
+                MessageReference messageReference = new MessageReference(
+                        account.getUuid(), account.getScheduledFolderName(), uid, null);
+                deleteMessage(messageReference, null);
+            }
+        } catch (MessagingException me) {
+            Timber.e(me, "Error deleting scheduled");
+        } finally {
+            closeFolder(localFolder);
+        }
+    }
+
     public void deleteThreads(final List<MessageReference> messages) {
         actOnMessagesGroupedByAccountAndFolder(messages, new MessageActor() {
             @Override
@@ -3865,6 +3884,46 @@ public class MessagingController {
 
         } catch (MessagingException e) {
             Timber.e(e, "Unable to save message as draft.");
+        }
+        return localMessage;
+    }
+
+    /**
+     * Save a scheduled message.
+     *
+     * @param account
+     *         Account we are saving for.
+     * @param message
+     *         Message to save.
+     *
+     * @return Message representing the entry in the local store.
+     */
+    public Message saveScheduled(final Account account, final Message message, long existingScheduledId, boolean saveRemotely) {
+        Message localMessage = null;
+        try {
+            LocalStore localStore = account.getLocalStore();
+            LocalFolder localFolder = localStore.getFolder(account.getScheduledFolderName());
+            localFolder.open(Folder.OPEN_MODE_RW);
+
+            if (existingScheduledId != INVALID_MESSAGE_ID) {
+                String uid = localFolder.getMessageUidById(existingScheduledId);
+                message.setUid(uid);
+            }
+
+            // Save the message to the store.
+            localFolder.appendMessages(Collections.singletonList(message));
+            // Fetch the message back from the store.  This is the Message that's returned to the caller.
+            localMessage = localFolder.getMessage(message.getUid());
+            localMessage.setFlag(Flag.X_DOWNLOADED_FULL, true);
+
+            if (saveRemotely) {
+                PendingCommand command = PendingAppend.create(localFolder.getName(), localMessage.getUid());
+                queuePendingCommand(account, command);
+                processPendingCommands(account);
+            }
+
+        } catch (MessagingException e) {
+            Timber.e(e, "Unable to save scheduled message.");
         }
         return localMessage;
     }
