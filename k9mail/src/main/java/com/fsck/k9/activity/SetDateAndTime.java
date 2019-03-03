@@ -26,7 +26,6 @@ public class SetDateAndTime  extends K9Activity implements DatePickerDialog.OnDa
     private TextView chosenDateTextView;
     private TextView chosenTimeTextView;
 
-    //Had to create an instance to set the Calendar
     private Calendar chosenDateAndTime;
 
     @Override
@@ -46,7 +45,6 @@ public class SetDateAndTime  extends K9Activity implements DatePickerDialog.OnDa
         chosenTimeTextView.setText(strTime);
 
         chosenDateAndTime = Calendar.getInstance();
-        chosenDateAndTime.set(0,0,0,0,0,0);
 
         setDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,7 +76,8 @@ public class SetDateAndTime  extends K9Activity implements DatePickerDialog.OnDa
                                     + chosenDateAndTime.get(Calendar.DAY_OF_MONTH) + "/"
                                     + chosenDateAndTime.get(Calendar.YEAR) + " | "
                                     + chosenDateAndTime.get(Calendar.HOUR_OF_DAY) + ":"
-                                    + chosenDateAndTime.get(Calendar.MINUTE),
+                                    + ((chosenDateAndTime.get(Calendar.MINUTE) < 10) ? "0" : "")
+                                    + (chosenDateAndTime.get(Calendar.MINUTE)),
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -99,7 +98,7 @@ public class SetDateAndTime  extends K9Activity implements DatePickerDialog.OnDa
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        String strTime = hourOfDay + ":" + ((minute < 10)?("0"+minute):minute);
+        String strTime = hourOfDay + ":" + ((minute < 10) ? "0" + minute : minute);
         chosenTimeTextView.setText(strTime);
         this.chosenDateAndTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
         this.chosenDateAndTime.set(Calendar.MINUTE, minute);
