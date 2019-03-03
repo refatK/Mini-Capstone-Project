@@ -208,6 +208,11 @@ public class FolderList extends K9ListActivity {
      */
 
     private void checkMail(FolderInfoHolder folder) {
+
+        if (account.getScheduledFolderName().equals(folder.name)){
+            return;
+        }
+
         TracingPowerManager pm = TracingPowerManager.getPowerManager(this);
         final TracingWakeLock wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "FolderList checkMail");
         wakeLock.setReferenceCounted(false);
