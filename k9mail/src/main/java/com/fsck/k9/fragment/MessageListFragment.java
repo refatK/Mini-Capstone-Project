@@ -465,6 +465,12 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
         initializeLayout();
         listView.setVerticalFadingEdgeEnabled(false);
 
+        if( account != null && folderName.equals(account.getScheduledFolderName())) {
+            adapter = new ScheduledMailAdapter(this);
+        }
+
+        listView.setAdapter(adapter);
+
         return view;
     }
 
@@ -632,8 +638,12 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
             updateFooterView();
         }
 
-        if(folderName.equals(account.getScheduledFolderName())) {
+        if( account != null && folderName.equals(account.getScheduledFolderName())) {
             adapter = new ScheduledMailAdapter(this);
+            footerView.setVisibility(View.GONE);
+        }
+        else if (footerView != null){
+            footerView.setVisibility(View.VISIBLE);
         }
 
         listView.setAdapter(adapter);
@@ -748,7 +758,7 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
                     new SwipeRefreshLayout.OnRefreshListener() {
                         @Override
                         public void onRefresh() {
-                            checkMail();
+                                checkMail();
                         }
                     }
             );
@@ -2237,6 +2247,10 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
     }
 
     public void checkMail() {
+
+        if(!isCheckMailSupported()) {
+            return;
+        }
         if (isSingleAccountMode() && isSingleFolderMode()) {
             messagingController.synchronizeMailbox(account, folderName, activityListener, null);
             messagingController.sendPendingMessages(account, activityListener);
@@ -2923,12 +2937,20 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
     }
 
     public boolean isCheckMailSupported() {
+        if (account == null) {
+            return (allAccounts || !isSingleAccountMode() || !isSingleFolderMode() ||
+                    isRemoteFolder());
+        }
         return (allAccounts || !isSingleAccountMode() || !isSingleFolderMode() ||
-                isRemoteFolder());
+                isRemoteFolder() || !account.getScheduledFolderName().equals(folderName));
     }
 
     private boolean isCheckMailAllowed() {
-        return (!isManualSearch() && isCheckMailSupported());
+        if(account == null) {
+            return (!isManualSearch() && isCheckMailSupported());
+        }
+        return (!isManualSearch() && isCheckMailSupported() &&
+                !account.getScheduledFolderName().equals(folderName));
     }
 
     private boolean isPullToRefreshAllowed() {

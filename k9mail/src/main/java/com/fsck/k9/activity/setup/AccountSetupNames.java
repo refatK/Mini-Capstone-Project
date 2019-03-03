@@ -1,6 +1,8 @@
 
 package com.fsck.k9.activity.setup;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +15,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import com.fsck.k9.*;
+import com.fsck.k9.activity.AccountList;
 import com.fsck.k9.activity.Accounts;
 import com.fsck.k9.activity.K9Activity;
 import com.fsck.k9.helper.Utility;
@@ -88,6 +91,16 @@ public class AccountSetupNames extends K9Activity implements OnClickListener {
         mAccount.save(Preferences.getPreferences(this));
         Accounts.listAccounts(this);
         finish();
+
+        //Makes the adapters all reload when creating a new account, fixes bug #2
+        Intent mStartActivity = new Intent(getBaseContext(), AccountList.class);
+        int mPendingIntentId = 123456;
+        PendingIntent mPendingIntent =
+                PendingIntent.getActivity(this, mPendingIntentId, mStartActivity,
+                        PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager mgr = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 1, mPendingIntent);
+        System.exit(0);
     }
 
     public void onClick(View v) {
@@ -96,5 +109,6 @@ public class AccountSetupNames extends K9Activity implements OnClickListener {
             onNext();
             break;
         }
+
     }
 }

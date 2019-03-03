@@ -704,6 +704,10 @@ public class MessagingController {
 
     public void loadMoreMessages(Account account, String folder, MessagingListener listener) {
         try {
+            if(account.getScheduledFolderName().equals(folder)) {
+                return;
+            }
+
             LocalStore localStore = account.getLocalStore();
             LocalFolder localFolder = localStore.getFolder(folder);
             if (localFolder.getVisibleLimit() > 0) {
