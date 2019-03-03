@@ -1,4 +1,4 @@
-package com.fsck.k9.activity;
+package com.fsck.k9.fragment;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.fsck.k9.activity.SetDateAndTime;
 
 import java.util.Calendar;
 
