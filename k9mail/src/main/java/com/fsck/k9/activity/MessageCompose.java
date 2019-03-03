@@ -985,6 +985,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             case R.id.save:
                 checkToSaveDraftAndSave();
                 break;
+            case R.id.save_scheduled:
+                checkToSaveDraftAndSave();
+                break;
             case R.id.discard:
                 askBeforeDiscard();
                 break;
