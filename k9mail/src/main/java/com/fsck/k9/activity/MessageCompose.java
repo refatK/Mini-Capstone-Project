@@ -1063,12 +1063,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             menu.findItem(R.id.save).setEnabled(false);
         }
 
-        // Hide the 'save scheduled' menu option if in drafts folder or Scheduled folder is set to -NONE-
-        if(!account.hasScheduledFolder())
-        {
-            menu.findItem(R.id.save_scheduled).setVisible(false);
-            menu.findItem(R.id.save_scheduled).setEnabled(false);
-        }
         return true;
     }
 

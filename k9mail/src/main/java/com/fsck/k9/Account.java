@@ -1112,14 +1112,6 @@ public class Account implements BaseAccount, StoreConfig {
     public synchronized boolean hasDraftsFolder() {
         return !K9.FOLDER_NONE.equalsIgnoreCase(draftsFolderName);
     }
-    /**
-     * Checks if this account has a scheduled folder set.
-     * @return true if account has a scheduled folder set.
-     */
-    public synchronized boolean hasScheduledFolder()
-    {
-        return !K9.FOLDER_NONE.equalsIgnoreCase(scheduledFolderName);
-    }
 
     public synchronized String getSentFolderName() {
         return sentFolderName;
