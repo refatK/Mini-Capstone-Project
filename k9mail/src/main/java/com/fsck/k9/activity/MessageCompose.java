@@ -1059,10 +1059,10 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             menu.findItem(R.id.save).setEnabled(false);
             //disable send option
             menu.findItem(R.id.send).setVisible(false);
-            menu.findItem(R.id.save).setEnabled(false);
+            menu.findItem(R.id.send).setEnabled(false);
             //disable send later option
-            menu.findItem(R.id.send).setVisible(false);
-            menu.findItem(R.id.save).setEnabled(false);
+            menu.findItem(R.id.send_later).setVisible(false);
+            menu.findItem(R.id.send_later).setEnabled(false);
         }
 
         // Disable the 'Save' menu option if Drafts folder is set to -NONE-
