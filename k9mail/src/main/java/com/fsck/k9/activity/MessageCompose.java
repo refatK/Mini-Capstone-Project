@@ -66,6 +66,7 @@ import com.fsck.k9.activity.compose.PgpSignOnlyDialog.OnOpenPgpSignOnlyChangeLis
 import com.fsck.k9.activity.compose.RecipientMvpView;
 import com.fsck.k9.activity.compose.RecipientPresenter;
 import com.fsck.k9.activity.compose.SaveDraftMessageTask;
+import com.fsck.k9.activity.compose.SaveScheduledMessageTask;
 import com.fsck.k9.activity.misc.Attachment;
 import com.fsck.k9.controller.MessagingController;
 import com.fsck.k9.controller.MessagingListener;
@@ -216,7 +217,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     private List<MailingList> mailingLists;
 
     private Date scheduledSendDate;
-    private boolean isScheduledSaved;
+    private boolean isScheduledSaved = false;
 
     private String referencedMessageIds;
     private String repliedToMessageId;
@@ -686,7 +687,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             recipientPresenter.builderSetProperties(builder);
         }
 
-        // TODO Refat assume scheduled is like draft for now
         builder.setSubject(Utility.stripNewLines(subjectView.getText().toString()))
                 .setSentDate(new Date())
                 .setHideTimeZone(K9.hideTimeZone())
@@ -879,7 +879,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                             + (scheduledSendDate.get(Calendar.MINUTE)),
                     Toast.LENGTH_SHORT).show();
 
-            checkToSaveDraftAndSave(); // TODO Refat this should be temporary
+            checkToSaveAndConfirmScheduledSave();
         }
     }
 
@@ -1587,9 +1587,16 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             }
 
             boolean saveRemotely = recipientPresenter.shouldSaveRemotely();
-            new SaveDraftMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
-                    message, draftId, saveRemotely).execute();
-            if (finishAfterDraftSaved) {
+
+            if (isScheduledSaved) {
+                new SaveScheduledMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
+                        message, draftId, saveRemotely).execute();
+            } else {
+                new SaveDraftMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
+                        message, draftId, saveRemotely).execute();
+            }
+
+            if (finishAfterDraftSaved || isScheduledSaved) {
                 finish();
             } else {
                 setProgressBarIndeterminateVisibility(false);
