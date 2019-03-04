@@ -216,6 +216,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     private List<MailingList> mailingLists;
 
     private Date scheduledSendDate;
+    private boolean isScheduledSaved;
 
     private String referencedMessageIds;
     private String repliedToMessageId;
@@ -759,6 +760,16 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         }
 
         finishAfterDraftSaved = false;
+        performSaveAfterChecks();
+    }
+
+    private void checkToSaveAndConfirmScheduledSave() {
+        if (!account.hasScheduledFolder()) {
+            Toast.makeText(this, R.string.compose_error_no_scheduled_folder, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        isScheduledSaved = true;
         performSaveAfterChecks();
     }
 
