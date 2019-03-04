@@ -736,6 +736,20 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         startActivityForResult(intent, MSG_SEND_LATER);
     }
 
+    private void sendLaterConfirmationToast() {
+        Calendar scheduledSendDate = Calendar.getInstance();
+        scheduledSendDate.setTimeInMillis(this.scheduledSendDate.getTime());
+
+        Toast.makeText(getApplicationContext(), "Scheduled to send at: "
+                        + (scheduledSendDate.get(Calendar.MONTH) + 1) + "/"
+                        + scheduledSendDate.get(Calendar.DAY_OF_MONTH) + "/"
+                        + scheduledSendDate.get(Calendar.YEAR) + " @ "
+                        + scheduledSendDate.get(Calendar.HOUR_OF_DAY) + ":"
+                        + ((scheduledSendDate.get(Calendar.MINUTE) < 10) ? "0" : "")
+                        + (scheduledSendDate.get(Calendar.MINUTE)),
+                Toast.LENGTH_LONG).show();
+    }
+
     private void checkToSaveDraftAndSave() {
         if (!account.hasDraftsFolder()) {
             Toast.makeText(this, R.string.compose_error_no_draft_folder, Toast.LENGTH_SHORT).show();
@@ -866,19 +880,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             }
 
             this.scheduledSendDate = new Date(dateInMillis);
-
-            Calendar scheduledSendDate = Calendar.getInstance();
-            scheduledSendDate.setTimeInMillis(dateInMillis);
-
-            Toast.makeText(getApplicationContext(), "Setting time to: "
-                            + (scheduledSendDate.get(Calendar.MONTH) + 1) + "/"
-                            + scheduledSendDate.get(Calendar.DAY_OF_MONTH) + "/"
-                            + scheduledSendDate.get(Calendar.YEAR) + " @ "
-                            + scheduledSendDate.get(Calendar.HOUR_OF_DAY) + ":"
-                            + ((scheduledSendDate.get(Calendar.MINUTE) < 10) ? "0" : "")
-                            + (scheduledSendDate.get(Calendar.MINUTE)),
-                    Toast.LENGTH_SHORT).show();
-
             checkToSaveAndConfirmScheduledSave();
         }
     }
@@ -1885,6 +1886,10 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                             MessageCompose.this,
                             getString(R.string.message_saved_toast),
                             Toast.LENGTH_LONG).show();
+                    break;
+                case MSG_SEND_LATER:
+                    draftId = (Long) msg.obj;
+                    sendLaterConfirmationToast();
                     break;
                 case MSG_DISCARDED_DRAFT:
                     Toast.makeText(
