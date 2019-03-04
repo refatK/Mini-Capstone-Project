@@ -730,7 +730,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         Intent intent = new Intent(this, SetDateAndTime.class);
         isInSubActivity = true;
         startActivityForResult(intent, MSG_SEND_LATER);
-        return;
     }
 
     private void checkToSaveDraftAndSave() {

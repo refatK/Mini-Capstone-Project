@@ -90,6 +90,10 @@ public abstract class Message implements Part, Body {
 
     public abstract void setSentDate(Date sentDate, boolean hideTimeZone);
 
+    public abstract Date getScheduledSendDate();
+
+    public abstract void setScheduledSendDate(Date scheduledSendDate);
+
     public abstract Address[] getRecipients(RecipientType type);
 
     public abstract void setRecipients(RecipientType type, Address[] addresses);

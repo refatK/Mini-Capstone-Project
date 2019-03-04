@@ -59,6 +59,7 @@ public class MimeMessage extends Message {
     private String[] mInReplyTo;
 
     private Date mSentDate;
+    private Date mScheduledSendDate;
     private SimpleDateFormat mDateFormat;
 
     private Body mBody;
@@ -166,6 +167,17 @@ public class MimeMessage extends Message {
 
     public void setInternalSentDate(Date sentDate) {
         this.mSentDate = sentDate;
+    }
+
+    @Override
+    public Date getScheduledSendDate() {
+        return mScheduledSendDate;
+    }
+
+    @Override
+    public void setScheduledSendDate(Date scheduledSendDate) {
+        // Unlike the other properties, this should not be in the message header as scheduled send information shouldn't be public
+        this.mScheduledSendDate = scheduledSendDate;
     }
 
     @Override
