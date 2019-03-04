@@ -1710,15 +1710,32 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
     @Override
     public void onMessageBuildSuccess(MimeMessage message, boolean isDraft) {
-        if (isDraft) {
+        if(isDraft && action == Action.EDIT_SCHEDULED) {
+            changesMadeSinceLastSave = false;
+            currentMessageBuilder = null;
+
+            if (action == Action.EDIT_SCHEDULED && relatedMessageReference != null) {
+                message.setUid(relatedMessageReference.getUid());
+            }
+
+            boolean saveRemotely = recipientPresenter.shouldSaveRemotely();
+            new SaveScheduledMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
+                    message, scheduledId, saveRemotely).execute();
+
+
+
+            if (finishAfterDraftSaved) {
+                finish();
+            } else {
+                setProgressBarIndeterminateVisibility(false);
+            }
+        }
+
+        else if (isDraft) {
             changesMadeSinceLastSave = false;
             currentMessageBuilder = null;
 
             if (action == Action.EDIT_DRAFT && relatedMessageReference != null) {
-                message.setUid(relatedMessageReference.getUid());
-            }
-
-            if (action == Action.EDIT_SCHEDULED && relatedMessageReference != null) {
                 message.setUid(relatedMessageReference.getUid());
             }
 
@@ -1728,10 +1745,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                         message, draftId, saveRemotely).execute();
 
 
-            if(action == Action.EDIT_SCHEDULED) {
-                new SaveScheduledMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
-                        message, scheduledId, saveRemotely).execute();
-            }
             if (finishAfterDraftSaved) {
                 finish();
             } else {
