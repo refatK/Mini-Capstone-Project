@@ -744,6 +744,10 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     }
 
     private void sendLaterConfirmationToast() {
+        if (this.scheduledSendDate == null) {
+            return;
+        }
+
         Calendar scheduledSendDate = Calendar.getInstance();
         scheduledSendDate.setTimeInMillis(this.scheduledSendDate.getTime());
 
@@ -2041,7 +2045,16 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                     break;
                 case MSG_SAVED_SCHEDULED:
                     scheduledId = (Long)  msg.obj;
-                    sendLaterConfirmationToast();
+
+                    if (action == Action.EDIT_SCHEDULED) {
+                        Toast.makeText(
+                                MessageCompose.this,
+                                getString(R.string.message_saved_scheduled_toast),
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        sendLaterConfirmationToast();
+                    }
+
                     break;
 
                 case MSG_DISCARDED_DRAFT:
