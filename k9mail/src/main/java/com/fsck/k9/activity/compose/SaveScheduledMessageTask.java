@@ -23,10 +23,9 @@ public class SaveScheduledMessageTask extends SaveMessageTask {
         draftId = messagingController.getId(scheduledMessage);
     }
 
-    //TODO Refat fix and use of scheduled ID
     @Override
     protected void returnNotificationToMessageHandler() {
-        android.os.Message msg = android.os.Message.obtain(handler, MessageCompose.MSG_SEND_LATER, draftId);
+        android.os.Message msg = android.os.Message.obtain(handler, MessageCompose.MSG_SAVED_SCHEDULED, draftId);
         handler.sendMessage(msg);
     }
 
