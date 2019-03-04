@@ -1179,7 +1179,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             }
         } else {
             // Check if editing an existing draft or scheduled.
-            if (draftId == INVALID_DRAFT_ID || scheduledId == INVALID_SCHEDULED_ID) {
+            if ((draftId == INVALID_DRAFT_ID || scheduledId == INVALID_SCHEDULED_ID) && action != Action.EDIT_SCHEDULED) {
                 onDiscard();
             } else {
                 if (navigateUp) {
