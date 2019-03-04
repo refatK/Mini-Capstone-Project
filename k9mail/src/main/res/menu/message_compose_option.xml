@@ -33,6 +33,13 @@
         android:icon="?attr/iconActionSave"
         />
     <item
+        android:id="@+id/save_scheduled"
+        android:alphabeticShortcut="s"
+        android:title="@string/save_scheduled_action"
+        android:icon="?attr/iconActionSave"
+        android:showAsAction="always"
+        />
+    <item
         android:id="@+id/discard"
         android:alphabeticShortcut="q"
         android:title="@string/discard_action"

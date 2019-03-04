@@ -3,7 +3,6 @@ package com.fsck.k9.activity;
 
 import java.util.Collection;
 import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.FragmentManager;
@@ -1219,8 +1218,16 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
         String folderName = messageReference.getFolderName();
 
         if (folderName.equals(account.getDraftsFolderName())) {
-            MessageActions.actionEditDraft(this, messageReference);
-        } else {
+            String change = "drafts";
+            MessageActions.actionEditDraft(this, messageReference, change);
+        }
+        else if (folderName.equals(account.getScheduledFolderName()))
+        {
+            String change = "scheduled";
+            MessageActions.actionEditDraft(this, messageReference, change);
+        }
+
+        else {
             messageViewContainer.removeView(messageViewPlaceHolder);
 
             if (messageListFragment != null) {
@@ -1241,7 +1248,7 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
 
     @Override
     public void onResendMessage(MessageReference messageReference) {
-        MessageActions.actionEditDraft(this, messageReference);
+        MessageActions.actionEditDraft(this, messageReference, "");
     }
 
     @Override
