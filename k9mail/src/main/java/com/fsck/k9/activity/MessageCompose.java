@@ -14,7 +14,6 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -66,7 +65,7 @@ import com.fsck.k9.activity.compose.PgpInlineDialog.OnOpenPgpInlineChangeListene
 import com.fsck.k9.activity.compose.PgpSignOnlyDialog.OnOpenPgpSignOnlyChangeListener;
 import com.fsck.k9.activity.compose.RecipientMvpView;
 import com.fsck.k9.activity.compose.RecipientPresenter;
-import com.fsck.k9.activity.compose.SaveMessageTask;
+import com.fsck.k9.activity.compose.SaveDraftMessageTask;
 import com.fsck.k9.activity.misc.Attachment;
 import com.fsck.k9.controller.MessagingController;
 import com.fsck.k9.controller.MessagingListener;
@@ -1577,7 +1576,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             }
 
             boolean saveRemotely = recipientPresenter.shouldSaveRemotely();
-            new SaveMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
+            new SaveDraftMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
                     message, draftId, saveRemotely).execute();
             if (finishAfterDraftSaved) {
                 finish();
