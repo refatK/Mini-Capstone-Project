@@ -378,6 +378,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             } else if (ACTION_FORWARD_AS_ATTACHMENT.equals(action)) {
                 this.action = Action.FORWARD_AS_ATTACHMENT;
             } else if (ACTION_EDIT_DRAFT.equals(action)) {
+                this.action= Action.EDIT_DRAFT;
             }
               else if (ACTION_EDIT_SCHEDULED.equals(action)){
                   this.action= Action.EDIT_SCHEDULED;
@@ -1723,14 +1724,15 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             }
 
             boolean saveRemotely = recipientPresenter.shouldSaveRemotely();
-            if(action == Action.EDIT_SCHEDULED) {
-                new SaveScheduledMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
-                        message, scheduledId, saveRemotely).execute();
-            }
 
             if(action == Action.EDIT_DRAFT) {
                 new SaveMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
                         message, draftId, saveRemotely).execute();
+            }
+
+            if(action == Action.EDIT_SCHEDULED) {
+                new SaveScheduledMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
+                        message, scheduledId, saveRemotely).execute();
             }
             if (finishAfterDraftSaved) {
                 finish();
