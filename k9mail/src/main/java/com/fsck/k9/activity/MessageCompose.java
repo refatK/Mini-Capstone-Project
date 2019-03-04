@@ -1,6 +1,5 @@
 package com.fsck.k9.activity;
 
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -1725,10 +1724,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
             boolean saveRemotely = recipientPresenter.shouldSaveRemotely();
 
-            if(action == Action.EDIT_DRAFT) {
                 new SaveMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
                         message, draftId, saveRemotely).execute();
-            }
+
 
             if(action == Action.EDIT_SCHEDULED) {
                 new SaveScheduledMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
