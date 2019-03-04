@@ -3843,11 +3843,17 @@ public class MessagingController {
      *
      * @return Message representing the entry in the local store.
      */
-    public Message saveDraft(final Account account, final Message message, long existingDraftId, boolean saveRemotely) {
+    public Message saveDraft(final Account account, final Message message, long existingDraftId, boolean saveRemotely, boolean isScheduled) {
         Message localMessage = null;
         try {
             LocalStore localStore = account.getLocalStore();
+
             LocalFolder localFolder = localStore.getFolder(account.getDraftsFolderName());
+            if (isScheduled) {
+                // default behavior sends to draft. If/else is not used to prevent possible null errors with localFolder
+                localFolder = localStore.getFolder(account.getScheduledFolderName());
+            }
+
             localFolder.open(Folder.OPEN_MODE_RW);
 
             if (existingDraftId != INVALID_MESSAGE_ID) {

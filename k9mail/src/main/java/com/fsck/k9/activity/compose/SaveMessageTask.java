@@ -33,7 +33,7 @@ public class SaveMessageTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... params) {
         final MessagingController messagingController = MessagingController.getInstance(context);
-        Message draftMessage = messagingController.saveDraft(account, message, draftId, saveRemotely);
+        Message draftMessage = messagingController.saveDraft(account, message, draftId, saveRemotely, false);
         draftId = messagingController.getId(draftMessage);
 
         android.os.Message msg = android.os.Message.obtain(handler, MessageCompose.MSG_SAVED_DRAFT, draftId);

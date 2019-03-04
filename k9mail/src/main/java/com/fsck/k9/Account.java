@@ -1078,11 +1078,11 @@ public class Account implements BaseAccount, StoreConfig {
         this.deletePolicy = deletePolicy;
     }
 
-    public String getScheduledFolderName() {
+    public synchronized String getScheduledFolderName() {
         return scheduledFolderName;
     }
 
-    public void setScheduledFolderName(String scheduledFolderName) {
+    public synchronized void setScheduledFolderName(String scheduledFolderName) {
         this.scheduledFolderName = scheduledFolderName;
     }
 
