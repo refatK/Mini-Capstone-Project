@@ -151,7 +151,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     private static final int MSG_PROGRESS_OFF = 2;
     public static final int MSG_SAVED_DRAFT = 4;
     private static final int MSG_DISCARDED_DRAFT = 5;
-    private static final int MSG_SEND_LATER = 6;
+    public static final int MSG_SEND_LATER = 6;
 
     private static final int REQUEST_MASK_RECIPIENT_PRESENTER = (1 << 8);
     private static final int REQUEST_MASK_LOADER_HELPER = (1 << 9);
