@@ -151,6 +151,7 @@ public class EmailProvider extends ContentProvider {
         String FLAGGED = "flagged";
         String ANSWERED = "answered";
         String FORWARDED = "forwarded";
+        String SCHEDULED_DATE_TIME = "scheduled_datetime";
     }
 
     private interface InternalMessageColumns extends MessageColumns {
