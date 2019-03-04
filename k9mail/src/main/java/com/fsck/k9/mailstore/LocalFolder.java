@@ -1387,6 +1387,10 @@ public class LocalFolder extends Folder<LocalMessage> {
             cv.put("mime_type", message.getMimeType());
             cv.put("empty", 0);
 
+            if (message.getScheduledSendDate() != null) {
+                cv.put("scheduled_datetime", message.getScheduledSendDate().getTime());
+            }
+
             cv.put("preview_type", databasePreviewType.getDatabaseValue());
             if (previewResult.isPreviewTextAvailable()) {
                 cv.put("preview", previewResult.getPreviewText());

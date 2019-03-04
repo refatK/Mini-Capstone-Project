@@ -216,6 +216,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     private DaoSession daoSession;
     private List<MailingList> mailingLists;
 
+    private Date scheduledSendDate;
+
     private String referencedMessageIds;
     private String repliedToMessageId;
 
@@ -684,6 +686,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             recipientPresenter.builderSetProperties(builder);
         }
 
+        // TODO Refat assume scheduled is like draft for now
         builder.setSubject(Utility.stripNewLines(subjectView.getText().toString()))
                 .setSentDate(new Date())
                 .setHideTimeZone(K9.hideTimeZone())
@@ -701,7 +704,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 .setCursorPosition(messageContentView.getSelectionStart())
                 .setMessageReference(relatedMessageReference)
                 .setDraft(isDraft)
-                .setIsPgpInlineEnabled(cryptoStatus.isPgpInlineModeEnabled());
+                .setIsPgpInlineEnabled(cryptoStatus.isPgpInlineModeEnabled())
+                .setScheduledSendDate(scheduledSendDate);
 
         quotedMessagePresenter.builderSetProperties(builder);
 
@@ -851,6 +855,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 return;
             }
 
+            this.scheduledSendDate = new Date(dateInMillis);
+
             Calendar scheduledSendDate = Calendar.getInstance();
             scheduledSendDate.setTimeInMillis(dateInMillis);
 
@@ -863,8 +869,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                             + (scheduledSendDate.get(Calendar.MINUTE)),
                     Toast.LENGTH_SHORT).show();
 
-
-
+            checkToSaveDraftAndSave(); // TODO Refat this should be temporary
         }
     }
 
