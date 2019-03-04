@@ -465,7 +465,8 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
         initializeLayout();
         listView.setVerticalFadingEdgeEnabled(false);
 
-        if( account != null && folderName.equals(account.getScheduledFolderName())) {
+        if( (account != null && folderName != null)&&
+                folderName.equals(account.getScheduledFolderName())) {
             adapter = new ScheduledMailAdapter(this);
         }
 
@@ -638,7 +639,8 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
             updateFooterView();
         }
 
-        if( account != null && folderName.equals(account.getScheduledFolderName())) {
+        if( (account != null && folderName != null) &&
+                folderName.equals(account.getScheduledFolderName())) {
             adapter = new ScheduledMailAdapter(this);
             footerView.setVisibility(View.GONE);
         }
