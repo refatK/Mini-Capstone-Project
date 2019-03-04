@@ -1087,15 +1087,16 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         Bundle bundle = getIntent().getExtras();
         String change = bundle.getString("change");
 
+
         //disable scheduled save option if in draft message
-        if(change.equals("drafts"))
+         if(change!= null && change.equals("drafts"))
         {
             menu.findItem(R.id.save_scheduled).setVisible(false);
             menu.findItem(R.id.save_scheduled).setEnabled(false);
         }
 
 
-        if(change.equals("scheduled"))
+        else if(change!= null &&change.equals("scheduled"))
         {
             //disable draft save option if in scheduled message
             menu.findItem(R.id.save).setVisible(false);
@@ -1107,6 +1108,13 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             menu.findItem(R.id.send_later).setVisible(false);
             menu.findItem(R.id.send_later).setEnabled(false);
         }
+        else {
+             //disable save scheduled option for other folders (inbox, outbox, etc)
+
+                 menu.findItem(R.id.save_scheduled).setVisible(false);
+                 menu.findItem(R.id.save_scheduled).setEnabled(false);
+
+         }
 
         // Disable the 'Save' menu option if Drafts folder is set to -NONE-
         if (!account.hasDraftsFolder()) {
