@@ -1,6 +1,7 @@
 package com.fsck.k9.activity;
 
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -727,6 +728,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
     private void sendMessageLater(){
         Intent intent = new Intent(this, SetDateAndTime.class);
+        isInSubActivity = true;
         startActivityForResult(intent, MSG_SEND_LATER);
         return;
     }
@@ -839,6 +841,31 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         if ((requestCode & REQUEST_MASK_ATTACHMENT_PRESENTER) == REQUEST_MASK_ATTACHMENT_PRESENTER) {
             requestCode ^= REQUEST_MASK_ATTACHMENT_PRESENTER;
             attachmentPresenter.onActivityResult(resultCode, requestCode, data);
+        }
+
+        if (resultCode == RESULT_OK && requestCode == MSG_SEND_LATER) {
+            long dateInMillis = data.getLongExtra("ScheduledSendDate", 0L);
+
+            if (dateInMillis == 0L) {
+                Toast.makeText(getApplicationContext(), "The scheduled date seems to be invalid",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Calendar scheduledSendDate = Calendar.getInstance();
+            scheduledSendDate.setTimeInMillis(dateInMillis);
+
+            Toast.makeText(getApplicationContext(), "Setting time to: "
+                            + (scheduledSendDate.get(Calendar.MONTH) + 1) + "/"
+                            + scheduledSendDate.get(Calendar.DAY_OF_MONTH) + "/"
+                            + scheduledSendDate.get(Calendar.YEAR) + " @ "
+                            + scheduledSendDate.get(Calendar.HOUR_OF_DAY) + ":"
+                            + ((scheduledSendDate.get(Calendar.MINUTE) < 10) ? "0" : "")
+                            + (scheduledSendDate.get(Calendar.MINUTE)),
+                    Toast.LENGTH_SHORT).show();
+
+
+
         }
     }
 

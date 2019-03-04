@@ -80,14 +80,6 @@ public class SetDateAndTime extends K9Activity implements DatePickerDialog.OnDat
                     Toast.LENGTH_SHORT).show();
         }else{
             // The time is good, so it will be set on the message
-            Toast.makeText(getApplicationContext(), "Setting time to: "
-                            + (chosenDateAndTime.get(Calendar.MONTH) + 1) + "/"
-                            + chosenDateAndTime.get(Calendar.DAY_OF_MONTH) + "/"
-                            + chosenDateAndTime.get(Calendar.YEAR) + " @ "
-                            + chosenDateAndTime.get(Calendar.HOUR_OF_DAY) + ":"
-                            + ((chosenDateAndTime.get(Calendar.MINUTE) < 10) ? "0" : "")
-                            + (chosenDateAndTime.get(Calendar.MINUTE)),
-                    Toast.LENGTH_SHORT).show();
             this.finish();
         }
     }
@@ -116,7 +108,7 @@ public class SetDateAndTime extends K9Activity implements DatePickerDialog.OnDat
         // intent used to send data back to MessageCompose.java
         Intent data = new Intent();
         // we want to send back the date for sending later
-        data.putExtra("ScheduledSendDate", chosenDateAndTime);
+        data.putExtra("ScheduledSendDate", chosenDateAndTime.getTimeInMillis());
         setResult(RESULT_OK, data);
         super.finish();
     }
