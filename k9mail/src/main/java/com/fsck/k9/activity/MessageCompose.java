@@ -46,11 +46,13 @@ import android.widget.Toast;
 import com.fsck.k9.Account;
 import com.fsck.k9.Account.MessageFormat;
 import com.fsck.k9.DaoSession;
+import com.fsck.k9.ScheduledEmailsToSendNowService;
 import com.fsck.k9.Identity;
 import com.fsck.k9.K9;
 import com.fsck.k9.MailingList;
 import com.fsck.k9.Preferences;
 import com.fsck.k9.R;
+import com.fsck.k9.ScheduledEmail;
 import com.fsck.k9.activity.MessageLoaderHelper.MessageLoaderCallbacks;
 import com.fsck.k9.activity.compose.AttachmentPresenter;
 import com.fsck.k9.activity.compose.AttachmentPresenter.AttachmentMvpView;
@@ -765,6 +767,16 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                         + ((scheduledSendDate.get(Calendar.MINUTE) < 10) ? "0" : "")
                         + (scheduledSendDate.get(Calendar.MINUTE)),
                 Toast.LENGTH_LONG).show();
+
+        daoSession = ((K9)getApplication()).getDaoSession();
+
+        ScheduledEmail scheduledEmail = new ScheduledEmail(null, account.getUuid(), scheduledId,
+                scheduledSendDate.getTimeInMillis());
+
+        daoSession.getScheduledEmailDao().insert(scheduledEmail);
+
+        Intent i = new Intent(getApplicationContext(), ScheduledEmailsToSendNowService.class);
+        startService(i);
     }
 
     private void checkToSaveDraftAndSave() {
