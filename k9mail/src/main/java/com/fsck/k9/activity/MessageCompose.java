@@ -1270,6 +1270,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 dismissDialog(DIALOG_SAVE_OR_DISCARD_DRAFT_MESSAGE);
                                 if (action == Action.EDIT_SCHEDULED) {
+                                    changesMadeSinceLastSave = false;
                                     goBack();
                                 } else {
                                     onDiscard();
@@ -1292,6 +1293,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 dismissDialog(DIALOG_CONFIRM_DISCARD_ON_BACK);
                                 if (action == Action.EDIT_SCHEDULED) {
+                                    changesMadeSinceLastSave = false;
                                     goBack();
                                 } else {
                                     Toast.makeText(MessageCompose.this,
@@ -1785,7 +1787,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             if (isScheduledSaved) {
                 new SaveScheduledMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
                         message, draftId, saveRemotely, scheduledId).execute();
-            } else {
+            } else if (action != Action.EDIT_SCHEDULED) { // never do draft saves in scheduled message editor
                 new SaveDraftMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
                         message, draftId, saveRemotely).execute();
             }
