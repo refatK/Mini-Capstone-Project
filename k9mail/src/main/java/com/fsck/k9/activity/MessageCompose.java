@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
@@ -776,7 +777,17 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         daoSession.getScheduledEmailDao().insert(scheduledEmail);
 
         Intent i = new Intent(getApplicationContext(), ScheduledEmailsToSendNowService.class);
-        startService(i);
+
+       Context context = getApplicationContext();
+
+        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        long frequency = 10 * 1000;
+
+        PendingIntent pi = PendingIntent.getService(context,0, i,
+                PendingIntent.FLAG_CANCEL_CURRENT);
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+                Calendar.getInstance().getTimeInMillis(),frequency,pi);
     }
 
     private void checkToSaveDraftAndSave() {

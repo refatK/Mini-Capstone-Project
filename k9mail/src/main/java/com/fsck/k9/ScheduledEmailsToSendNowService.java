@@ -33,6 +33,10 @@ public class ScheduledEmailsToSendNowService extends IntentService {
         if (!emailsToSendNow.isEmpty()) {
             sendEmails();
         }
+        else
+        {
+            stopSelf();
+        }
     }
 
     private void sendEmails() {
