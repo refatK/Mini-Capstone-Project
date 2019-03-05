@@ -809,6 +809,21 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         }
 
         isScheduledSaved = true;
+        finishAfterDraftSaved = true;
+        performSaveAfterChecks();
+    }
+
+    private void checkToSaveScheduledImplicitly() {
+        if (!account.hasScheduledFolder()) {
+            return;
+        }
+
+        if (!changesMadeSinceLastSave) {
+            return;
+        }
+
+        isScheduledSaved = true;
+        finishAfterDraftSaved = false;
         performSaveAfterChecks();
     }
 
@@ -919,7 +934,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             }
 
             // test whether there is something to save
-            if (changesMadeSinceLastSave || (draftId != INVALID_DRAFT_ID)) {
+            if ((changesMadeSinceLastSave || (draftId != INVALID_DRAFT_ID))
+                    && action != Action.EDIT_SCHEDULED) {
                 final long previousDraftId = draftId;
                 final Account previousAccount = this.account;
 
@@ -938,33 +954,26 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                     MessagingController.getInstance(getApplication()).deleteDraft(previousAccount,
                             previousDraftId);
                 }
+            } else if ((changesMadeSinceLastSave || (scheduledId != INVALID_SCHEDULED_ID))
+                    && action == Action.EDIT_SCHEDULED) {
+                final long previousScheduledId = scheduledId;
+                final Account previousAccount = this.account;
+
+                scheduledId = INVALID_SCHEDULED_ID;
+                this.account = account;
+
+                Timber.v("Account switch, saving new scheduled message in new account");
+                checkToSaveScheduledImplicitly();
+
+                if (previousScheduledId != INVALID_SCHEDULED_ID) {
+                    Timber.v("Account switch, deleting scheduled from previous account: %d", previousScheduledId);
+
+                    MessagingController.getInstance(getApplication()).deleteScheduled(previousAccount,
+                            previousScheduledId);
+                }
             } else {
                 this.account = account;
             }
-
-// TODO Refat Probably not necessary, ensure such
-//            if (changesMadeSinceLastSave || (scheduledId != INVALID_SCHEDULED_ID)) {
-//                final long previousScheduledId = scheduledId;
-//                final Account previousAccount = this.account;
-//
-//                // make current message appear as new
-//                scheduledId = INVALID_SCHEDULED_ID;
-//
-//                // actual account switch
-//                this.account = account;
-//
-//                Timber.v("Account switch, saving new scheduled message in new account");
-//                checkToSaveDraftImplicitly(); // TODO Refat Make sure this whole section makes sense
-//
-//                if (previousScheduledId != INVALID_SCHEDULED_ID) {
-//                    Timber.v("Account switch, deleting scheduled from previous account: %d", previousScheduledId);
-//
-//                    MessagingController.getInstance(getApplication()).deleteScheduled(previousAccount,
-//                            previousScheduledId);
-//                }
-//            } else {
-//                this.account = account;
-//            }
 
             // Show CC/BCC text input field when switching to an account that always wants them
             // displayed.
@@ -1781,7 +1790,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                         message, draftId, saveRemotely).execute();
             }
 
-            if (finishAfterDraftSaved || isScheduledSaved) {
+            if (finishAfterDraftSaved) {
                 finish();
             } else {
                 setProgressBarIndeterminateVisibility(false);
