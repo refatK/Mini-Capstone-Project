@@ -12,9 +12,9 @@ import java.util.ArrayList;
 
 public class EmailsToSendNow extends IntentService {
 
-    private LocalStore db;
+    long accountId;
     Account account;
-    
+
 
     public EmailsToSendNow() {
         super("EmailsToSendNow");

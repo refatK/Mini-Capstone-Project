@@ -1,5 +1,6 @@
 package com.fsck.k9.activity;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -7,13 +8,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -65,7 +64,7 @@ import com.fsck.k9.activity.compose.PgpInlineDialog.OnOpenPgpInlineChangeListene
 import com.fsck.k9.activity.compose.PgpSignOnlyDialog.OnOpenPgpSignOnlyChangeListener;
 import com.fsck.k9.activity.compose.RecipientMvpView;
 import com.fsck.k9.activity.compose.RecipientPresenter;
-import com.fsck.k9.activity.compose.SaveMessageTask;
+import com.fsck.k9.activity.compose.SaveDraftMessageTask;
 import com.fsck.k9.activity.compose.SaveScheduledMessageTask;
 import com.fsck.k9.activity.misc.Attachment;
 import com.fsck.k9.controller.MessagingController;
@@ -157,7 +156,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     private static final int MSG_DISCARDED_DRAFT = 5;
     public static final int MSG_SAVED_SCHEDULED = 6;
 
-
     private static final int REQUEST_MASK_RECIPIENT_PRESENTER = (1 << 8);
     private static final int REQUEST_MASK_LOADER_HELPER = (1 << 9);
     private static final int REQUEST_MASK_ATTACHMENT_PRESENTER = (1 << 10);
@@ -221,6 +219,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     private DaoSession daoSession;
     private List<MailingList> mailingLists;
 
+    private Date scheduledSendDate;
+    private boolean isScheduledSaved = false;
+
     private String referencedMessageIds;
     private String repliedToMessageId;
 
@@ -234,7 +235,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         if (UpgradeDatabases.actionUpgradeDatabases(this, getIntent())) {
             finish();
@@ -378,11 +378,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 this.action = Action.FORWARD_AS_ATTACHMENT;
             } else if (ACTION_EDIT_DRAFT.equals(action)) {
                 this.action= Action.EDIT_DRAFT;
-            }
-              else if (ACTION_EDIT_SCHEDULED.equals(action)){
-                  this.action= Action.EDIT_SCHEDULED;
-            }
-              else {
+            } else if (ACTION_EDIT_SCHEDULED.equals(action)){
+                this.action= Action.EDIT_SCHEDULED;
+            } else {
                 // This shouldn't happen
                 Timber.w("MessageCompose was started with an unsupported action");
                 this.action = Action.COMPOSE;
@@ -713,7 +711,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 .setCursorPosition(messageContentView.getSelectionStart())
                 .setMessageReference(relatedMessageReference)
                 .setDraft(isDraft)
-                .setIsPgpInlineEnabled(cryptoStatus.isPgpInlineModeEnabled());
+                .setIsPgpInlineEnabled(cryptoStatus.isPgpInlineModeEnabled())
+                .setScheduledSendDate(scheduledSendDate);
 
         quotedMessagePresenter.builderSetProperties(builder);
 
@@ -739,9 +738,33 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     }
 
     private void sendMessageLater(){
+
+        // a scheduled save should be set up with someone to send to
+        if (recipientPresenter.checkRecipientsOkForSending()) {
+            return;
+        }
+
         Intent intent = new Intent(this, SetDateAndTime.class);
-        startActivity(intent);
-        return;
+        isInSubActivity = true;
+        startActivityForResult(intent, MSG_SAVED_SCHEDULED);
+    }
+
+    private void sendLaterConfirmationToast() {
+        if (this.scheduledSendDate == null) {
+            return;
+        }
+
+        Calendar scheduledSendDate = Calendar.getInstance();
+        scheduledSendDate.setTimeInMillis(this.scheduledSendDate.getTime());
+
+        Toast.makeText(getApplicationContext(), "Scheduled to send at: "
+                        + (scheduledSendDate.get(Calendar.MONTH) + 1) + "/"
+                        + scheduledSendDate.get(Calendar.DAY_OF_MONTH) + "/"
+                        + scheduledSendDate.get(Calendar.YEAR) + " @ "
+                        + scheduledSendDate.get(Calendar.HOUR_OF_DAY) + ":"
+                        + ((scheduledSendDate.get(Calendar.MINUTE) < 10) ? "0" : "")
+                        + (scheduledSendDate.get(Calendar.MINUTE)),
+                Toast.LENGTH_LONG).show();
     }
 
     private void checkToSaveDraftAndSave() {
@@ -767,6 +790,39 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             return;
         }
 
+        finishAfterDraftSaved = false;
+        performSaveAfterChecks();
+    }
+
+    private void checkToSaveAndConfirmScheduledSave() {
+        if (!account.hasScheduledFolder()) {
+            Toast.makeText(this, R.string.compose_error_no_scheduled_folder, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (recipientPresenter.checkRecipientsOkForSending()) {
+            return;
+        }
+
+        if (attachmentPresenter.checkOkForSendingOrDraftSaving()) {
+            return;
+        }
+
+        isScheduledSaved = true;
+        finishAfterDraftSaved = true;
+        performSaveAfterChecks();
+    }
+
+    private void checkToSaveScheduledImplicitly() {
+        if (!account.hasScheduledFolder()) {
+            return;
+        }
+
+        if (!changesMadeSinceLastSave) {
+            return;
+        }
+
+        isScheduledSaved = true;
         finishAfterDraftSaved = false;
         performSaveAfterChecks();
     }
@@ -799,11 +855,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         }
         internalMessageHandler.sendEmptyMessage(MSG_DISCARDED_DRAFT);
         changesMadeSinceLastSave = false;
-        if (navigateUp) {
-            openAutoExpandFolder();
-        } else {
-            finish();
-        }
+        goBack();
     }
 
     private void onReadReceipt() {
@@ -857,6 +909,19 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             requestCode ^= REQUEST_MASK_ATTACHMENT_PRESENTER;
             attachmentPresenter.onActivityResult(resultCode, requestCode, data);
         }
+
+        if (resultCode == RESULT_OK && requestCode == MSG_SAVED_SCHEDULED) {
+            long dateInMillis = data.getLongExtra("ScheduledSendDate", 0L);
+
+            if (dateInMillis == 0L) {
+                Toast.makeText(getApplicationContext(), "The scheduled date seems to be invalid",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            this.scheduledSendDate = new Date(dateInMillis);
+            checkToSaveAndConfirmScheduledSave();
+        }
     }
 
     private void onAccountChosen(Account account, Identity identity) {
@@ -864,17 +929,13 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             Timber.v("Switching account from %s to %s", this.account, account);
 
             // on draft edit, make sure we don't keep previous message UID
-            if (action == Action.EDIT_DRAFT) {
-                relatedMessageReference = null;
-            }
-
-            if (action == Action.EDIT_SCHEDULED)
-            {
+            if (action == Action.EDIT_DRAFT || action == Action.EDIT_SCHEDULED) {
                 relatedMessageReference = null;
             }
 
             // test whether there is something to save
-            if (changesMadeSinceLastSave || (draftId != INVALID_DRAFT_ID)) {
+            if ((changesMadeSinceLastSave || (draftId != INVALID_DRAFT_ID))
+                    && action != Action.EDIT_SCHEDULED) {
                 final long previousDraftId = draftId;
                 final Account previousAccount = this.account;
 
@@ -893,20 +954,16 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                     MessagingController.getInstance(getApplication()).deleteDraft(previousAccount,
                             previousDraftId);
                 }
-            }
-
-            if (changesMadeSinceLastSave || (scheduledId != INVALID_SCHEDULED_ID)) {
+            } else if ((changesMadeSinceLastSave || (scheduledId != INVALID_SCHEDULED_ID))
+                    && action == Action.EDIT_SCHEDULED) {
                 final long previousScheduledId = scheduledId;
                 final Account previousAccount = this.account;
 
-                // make current message appear as new
                 scheduledId = INVALID_SCHEDULED_ID;
-
-                // actual account switch
                 this.account = account;
 
-                Timber.v("Account switch, saving new draft in new account");
-                checkToSaveDraftImplicitly();
+                Timber.v("Account switch, saving new scheduled message in new account");
+                checkToSaveScheduledImplicitly();
 
                 if (previousScheduledId != INVALID_SCHEDULED_ID) {
                     Timber.v("Account switch, deleting scheduled from previous account: %d", previousScheduledId);
@@ -914,7 +971,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                     MessagingController.getInstance(getApplication()).deleteScheduled(previousAccount,
                             previousScheduledId);
                 }
-            }else {
+            } else {
                 this.account = account;
             }
 
@@ -1029,7 +1086,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 checkToSaveDraftAndSave();
                 break;
             case R.id.save_scheduled:
-                checkToSaveDraftAndSave();
+                checkToSaveAndConfirmScheduledSave();
                 break;
             case R.id.discard:
                 askBeforeDiscard();
@@ -1073,8 +1130,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
-
         super.onCreateOptionsMenu(menu);
 
         if (isFinishing()) {
@@ -1089,20 +1144,16 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
 
         //disable scheduled save option if in draft message
-         if(change!= null && change.equals("drafts"))
-        {
+         if(change!= null && change.equals("drafts")) {
             menu.findItem(R.id.save_scheduled).setVisible(false);
             menu.findItem(R.id.save_scheduled).setEnabled(false);
         }
-
-
-        else if(change!= null &&change.equals("scheduled"))
-        {
+        else if(change!= null && change.equals("scheduled")) {
             //disable draft save option if in scheduled message
             menu.findItem(R.id.save).setVisible(false);
             menu.findItem(R.id.save).setEnabled(false);
             //disable send option
-            menu.findItem(R.id.send).setVisible(false);
+            menu.findItem(R.id.send).setVisible(false); //TODO Refat maybe don't disable
             menu.findItem(R.id.send).setEnabled(false);
             //disable send later option
             menu.findItem(R.id.send_later).setVisible(false);
@@ -1110,10 +1161,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         }
         else {
              //disable save scheduled option for other folders (inbox, outbox, etc)
-
-                 menu.findItem(R.id.save_scheduled).setVisible(false);
-                 menu.findItem(R.id.save_scheduled).setEnabled(false);
-
+             menu.findItem(R.id.save_scheduled).setVisible(false);
+             menu.findItem(R.id.save_scheduled).setEnabled(false);
          }
 
         // Disable the 'Save' menu option if Drafts folder is set to -NONE-
@@ -1124,7 +1173,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         return true;
     }
 
-
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
@@ -1132,6 +1180,14 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         recipientPresenter.onPrepareOptionsMenu(menu);
 
         return true;
+    }
+
+    public void goBack() {
+        if (navigateUp) {
+            openAutoExpandFolder();
+        } else {
+            finish();
+        }
     }
 
     @Override
@@ -1145,25 +1201,15 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         if (changesMadeSinceLastSave && draftIsNotEmpty()) {
             if (!account.hasDraftsFolder()) {
                 showDialog(DIALOG_CONFIRM_DISCARD_ON_BACK);
-            }
-            else {
+            } else {
                 showDialog(DIALOG_SAVE_OR_DISCARD_DRAFT_MESSAGE);
             }
         } else {
             // Check if editing an existing draft or scheduled.
-            if (draftId == INVALID_DRAFT_ID) {
+            if ((draftId == INVALID_DRAFT_ID || scheduledId == INVALID_SCHEDULED_ID) && action != Action.EDIT_SCHEDULED) {
                 onDiscard();
-            }
-            if (scheduledId == INVALID_SCHEDULED_ID)
-            {
-                onDiscard();
-            }
-            else {
-                if (navigateUp) {
-                    openAutoExpandFolder();
-                } else {
-                    super.onBackPressed();
-                }
+            } else {
+                goBack();
             }
         }
     }
@@ -1212,14 +1258,22 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                             @Override
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 dismissDialog(DIALOG_SAVE_OR_DISCARD_DRAFT_MESSAGE);
-                                checkToSaveDraftAndSave();
+                                if (action == Action.EDIT_SCHEDULED) {
+                                    checkToSaveAndConfirmScheduledSave();
+                                } else {
+                                    checkToSaveDraftAndSave();
+                                }
                             }
                         })
                         .setNegativeButton(R.string.discard_action, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 dismissDialog(DIALOG_SAVE_OR_DISCARD_DRAFT_MESSAGE);
-                                onDiscard();
+                                if (action == Action.EDIT_SCHEDULED) {
+                                    goBack();
+                                } else {
+                                    onDiscard();
+                                }
                             }
                         })
                         .create();
@@ -1237,10 +1291,14 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                             @Override
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 dismissDialog(DIALOG_CONFIRM_DISCARD_ON_BACK);
-                                Toast.makeText(MessageCompose.this,
-                                        getString(R.string.message_discarded_toast),
-                                        Toast.LENGTH_LONG).show();
-                                onDiscard();
+                                if (action == Action.EDIT_SCHEDULED) {
+                                    goBack();
+                                } else {
+                                    Toast.makeText(MessageCompose.this,
+                                            getString(R.string.message_discarded_toast),
+                                            Toast.LENGTH_LONG).show();
+                                    onDiscard();
+                                }
                             }
                         })
                         .create();
@@ -1509,6 +1567,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         scheduledId = MessagingController.getInstance(getApplication()).getId(message);
         subjectView.setText(message.getSubject());
 
+        // A message loaded for editing sets this variable with the message send date
+        this.scheduledSendDate = message.getScheduledSendDate();
+
         recipientPresenter.initFromDraftMessage(message);
 
         // Read In-Reply-To header from draft
@@ -1584,6 +1645,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
         quotedMessagePresenter.processDraftMessage(messageViewInfo, k9identity);
     }
+
     public List<MailingList> getMailingLists() {
         return this.mailingLists;
     }
@@ -1622,7 +1684,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 // TODO set draft id to invalid in MessageCompose!
                 MessagingController.getInstance(context).deleteDraft(account, draftId);
             }
-
 
             return null;
         }
@@ -1710,40 +1771,24 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
     @Override
     public void onMessageBuildSuccess(MimeMessage message, boolean isDraft) {
-        if(isDraft && action == Action.EDIT_SCHEDULED) {
+        if (isDraft) {
             changesMadeSinceLastSave = false;
             currentMessageBuilder = null;
 
-            if (action == Action.EDIT_SCHEDULED && relatedMessageReference != null) {
+            if ((action == Action.EDIT_DRAFT || action == Action.EDIT_SCHEDULED)
+                    && relatedMessageReference != null) {
                 message.setUid(relatedMessageReference.getUid());
             }
 
             boolean saveRemotely = recipientPresenter.shouldSaveRemotely();
-            new SaveScheduledMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
-                    message, scheduledId, saveRemotely).execute();
 
-
-
-            if (finishAfterDraftSaved) {
-                finish();
+            if (isScheduledSaved) {
+                new SaveScheduledMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
+                        message, draftId, saveRemotely, scheduledId).execute();
             } else {
-                setProgressBarIndeterminateVisibility(false);
-            }
-        }
-
-        else if (isDraft) {
-            changesMadeSinceLastSave = false;
-            currentMessageBuilder = null;
-
-            if (action == Action.EDIT_DRAFT && relatedMessageReference != null) {
-                message.setUid(relatedMessageReference.getUid());
-            }
-
-            boolean saveRemotely = recipientPresenter.shouldSaveRemotely();
-
-                new SaveMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
+                new SaveDraftMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
                         message, draftId, saveRemotely).execute();
-
+            }
 
             if (finishAfterDraftSaved) {
                 finish();
@@ -2037,10 +2082,16 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                     break;
                 case MSG_SAVED_SCHEDULED:
                     scheduledId = (Long)  msg.obj;
-                    Toast.makeText(
-                            MessageCompose.this,
-                            getString(R.string.message_saved_scheduled_toast),
-                            Toast.LENGTH_LONG).show();
+
+                    if (action == Action.EDIT_SCHEDULED) {
+                        Toast.makeText(
+                                MessageCompose.this,
+                                getString(R.string.message_saved_scheduled_toast),
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        sendLaterConfirmationToast();
+                    }
+
                     break;
 
                 case MSG_DISCARDED_DRAFT:
