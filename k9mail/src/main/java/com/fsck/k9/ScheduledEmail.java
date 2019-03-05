@@ -5,7 +5,6 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Property;
 
-import java.util.UUID;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity(nameInDb = "scheduled_email")

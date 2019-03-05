@@ -14,6 +14,7 @@ public class EmailsToSendNow extends IntentService {
 
     private LocalStore db;
     Account account;
+    
 
     public EmailsToSendNow() {
         super("EmailsToSendNow");
