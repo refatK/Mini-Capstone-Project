@@ -840,11 +840,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         }
         internalMessageHandler.sendEmptyMessage(MSG_DISCARDED_DRAFT);
         changesMadeSinceLastSave = false;
-        if (navigateUp) {
-            openAutoExpandFolder();
-        } else {
-            finish();
-        }
+        goBack();
     }
 
     private void onReadReceipt() {
@@ -1177,6 +1173,14 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         return true;
     }
 
+    public void goBack() {
+        if (navigateUp) {
+            openAutoExpandFolder();
+        } else {
+            finish();
+        }
+    }
+
     @Override
     public void onBackPressed() {
         prepareToFinish(false);
@@ -1196,11 +1200,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             if ((draftId == INVALID_DRAFT_ID || scheduledId == INVALID_SCHEDULED_ID) && action != Action.EDIT_SCHEDULED) {
                 onDiscard();
             } else {
-                if (navigateUp) {
-                    openAutoExpandFolder();
-                } else {
-                    super.onBackPressed();
-                }
+                goBack();
             }
         }
     }
@@ -1260,7 +1260,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                             @Override
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 dismissDialog(DIALOG_SAVE_OR_DISCARD_DRAFT_MESSAGE);
-                                if (action != Action.EDIT_SCHEDULED) {
+                                if (action == Action.EDIT_SCHEDULED) {
+                                    goBack();
+                                } else {
                                     onDiscard();
                                 }
                             }
@@ -1280,7 +1282,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                             @Override
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 dismissDialog(DIALOG_CONFIRM_DISCARD_ON_BACK);
-                                if (action != Action.EDIT_SCHEDULED) {
+                                if (action == Action.EDIT_SCHEDULED) {
+                                    goBack();
+                                } else {
                                     Toast.makeText(MessageCompose.this,
                                             getString(R.string.message_discarded_toast),
                                             Toast.LENGTH_LONG).show();
