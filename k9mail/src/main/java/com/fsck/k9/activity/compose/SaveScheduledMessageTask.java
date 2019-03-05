@@ -11,21 +11,29 @@ import com.fsck.k9.mail.Message;
 
 public class SaveScheduledMessageTask extends SaveMessageTask {
 
+    long scheduledId;
+
     public SaveScheduledMessageTask(Context context, Account account, Contacts contacts,
-                                Handler handler, Message message, long draftId, boolean saveRemotely) {
+                                Handler handler, Message message, Long draftId, boolean saveRemotely,
+                                    long scheduledId) {
         super(context, account, contacts, handler, message, draftId, saveRemotely);
+        this.scheduledId = scheduledId;
     }
 
     @Override
     protected void saveMessage() {
         final MessagingController messagingController = MessagingController.getInstance(context);
-        Message scheduledMessage = messagingController.saveDraft(account, message, draftId, saveRemotely, true);
-        draftId = messagingController.getId(scheduledMessage);
+        Message scheduledMessage = messagingController.saveDraft(account, message, scheduledId, saveRemotely, true);
+        scheduledId = messagingController.getId(scheduledMessage);
+
+        if (draftId != null) {
+            MessagingController.getInstance(context).deleteDraft(account, draftId);
+        }
     }
 
     @Override
     protected void returnNotificationToMessageHandler() {
-        android.os.Message msg = android.os.Message.obtain(handler, MessageCompose.MSG_SAVED_SCHEDULED, draftId);
+        android.os.Message msg = android.os.Message.obtain(handler, MessageCompose.MSG_SAVED_SCHEDULED, scheduledId);
         handler.sendMessage(msg);
     }
 

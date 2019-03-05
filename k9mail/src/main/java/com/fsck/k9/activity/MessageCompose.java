@@ -1618,6 +1618,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
         quotedMessagePresenter.processDraftMessage(messageViewInfo, k9identity);
     }
+
     public List<MailingList> getMailingLists() {
         return this.mailingLists;
     }
@@ -1756,7 +1757,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
             if (isScheduledSaved) {
                 new SaveScheduledMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
-                        message, scheduledId, saveRemotely).execute();
+                        message, draftId, saveRemotely, scheduledId).execute();
             } else {
                 new SaveDraftMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
                         message, draftId, saveRemotely).execute();
