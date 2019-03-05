@@ -1235,14 +1235,20 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                             @Override
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 dismissDialog(DIALOG_SAVE_OR_DISCARD_DRAFT_MESSAGE);
-                                checkToSaveDraftAndSave();
+                                if (action == Action.EDIT_SCHEDULED) {
+                                    checkToSaveAndConfirmScheduledSave();
+                                } else {
+                                    checkToSaveDraftAndSave();
+                                }
                             }
                         })
                         .setNegativeButton(R.string.discard_action, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 dismissDialog(DIALOG_SAVE_OR_DISCARD_DRAFT_MESSAGE);
-                                onDiscard();
+                                if (action != Action.EDIT_SCHEDULED) {
+                                    onDiscard();
+                                }
                             }
                         })
                         .create();
@@ -1260,10 +1266,12 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                             @Override
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 dismissDialog(DIALOG_CONFIRM_DISCARD_ON_BACK);
-                                Toast.makeText(MessageCompose.this,
-                                        getString(R.string.message_discarded_toast),
-                                        Toast.LENGTH_LONG).show();
-                                onDiscard();
+                                if (action != Action.EDIT_SCHEDULED) {
+                                    Toast.makeText(MessageCompose.this,
+                                            getString(R.string.message_discarded_toast),
+                                            Toast.LENGTH_LONG).show();
+                                    onDiscard();
+                                }
                             }
                         })
                         .create();
