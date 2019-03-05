@@ -738,6 +738,12 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     }
 
     private void sendMessageLater(){
+
+        // a scheduled save should be set up with someone to send to
+        if (recipientPresenter.checkRecipientsOkForSending()) {
+            return;
+        }
+
         Intent intent = new Intent(this, SetDateAndTime.class);
         isInSubActivity = true;
         startActivityForResult(intent, MSG_SAVED_SCHEDULED);
@@ -791,6 +797,14 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     private void checkToSaveAndConfirmScheduledSave() {
         if (!account.hasScheduledFolder()) {
             Toast.makeText(this, R.string.compose_error_no_scheduled_folder, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (recipientPresenter.checkRecipientsOkForSending()) {
+            return;
+        }
+
+        if (attachmentPresenter.checkOkForSendingOrDraftSaving()) {
             return;
         }
 
@@ -1060,13 +1074,13 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             case R.id.send:
                 checkToSendMessage();
                 break;
-            case R.id.send_later:   //TODO Refat (add recipents check)
+            case R.id.send_later:
                 sendMessageLater();
                 break;
             case R.id.save:
                 checkToSaveDraftAndSave();
                 break;
-            case R.id.save_scheduled:   //TODO Refat check this out (add recipents check)
+            case R.id.save_scheduled:
                 checkToSaveAndConfirmScheduledSave();
                 break;
             case R.id.discard:
