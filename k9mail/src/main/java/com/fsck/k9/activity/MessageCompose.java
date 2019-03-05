@@ -1540,7 +1540,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         scheduledId = MessagingController.getInstance(getApplication()).getId(message);
         subjectView.setText(message.getSubject());
 
-        //TODO Refat set message date
+        // A message loaded for editing sets this variable with the message send date
+        this.scheduledSendDate = message.getScheduledSendDate();
 
         recipientPresenter.initFromDraftMessage(message);
 
