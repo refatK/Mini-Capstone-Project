@@ -1,12 +1,12 @@
 package com.fsck.k9.activity;
 
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
+
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
@@ -66,6 +66,7 @@ import com.fsck.k9.activity.compose.PgpSignOnlyDialog.OnOpenPgpSignOnlyChangeLis
 import com.fsck.k9.activity.compose.RecipientMvpView;
 import com.fsck.k9.activity.compose.RecipientPresenter;
 import com.fsck.k9.activity.compose.SaveMessageTask;
+import com.fsck.k9.activity.compose.SaveScheduledMessageTask;
 import com.fsck.k9.activity.misc.Attachment;
 import com.fsck.k9.controller.MessagingController;
 import com.fsck.k9.controller.MessagingListener;
@@ -119,6 +120,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     private static final int DIALOG_CONFIRM_DISCARD = 4;
 
     private static final long INVALID_DRAFT_ID = MessagingController.INVALID_MESSAGE_ID;
+    private static final long INVALID_SCHEDULED_ID = MessagingController.INVALID_MESSAGE_ID;
 
     public static final String ACTION_COMPOSE = "com.fsck.k9.intent.action.COMPOSE";
     public static final String ACTION_REPLY = "com.fsck.k9.intent.action.REPLY";
@@ -126,6 +128,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     public static final String ACTION_FORWARD = "com.fsck.k9.intent.action.FORWARD";
     public static final String ACTION_FORWARD_AS_ATTACHMENT = "com.fsck.k9.intent.action.FORWARD_AS_ATTACHMENT";
     public static final String ACTION_EDIT_DRAFT = "com.fsck.k9.intent.action.EDIT_DRAFT";
+    public static final String ACTION_EDIT_SCHEDULED = "com.fsck.k9.intent.action.EDIT_SCHEDULED";
     private static final String ACTION_AUTOCRYPT_PEER = "org.autocrypt.PEER_ACTION";
 
     public static final String EXTRA_ACCOUNT = "account";
@@ -135,6 +138,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     private static final String STATE_KEY_SOURCE_MESSAGE_PROCED =
             "com.fsck.k9.activity.MessageCompose.stateKeySourceMessageProced";
     private static final String STATE_KEY_DRAFT_ID = "com.fsck.k9.activity.MessageCompose.draftId";
+    private static final String STATE_KEY_SCHEDULED_ID = "com.fsck.k9.activity.MessageCompose.scheduledId";
     private static final String STATE_IDENTITY_CHANGED =
             "com.fsck.k9.activity.MessageCompose.identityChanged";
     private static final String STATE_IDENTITY =
@@ -151,6 +155,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     private static final int MSG_PROGRESS_OFF = 2;
     public static final int MSG_SAVED_DRAFT = 4;
     private static final int MSG_DISCARDED_DRAFT = 5;
+    public static final int MSG_SAVED_SCHEDULED = 6;
+
 
     private static final int REQUEST_MASK_RECIPIENT_PRESENTER = (1 << 8);
     private static final int REQUEST_MASK_LOADER_HELPER = (1 << 9);
@@ -200,6 +206,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
      * until the first save.
      */
     private long draftId = INVALID_DRAFT_ID;
+    private long scheduledId = INVALID_SCHEDULED_ID;
 
     private Action action;
 
@@ -227,6 +234,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         if (UpgradeDatabases.actionUpgradeDatabases(this, getIntent())) {
             finish();
@@ -369,8 +377,12 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             } else if (ACTION_FORWARD_AS_ATTACHMENT.equals(action)) {
                 this.action = Action.FORWARD_AS_ATTACHMENT;
             } else if (ACTION_EDIT_DRAFT.equals(action)) {
-                this.action = Action.EDIT_DRAFT;
-            } else {
+                this.action= Action.EDIT_DRAFT;
+            }
+              else if (ACTION_EDIT_SCHEDULED.equals(action)){
+                  this.action= Action.EDIT_SCHEDULED;
+            }
+              else {
                 // This shouldn't happen
                 Timber.w("MessageCompose was started with an unsupported action");
                 this.action = Action.COMPOSE;
@@ -402,7 +414,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         if (!relatedMessageProcessed) {
             if (action == Action.REPLY || action == Action.REPLY_ALL ||
                     action == Action.FORWARD || action == Action.FORWARD_AS_ATTACHMENT ||
-                    action == Action.EDIT_DRAFT) {
+                    action == Action.EDIT_DRAFT || action == Action.EDIT_SCHEDULED) {
                 messageLoaderHelper = new MessageLoaderHelper(this, getLoaderManager(), getFragmentManager(),
                         messageLoaderCallbacks);
                 internalMessageHandler.sendEmptyMessage(MSG_PROGRESS_ON);
@@ -416,7 +428,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 }
             }
 
-            if (action != Action.EDIT_DRAFT) {
+            if (action != Action.EDIT_DRAFT || action != Action.EDIT_SCHEDULED) {
                 String alwaysBccString = account.getAlwaysBcc();
                 if (!TextUtils.isEmpty(alwaysBccString)) {
                     recipientPresenter.addBccAddresses(Address.parse(alwaysBccString));
@@ -429,7 +441,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         }
 
         if (action == Action.REPLY || action == Action.REPLY_ALL ||
-                action == Action.EDIT_DRAFT) {
+                action == Action.EDIT_DRAFT || action == Action.EDIT_SCHEDULED) {
             //change focus to message body.
             messageContentView.requestFocus();
         } else {
@@ -607,6 +619,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
         outState.putBoolean(STATE_KEY_SOURCE_MESSAGE_PROCED, relatedMessageProcessed);
         outState.putLong(STATE_KEY_DRAFT_ID, draftId);
+        outState.putLong(STATE_KEY_SCHEDULED_ID, scheduledId);
         outState.putSerializable(STATE_IDENTITY, identity);
         outState.putBoolean(STATE_IDENTITY_CHANGED, identityChanged);
         outState.putString(STATE_IN_REPLY_TO, repliedToMessageId);
@@ -641,6 +654,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         attachmentPresenter.onRestoreInstanceState(savedInstanceState);
 
         draftId = savedInstanceState.getLong(STATE_KEY_DRAFT_ID);
+        scheduledId = savedInstanceState.getLong(STATE_KEY_SCHEDULED_ID);
         identity = (Identity) savedInstanceState.getSerializable(STATE_IDENTITY);
         identityChanged = savedInstanceState.getBoolean(STATE_IDENTITY_CHANGED);
         repliedToMessageId = savedInstanceState.getString(STATE_IN_REPLY_TO);
@@ -779,6 +793,10 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             MessagingController.getInstance(getApplication()).deleteDraft(account, draftId);
             draftId = INVALID_DRAFT_ID;
         }
+        if (scheduledId != INVALID_SCHEDULED_ID) {
+            MessagingController.getInstance(getApplication()).deleteScheduled(account, scheduledId);
+            scheduledId = INVALID_SCHEDULED_ID;
+        }
         internalMessageHandler.sendEmptyMessage(MSG_DISCARDED_DRAFT);
         changesMadeSinceLastSave = false;
         if (navigateUp) {
@@ -850,6 +868,11 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 relatedMessageReference = null;
             }
 
+            if (action == Action.EDIT_SCHEDULED)
+            {
+                relatedMessageReference = null;
+            }
+
             // test whether there is something to save
             if (changesMadeSinceLastSave || (draftId != INVALID_DRAFT_ID)) {
                 final long previousDraftId = draftId;
@@ -870,7 +893,28 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                     MessagingController.getInstance(getApplication()).deleteDraft(previousAccount,
                             previousDraftId);
                 }
-            } else {
+            }
+
+            if (changesMadeSinceLastSave || (scheduledId != INVALID_SCHEDULED_ID)) {
+                final long previousScheduledId = scheduledId;
+                final Account previousAccount = this.account;
+
+                // make current message appear as new
+                scheduledId = INVALID_SCHEDULED_ID;
+
+                // actual account switch
+                this.account = account;
+
+                Timber.v("Account switch, saving new draft in new account");
+                checkToSaveDraftImplicitly();
+
+                if (previousScheduledId != INVALID_SCHEDULED_ID) {
+                    Timber.v("Account switch, deleting scheduled from previous account: %d", previousScheduledId);
+
+                    MessagingController.getInstance(getApplication()).deleteScheduled(previousAccount,
+                            previousScheduledId);
+                }
+            }else {
                 this.account = account;
             }
 
@@ -984,6 +1028,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             case R.id.save:
                 checkToSaveDraftAndSave();
                 break;
+            case R.id.save_scheduled:
+                checkToSaveDraftAndSave();
+                break;
             case R.id.discard:
                 askBeforeDiscard();
                 break;
@@ -1026,6 +1073,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
+
         super.onCreateOptionsMenu(menu);
 
         if (isFinishing()) {
@@ -1034,6 +1083,39 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
         getMenuInflater().inflate(R.menu.message_compose_option, menu);
 
+
+        Bundle bundle = getIntent().getExtras();
+        String change = bundle.getString("change");
+
+
+        //disable scheduled save option if in draft message
+         if(change!= null && change.equals("drafts"))
+        {
+            menu.findItem(R.id.save_scheduled).setVisible(false);
+            menu.findItem(R.id.save_scheduled).setEnabled(false);
+        }
+
+
+        else if(change!= null &&change.equals("scheduled"))
+        {
+            //disable draft save option if in scheduled message
+            menu.findItem(R.id.save).setVisible(false);
+            menu.findItem(R.id.save).setEnabled(false);
+            //disable send option
+            menu.findItem(R.id.send).setVisible(false);
+            menu.findItem(R.id.send).setEnabled(false);
+            //disable send later option
+            menu.findItem(R.id.send_later).setVisible(false);
+            menu.findItem(R.id.send_later).setEnabled(false);
+        }
+        else {
+             //disable save scheduled option for other folders (inbox, outbox, etc)
+
+                 menu.findItem(R.id.save_scheduled).setVisible(false);
+                 menu.findItem(R.id.save_scheduled).setEnabled(false);
+
+         }
+
         // Disable the 'Save' menu option if Drafts folder is set to -NONE-
         if (!account.hasDraftsFolder()) {
             menu.findItem(R.id.save).setEnabled(false);
@@ -1041,6 +1123,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
         return true;
     }
+
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -1062,14 +1145,20 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         if (changesMadeSinceLastSave && draftIsNotEmpty()) {
             if (!account.hasDraftsFolder()) {
                 showDialog(DIALOG_CONFIRM_DISCARD_ON_BACK);
-            } else {
+            }
+            else {
                 showDialog(DIALOG_SAVE_OR_DISCARD_DRAFT_MESSAGE);
             }
         } else {
-            // Check if editing an existing draft.
+            // Check if editing an existing draft or scheduled.
             if (draftId == INVALID_DRAFT_ID) {
                 onDiscard();
-            } else {
+            }
+            if (scheduledId == INVALID_SCHEDULED_ID)
+            {
+                onDiscard();
+            }
+            else {
                 if (navigateUp) {
                     openAutoExpandFolder();
                 } else {
@@ -1230,6 +1319,10 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 }
                 case EDIT_DRAFT: {
                     processDraftMessage(messageViewInfo);
+                    break;
+                }
+                case EDIT_SCHEDULED: {
+                    processScheduledMessage(messageViewInfo);
                     break;
                 }
                 default: {
@@ -1411,6 +1504,86 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         quotedMessagePresenter.processDraftMessage(messageViewInfo, k9identity);
     }
 
+    private void processScheduledMessage(MessageViewInfo messageViewInfo) {
+        Message message = messageViewInfo.message;
+        scheduledId = MessagingController.getInstance(getApplication()).getId(message);
+        subjectView.setText(message.getSubject());
+
+        recipientPresenter.initFromDraftMessage(message);
+
+        // Read In-Reply-To header from draft
+        final String[] inReplyTo = message.getHeader("In-Reply-To");
+        if (inReplyTo.length >= 1) {
+            repliedToMessageId = inReplyTo[0];
+        }
+
+        // Read References header from draft
+        final String[] references = message.getHeader("References");
+        if (references.length >= 1) {
+            referencedMessageIds = references[0];
+        }
+
+        if (!relatedMessageProcessed) {
+            attachmentPresenter.loadNonInlineAttachments(messageViewInfo);
+        }
+
+        // Decode the identity header when loading a draft.
+        // See buildIdentityHeader(TextBody) for a detailed description of the composition of this blob.
+        Map<IdentityField, String> k9identity = new HashMap<>();
+        String[] identityHeaders = message.getHeader(K9.IDENTITY_HEADER);
+
+        if (identityHeaders.length > 0 && identityHeaders[0] != null) {
+            k9identity = IdentityHeaderParser.parse(identityHeaders[0]);
+        }
+
+        Identity newIdentity = new Identity();
+        if (k9identity.containsKey(IdentityField.SIGNATURE)) {
+            newIdentity.setSignatureUse(true);
+            newIdentity.setSignature(k9identity.get(IdentityField.SIGNATURE));
+            signatureChanged = true;
+        } else {
+            if (message instanceof LocalMessage) {
+                newIdentity.setSignatureUse(((LocalMessage) message).getFolder().getSignatureUse());
+            }
+            newIdentity.setSignature(identity.getSignature());
+        }
+
+        if (k9identity.containsKey(IdentityField.NAME)) {
+            newIdentity.setName(k9identity.get(IdentityField.NAME));
+            identityChanged = true;
+        } else {
+            newIdentity.setName(identity.getName());
+        }
+
+        if (k9identity.containsKey(IdentityField.EMAIL)) {
+            newIdentity.setEmail(k9identity.get(IdentityField.EMAIL));
+            identityChanged = true;
+        } else {
+            newIdentity.setEmail(identity.getEmail());
+        }
+
+        if (k9identity.containsKey(IdentityField.ORIGINAL_MESSAGE)) {
+            relatedMessageReference = null;
+            String originalMessage = k9identity.get(IdentityField.ORIGINAL_MESSAGE);
+            MessageReference messageReference = MessageReference.parse(originalMessage);
+
+            if (messageReference != null) {
+                // Check if this is a valid account in our database
+                Preferences prefs = Preferences.getPreferences(getApplicationContext());
+                Account account = prefs.getAccount(messageReference.getAccountUuid());
+                if (account != null) {
+                    relatedMessageReference = messageReference;
+                }
+            }
+        }
+
+        identity = newIdentity;
+
+        updateSignature();
+        updateFrom();
+
+        quotedMessagePresenter.processDraftMessage(messageViewInfo, k9identity);
+    }
     public List<MailingList> getMailingLists() {
         return this.mailingLists;
     }
@@ -1449,6 +1622,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 // TODO set draft id to invalid in MessageCompose!
                 MessagingController.getInstance(context).deleteDraft(account, draftId);
             }
+
 
             return null;
         }
@@ -1536,7 +1710,28 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
     @Override
     public void onMessageBuildSuccess(MimeMessage message, boolean isDraft) {
-        if (isDraft) {
+        if(isDraft && action == Action.EDIT_SCHEDULED) {
+            changesMadeSinceLastSave = false;
+            currentMessageBuilder = null;
+
+            if (action == Action.EDIT_SCHEDULED && relatedMessageReference != null) {
+                message.setUid(relatedMessageReference.getUid());
+            }
+
+            boolean saveRemotely = recipientPresenter.shouldSaveRemotely();
+            new SaveScheduledMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
+                    message, scheduledId, saveRemotely).execute();
+
+
+
+            if (finishAfterDraftSaved) {
+                finish();
+            } else {
+                setProgressBarIndeterminateVisibility(false);
+            }
+        }
+
+        else if (isDraft) {
             changesMadeSinceLastSave = false;
             currentMessageBuilder = null;
 
@@ -1545,8 +1740,11 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             }
 
             boolean saveRemotely = recipientPresenter.shouldSaveRemotely();
-            new SaveMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
-                    message, draftId, saveRemotely).execute();
+
+                new SaveMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
+                        message, draftId, saveRemotely).execute();
+
+
             if (finishAfterDraftSaved) {
                 finish();
             } else {
@@ -1834,9 +2032,17 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                     draftId = (Long) msg.obj;
                     Toast.makeText(
                             MessageCompose.this,
-                            getString(R.string.message_saved_toast),
+                            getString(R.string.message_saved_draft_toast),
                             Toast.LENGTH_LONG).show();
                     break;
+                case MSG_SAVED_SCHEDULED:
+                    scheduledId = (Long)  msg.obj;
+                    Toast.makeText(
+                            MessageCompose.this,
+                            getString(R.string.message_saved_scheduled_toast),
+                            Toast.LENGTH_LONG).show();
+                    break;
+
                 case MSG_DISCARDED_DRAFT:
                     Toast.makeText(
                             MessageCompose.this,
@@ -1856,7 +2062,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         REPLY_ALL(R.string.compose_title_reply_all),
         FORWARD(R.string.compose_title_forward),
         FORWARD_AS_ATTACHMENT(R.string.compose_title_forward_as_attachment),
-        EDIT_DRAFT(R.string.compose_title_compose);
+        EDIT_DRAFT(R.string.compose_title_compose),
+        EDIT_SCHEDULED(R.string.compose_title_compose);
 
         private final int titleResource;
 
