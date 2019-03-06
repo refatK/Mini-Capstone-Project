@@ -98,9 +98,19 @@ public class SetDateAndTime  extends K9Activity implements DatePickerDialog.OnDa
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        String strTime = hourOfDay + ":" + ((minute < 10) ? "0" + minute : minute);
+        String strTime = (hourOfDay%12) + ":" + ((minute < 10) ? "0" + minute : minute) + (hourOfDay > 12 ? "PM" : "AM");
         chosenTimeTextView.setText(strTime);
         this.chosenDateAndTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
         this.chosenDateAndTime.set(Calendar.MINUTE, minute);
+    }
+
+    public void supersedeChosenDateTextView(TextView chosenDateTextView){
+        this.chosenDateTextView = chosenDateTextView;
+    }
+    public void supersedeChosenTimeTextView(TextView chosenTimeTextView){
+        this.chosenTimeTextView = chosenTimeTextView;
+    }
+    public void supersedeChosenDateAndTime(Calendar chosenDateAndTime){
+        this.chosenDateAndTime = chosenDateAndTime;
     }
 }
