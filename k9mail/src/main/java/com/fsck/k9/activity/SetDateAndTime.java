@@ -32,8 +32,8 @@ public class SetDateAndTime  extends K9Activity implements DatePickerDialog.OnDa
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.send_later_set_date_and_time);
-        setTimeButton = (Button) findViewById(R.id.send_later_set_date_button);
-        setDateButton = (Button) findViewById(R.id.send_later_set_time_button);
+        setDateButton = (Button) findViewById(R.id.send_later_set_date_button);
+        setTimeButton = (Button) findViewById(R.id.send_later_set_time_button);
         setDateAndTimeButton = (Button) findViewById(R.id.send_later_set_date_and_time_button);
 
         chosenDateTextView = (TextView) findViewById(R.id.send_later_date);
@@ -90,18 +90,18 @@ public class SetDateAndTime  extends K9Activity implements DatePickerDialog.OnDa
         //VERY IMPORTANT
         //MONTH IS GIVEN STARTING FROM 0
         String strDate = (month + 1) + "/" + dayOfMonth + "/" + year;
-        chosenDateTextView.setText(strDate);
         this.chosenDateAndTime.set(Calendar.YEAR, year);
         this.chosenDateAndTime.set(Calendar.MONTH, month);
         this.chosenDateAndTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        chosenDateTextView.setText(strDate);
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         String strTime = (hourOfDay%12) + ":" + ((minute < 10) ? "0" + minute : minute) + (hourOfDay > 12 ? "PM" : "AM");
-        chosenTimeTextView.setText(strTime);
         this.chosenDateAndTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
         this.chosenDateAndTime.set(Calendar.MINUTE, minute);
+        chosenTimeTextView.setText(strTime);
     }
 
     public void supersedeChosenDateTextView(TextView chosenDateTextView){
