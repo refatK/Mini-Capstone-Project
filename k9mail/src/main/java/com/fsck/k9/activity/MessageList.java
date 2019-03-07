@@ -1213,6 +1213,11 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
     }
 
     @Override
+    /**
+     * Takes a message reference and edits draft message or scheduled message based on its location
+     * if the message does not belong to either folder, it is simply displayed
+     * @param messageReference message reference received when tapping on a message
+     */
     public void openMessage(MessageReference messageReference) {
         Preferences prefs = Preferences.getPreferences(getApplicationContext());
         Account account = prefs.getAccount(messageReference.getAccountUuid());
