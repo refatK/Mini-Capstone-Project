@@ -75,9 +75,10 @@ public class SetDateAndTime  extends K9Activity implements DatePickerDialog.OnDa
                                     + (chosenDateAndTime.get(Calendar.MONTH) + 1) + "/"
                                     + chosenDateAndTime.get(Calendar.DAY_OF_MONTH) + "/"
                                     + chosenDateAndTime.get(Calendar.YEAR) + " @ "
-                                    + chosenDateAndTime.get(Calendar.HOUR_OF_DAY) + ":"
+                                    + (chosenDateAndTime.get(Calendar.HOUR_OF_DAY)%12) + ":"
                                     + ((chosenDateAndTime.get(Calendar.MINUTE) < 10) ? "0" : "")
-                                    + (chosenDateAndTime.get(Calendar.MINUTE)),
+                                    + (chosenDateAndTime.get(Calendar.MINUTE))
+                                    + (chosenDateAndTime.get(Calendar.HOUR_OF_DAY) > 12 ? "PM" : "AM"),
                             Toast.LENGTH_SHORT).show();
                 }
             }
