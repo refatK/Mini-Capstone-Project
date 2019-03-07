@@ -49,7 +49,8 @@ public class MailingListEmailListMenu extends K9ListActivity {
 
         if(savedInstanceState != null && savedInstanceState.containsKey("testToggle")
                 && savedInstanceState.getBoolean("testToggle") == true ||
-                getIntent().getExtras().containsKey("testToggle")
+                getIntent().getStringExtra("testToggle") != null
+                && getIntent().getExtras().containsKey("testToggle")
                         && getIntent().getExtras().getBoolean("testToggle") == true) {
             emailAddresses = new ArrayList<>();
             emailAddresses.add(
