@@ -16,7 +16,9 @@ import com.fsck.k9.R;
 import com.fsck.k9.fragment.SendLaterDatePicker;
 import com.fsck.k9.fragment.SendLaterTimePicker;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class SetDateAndTime extends K9Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
 
@@ -33,20 +35,38 @@ public class SetDateAndTime extends K9Activity implements DatePickerDialog.OnDat
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.send_later_set_date_and_time);
-        setTimeButton = (Button) findViewById(R.id.send_later_set_date_button);
-        setDateButton = (Button) findViewById(R.id.send_later_set_time_button);
+        setTimeButton = (Button) findViewById(R.id.send_later_set_time_button);
+        setDateButton = (Button) findViewById(R.id.send_later_set_date_button);
         setDateAndTimeButton = (Button) findViewById(R.id.send_later_set_date_and_time_button);
 
+        Date dateIncomingIntent = (Date)getIntent().getSerializableExtra("currentDate");
         chosenDateTextView = (TextView) findViewById(R.id.send_later_date);
-        String strDate = "MM/DD/YYYY";
-        chosenDateTextView.setText(strDate);
-
         chosenTimeTextView = (TextView) findViewById(R.id.send_later_time);
-        String strTime = "hh:mm";
-        chosenTimeTextView.setText(strTime);
-
+        String strDate;
+        String strTime;
         chosenDateAndTime = Calendar.getInstance();
 
+        if(dateIncomingIntent == null) {
+
+            strDate = "MM/DD/YYYY";
+            chosenDateTextView.setText(strDate);
+
+            strTime = "hh:mm";
+            chosenTimeTextView.setText(strTime);
+        }
+        else{
+
+            SimpleDateFormat inputDateFormat = new SimpleDateFormat("MM/dd/YYYY");
+            strDate = inputDateFormat.format(dateIncomingIntent);
+            chosenDateTextView.setText(strDate);
+
+            SimpleDateFormat inputTimeFormat = new SimpleDateFormat ("h:mm a");
+            strTime = inputTimeFormat.format(dateIncomingIntent);
+            chosenTimeTextView.setText(strTime);
+
+            this.chosenDateAndTime.setTime(dateIncomingIntent);
+
+        }
         setDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

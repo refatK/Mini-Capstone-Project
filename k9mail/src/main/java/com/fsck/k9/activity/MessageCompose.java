@@ -738,13 +738,15 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     }
 
     private void sendMessageLater(){
-
         // a scheduled save should be set up with someone to send to
         if (recipientPresenter.checkRecipientsOkForSending()) {
             return;
         }
 
         Intent intent = new Intent(this, SetDateAndTime.class);
+        if(action == Action.EDIT_SCHEDULED){
+            intent.putExtra("currentDate",scheduledSendDate);
+        }
         isInSubActivity = true;
         startActivityForResult(intent, MSG_SAVED_SCHEDULED);
     }
@@ -1156,8 +1158,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             menu.findItem(R.id.send).setVisible(false); //TODO Refat maybe don't disable
             menu.findItem(R.id.send).setEnabled(false);
             //disable send later option
-            menu.findItem(R.id.send_later).setVisible(false);
-            menu.findItem(R.id.send_later).setEnabled(false);
+            //menu.findItem(R.id.send_later).setVisible(false);
+            //menu.findItem(R.id.send_later).setEnabled(false);
         }
         else {
              //disable save scheduled option for other folders (inbox, outbox, etc)
