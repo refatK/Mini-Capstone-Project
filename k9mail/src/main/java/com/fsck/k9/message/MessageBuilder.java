@@ -46,6 +46,7 @@ public abstract class MessageBuilder {
 
     private String subject;
     private Date sentDate;
+    private Date scheduledSendDate;
     private boolean hideTimeZone;
     private Address[] to;
     private Address[] cc;
@@ -88,6 +89,7 @@ public abstract class MessageBuilder {
 
         buildHeader(message);
         buildBody(message);
+        buildOther(message);
 
         return message;
     }
@@ -192,7 +194,13 @@ public abstract class MessageBuilder {
         }
     }
 
-    private String buildIdentityHeader(TextBody body, TextBody bodyPlain) {
+    private void buildOther(MimeMessage message) {
+        // Build anything that isn't a part of the header or body of the message
+        message.setScheduledSendDate(this.scheduledSendDate);
+    }
+
+
+        private String buildIdentityHeader(TextBody body, TextBody bodyPlain) {
         return new IdentityHeaderBuilder()
                 .setCursorPosition(cursorPosition)
                 .setIdentity(identity)
@@ -345,6 +353,11 @@ public abstract class MessageBuilder {
 
     public MessageBuilder setSentDate(Date sentDate) {
         this.sentDate = sentDate;
+        return this;
+    }
+
+    public MessageBuilder setScheduledSendDate(Date scheduledSendDate) {
+        this.scheduledSendDate = scheduledSendDate;
         return this;
     }
 

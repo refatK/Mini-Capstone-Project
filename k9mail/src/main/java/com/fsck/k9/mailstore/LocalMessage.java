@@ -62,6 +62,9 @@ public class LocalMessage extends MimeMessage {
             this.setFrom(from[0]);
         }
         this.setInternalSentDate(new Date(cursor.getLong(LocalStore.MSG_INDEX_DATE)));
+
+        this.setScheduledSendDate(new Date(cursor.getLong(LocalStore.MSG_INDEX_SCHEDULED_SEND_DATE)));
+
         this.setUid(cursor.getString(LocalStore.MSG_INDEX_UID));
         String flagList = cursor.getString(LocalStore.MSG_INDEX_FLAGS);
         if (flagList != null && flagList.length() > 0) {

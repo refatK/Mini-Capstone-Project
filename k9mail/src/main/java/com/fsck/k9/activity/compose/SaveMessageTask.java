@@ -5,22 +5,21 @@ import android.os.AsyncTask;
 import android.os.Handler;
 
 import com.fsck.k9.Account;
-import com.fsck.k9.activity.MessageCompose;
-import com.fsck.k9.controller.MessagingController;
 import com.fsck.k9.helper.Contacts;
 import com.fsck.k9.mail.Message;
 
-public class SaveMessageTask extends AsyncTask<Void, Void, Void> {
+public abstract class SaveMessageTask extends AsyncTask<Void, Void, Void> {
+
     Context context;
     Account account;
     Contacts contacts;
     Handler handler;
     Message message;
-    long draftId;
+    Long draftId;
     boolean saveRemotely;
 
     public SaveMessageTask(Context context, Account account, Contacts contacts,
-                           Handler handler, Message message, long draftId, boolean saveRemotely) {
+                                Handler handler, Message message, Long draftId, boolean saveRemotely) {
         this.context = context;
         this.account = account;
         this.contacts = contacts;
@@ -30,14 +29,14 @@ public class SaveMessageTask extends AsyncTask<Void, Void, Void> {
         this.saveRemotely = saveRemotely;
     }
 
+    protected abstract void saveMessage();
+
+    protected abstract void returnNotificationToMessageHandler();
+
     @Override
     protected Void doInBackground(Void... params) {
-        final MessagingController messagingController = MessagingController.getInstance(context);
-        Message draftMessage = messagingController.saveDraft(account, message, draftId, saveRemotely);
-        draftId = messagingController.getId(draftMessage);
-
-        android.os.Message msg = android.os.Message.obtain(handler, MessageCompose.MSG_SAVED_DRAFT, draftId);
-        handler.sendMessage(msg);
+        saveMessage();
+        returnNotificationToMessageHandler();
         return null;
     }
 }
