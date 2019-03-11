@@ -2,6 +2,8 @@ package com.fsck.k9;
 
 import android.app.IntentService;
 import android.content.Intent;
+import com.fsck.k9.controller.MessagingController;
+import com.fsck.k9.mail.Message;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,7 +33,7 @@ public class ScheduledEmailsToSendNowService extends IntentService {
         }
 
         if (!emailsToSendNow.isEmpty()) {
-            sendEmails();
+            sendEmails(emailsToSendNow);
         }
         else
         {
@@ -39,9 +41,30 @@ public class ScheduledEmailsToSendNowService extends IntentService {
         }
     }
 
-    private void sendEmails() {
-        //TODO: Add method behaviour to send emails, use the MessageController class, as well as the others classes
-        //TODO: Remember to delete the sent emails from the DAO after sending
-        //TODO: use daoSession.getScheduledEmailsDao().delete(ScheduledEmail) to delete after sending
+    private void sendEmails(List<ScheduledEmail> emailsToSendNow) {
+        Account account;
+        Preferences prefs;
+        String accountID;
+        Long emailID;
+        Message message;
+
+        //Loop to send each email in the emailsToSendNow list
+        for (int i = 0; i < emailsToSendNow.size(); i++) {
+            //Generating the account
+            accountID = emailsToSendNow.get(i).getAccountID();
+            prefs = Preferences.getPreferences(getApplicationContext());
+            account = prefs.getAccount(accountID);
+
+            //Generate the message
+            emailID = emailsToSendNow.get(i).getEmailID();
+            //TO DO: Make a message using the emailID; all K9 message generators use a string ID of some kind versus a long
+
+            //Send the email now that the parameters are created
+            MessagingController.getInstance(getApplicationContext()).sendMessage(account, message, null);
+        }
+
+        //Clear sent emails
+        emailsToSendNow.clear();
+        daoSession.getScheduledEmailsDao().delete(ScheduledEmail);
     }
 }
