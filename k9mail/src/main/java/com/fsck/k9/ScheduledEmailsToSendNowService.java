@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import com.fsck.k9.controller.MessagingController;
 import com.fsck.k9.mail.Message;
+import com.fsck.k9.mailstore.LocalStore;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -57,7 +58,7 @@ public class ScheduledEmailsToSendNowService extends IntentService {
 
             //Generate the message
             emailID = emailsToSendNow.get(i).getEmailID();
-            //TO DO: Make a message using the emailID; all K9 message generators use a string ID of some kind versus a long
+            message = LocalStore.getLocalMessageByMessageId(emailID);
 
             //Send the email now that the parameters are created
             MessagingController.getInstance(getApplicationContext()).sendMessage(account, message, null);

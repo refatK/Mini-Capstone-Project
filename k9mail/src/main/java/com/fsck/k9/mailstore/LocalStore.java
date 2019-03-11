@@ -98,7 +98,7 @@ public class LocalStore extends Store {
         "subject, sender_list, date, uid, flags, messages.id, to_list, cc_list, " +
         "bcc_list, reply_to_list, attachment_count, internal_date, messages.message_id, " +
         "folder_id, preview, threads.id, threads.root, deleted, read, flagged, answered, " +
-        "forwarded, message_part_id, messages.mime_type, preview_type, header, scheduled_datetime ";
+        "forwarded, message_part_id, messages.mime_type, preview_type, header ";
 
     static final int MSG_INDEX_SUBJECT = 0;
     static final int MSG_INDEX_SENDER_LIST = 1;
@@ -126,7 +126,6 @@ public class LocalStore extends Store {
     static final int MSG_INDEX_MIME_TYPE = 23;
     static final int MSG_INDEX_PREVIEW_TYPE = 24;
     static final int MSG_INDEX_HEADER_DATA = 25;
-    static final int MSG_INDEX_SCHEDULED_SEND_DATE = 26;
 
     static final String GET_FOLDER_COLS =
         "folders.id, name, visible_limit, last_updated, status, push_state, last_pushed, " +
@@ -389,6 +388,11 @@ public class LocalStore extends Store {
         });
     }
 
+    public static LocalMessage getLocalMessageByMessageId(long messageId) {
+        LocalMessage localMessage = loadLocalMessageByMessageId(messageId);
+        return localMessage;		
+	}	
+	
     @Override
     public LocalFolder getFolder(String name) {
         return new LocalFolder(this, name);
@@ -815,7 +819,7 @@ public class LocalStore extends Store {
 
         return loadLocalMessageByMessageId(messageId);
     }
-
+	
     @Nullable
     private LocalMessage loadLocalMessageByMessageId(long messageId) throws MessagingException {
         Map<String, List<String>> foldersAndUids =
