@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import com.fsck.k9.controller.MessagingController;
 import com.fsck.k9.mail.Message;
+import com.fsck.k9.mail.MessagingException;
 import com.fsck.k9.mailstore.LocalStore;
 
 import java.util.ArrayList;
@@ -47,7 +48,6 @@ public class ScheduledEmailsToSendNowService extends IntentService {
         Preferences prefs;
         String accountID;
         Long emailID;
-        Message message;
 
         //Loop to send each email in the emailsToSendNow list
         for (int i = 0; i < emailsToSendNow.size(); i++) {
@@ -58,14 +58,21 @@ public class ScheduledEmailsToSendNowService extends IntentService {
 
             //Generate the message
             emailID = emailsToSendNow.get(i).getEmailID();
-            message = LocalStore.getLocalMessageByMessageId(emailID);
+            Message message = null;
+            try {
+                message = LocalStore.getInstance(account, getApplicationContext()).getLocalMessageByMessageId(emailID);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
 
             //Send the email now that the parameters are created
             MessagingController.getInstance(getApplicationContext()).sendMessage(account, message, null);
+
+            //Clear sent email from Dao
+            daoSession.getScheduledEmailDao().delete(emailsToSendNow.get(i));
         }
 
-        //Clear sent emails
+        //Clear emails to sent array list
         emailsToSendNow.clear();
-        daoSession.getScheduledEmailsDao().delete(ScheduledEmail);
     }
 }
