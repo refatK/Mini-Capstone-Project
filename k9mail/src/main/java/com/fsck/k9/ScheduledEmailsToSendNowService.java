@@ -10,6 +10,7 @@ import com.fsck.k9.mailstore.LocalStore;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import android.util.Log;
 
 
 public class ScheduledEmailsToSendNowService extends IntentService {
@@ -66,13 +67,15 @@ public class ScheduledEmailsToSendNowService extends IntentService {
             }
 
             //Send the email now that the parameters are created
+            message.removeHeader(K9.IDENTITY_HEADER); //Required to pass some K9 checks
             MessagingController.getInstance(getApplicationContext()).sendMessage(account, message, null);
 
-            //Clear sent email from Dao
+            MessagingController.getInstance(getApplicationContext()).deleteScheduled(account, emailID);
             daoSession.getScheduledEmailDao().delete(emailsToSendNow.get(i));
+            //Clear sent email
         }
 
-        //Clear emails to sent array list
+        //Clear emails to send array list
         emailsToSendNow.clear();
     }
 }
