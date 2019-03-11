@@ -1161,32 +1161,31 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
         getMenuInflater().inflate(R.menu.message_compose_option, menu);
 
-
         Bundle bundle = getIntent().getExtras();
-        String change = bundle.getString("change");
-
+        String change = null;
+        if (bundle != null) {
+            change = bundle.getString("change");
+        }
 
         //disable scheduled save option if in draft message
-         if(change!= null && change.equals("drafts")) {
+        if (change != null && change.equals("drafts")) {
             menu.findItem(R.id.save_scheduled).setVisible(false);
             menu.findItem(R.id.save_scheduled).setEnabled(false);
-        }
-        else if(change!= null && change.equals("scheduled")) {
+        } else if (change != null && change.equals("scheduled")) {
             //disable draft save option if in scheduled message
             menu.findItem(R.id.save).setVisible(false);
             menu.findItem(R.id.save).setEnabled(false);
             //disable send option
-            menu.findItem(R.id.send).setVisible(false); //TODO Refat maybe don't disable
+            menu.findItem(R.id.send).setVisible(false);
             menu.findItem(R.id.send).setEnabled(false);
             //disable send later option
             menu.findItem(R.id.send_later).setVisible(false);
             menu.findItem(R.id.send_later).setEnabled(false);
+        } else {
+            //disable save scheduled option for other folders (inbox, outbox, etc)
+            menu.findItem(R.id.save_scheduled).setVisible(false);
+            menu.findItem(R.id.save_scheduled).setEnabled(false);
         }
-        else {
-             //disable save scheduled option for other folders (inbox, outbox, etc)
-             menu.findItem(R.id.save_scheduled).setVisible(false);
-             menu.findItem(R.id.save_scheduled).setEnabled(false);
-         }
 
         // Disable the 'Save' menu option if Drafts folder is set to -NONE-
         if (!account.hasDraftsFolder()) {
@@ -1293,6 +1292,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 dismissDialog(DIALOG_SAVE_OR_DISCARD_DRAFT_MESSAGE);
                                 if (action == Action.EDIT_SCHEDULED) {
+                                    changesMadeSinceLastSave = false;
                                     goBack();
                                 } else {
                                     onDiscard();
@@ -1315,6 +1315,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 dismissDialog(DIALOG_CONFIRM_DISCARD_ON_BACK);
                                 if (action == Action.EDIT_SCHEDULED) {
+                                    changesMadeSinceLastSave = false;
                                     goBack();
                                 } else {
                                     Toast.makeText(MessageCompose.this,
@@ -1808,7 +1809,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             if (isScheduledSaved) {
                 new SaveScheduledMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
                         message, draftId, saveRemotely, scheduledId).execute();
-            } else {
+            } else if (action != Action.EDIT_SCHEDULED) { // never do draft saves in scheduled message editor
                 new SaveDraftMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
                         message, draftId, saveRemotely).execute();
             }
