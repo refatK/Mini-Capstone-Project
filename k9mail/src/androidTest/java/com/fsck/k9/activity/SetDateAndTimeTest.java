@@ -1,5 +1,6 @@
 package com.fsck.k9.activity;
 
+import android.content.Intent;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.rule.ActivityTestRule;
 import android.widget.DatePicker;
@@ -26,7 +27,7 @@ import java.util.Calendar;
 
 public class SetDateAndTimeTest {
     @Rule
-    public ActivityTestRule<SetDateAndTime> activityTestRule = new ActivityTestRule<>(SetDateAndTime.class);
+    public ActivityTestRule<SetDateAndTime> activityTestRule = new ActivityTestRule<>(SetDateAndTime.class, true, false);
 
     private String strDate;
     private String strTime;
@@ -36,6 +37,7 @@ public class SetDateAndTimeTest {
     private int day;
     private int hour;
     private int minute;
+    private Intent intent;
 
     @Before
     public void setUp(){
@@ -45,6 +47,10 @@ public class SetDateAndTimeTest {
         day = calendar.get(Calendar.DAY_OF_MONTH);
         hour = calendar.get(Calendar.HOUR_OF_DAY);
         minute = calendar.get(Calendar.MINUTE);
+
+        intent = new Intent();
+        intent.putExtra("testingSetDateAndTime", true);
+        activityTestRule.launchActivity(intent);
     }
 
     @Test
@@ -116,8 +122,8 @@ public class SetDateAndTimeTest {
         onView(withId(R.id.send_later_date)).check(matches(withText(strDate)));
         onView(withId(R.id.send_later_time)).check(matches(withText(strTime)));
 
-        onView(withId(R.id.send_later_set_date_and_time_button)).perform(click());
         String strDateAndTime = "Setting time to: " + strDate + " @ " + strTime;
+        onView(withId(R.id.send_later_set_date_and_time_button)).perform(click());
         onView(withText(strDateAndTime))
                 .inRoot(withDecorView(not(activityTestRule.getActivity().getWindow().getDecorView())))
                 .check(matches(isDisplayed()));

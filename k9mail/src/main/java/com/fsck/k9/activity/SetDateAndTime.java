@@ -17,6 +17,7 @@ import com.fsck.k9.fragment.SendLaterDatePicker;
 import com.fsck.k9.fragment.SendLaterTimePicker;
 
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 public class SetDateAndTime extends K9Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
 
@@ -88,7 +89,10 @@ public class SetDateAndTime extends K9Activity implements DatePickerDialog.OnDat
                             + (chosenDateAndTime.get(Calendar.MINUTE))
                             + (chosenDateAndTime.get(Calendar.HOUR_OF_DAY) > 12 ? "PM" : "AM"),
                     Toast.LENGTH_SHORT).show();
-            this.finish();
+            if(!getIntent().getBooleanExtra("testingSetDateAndTime",false)){
+                this.finish();
+            }
+
         }
     }
 
