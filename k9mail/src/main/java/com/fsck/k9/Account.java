@@ -1078,12 +1078,20 @@ public class Account implements BaseAccount, StoreConfig {
         this.deletePolicy = deletePolicy;
     }
 
-    public String getScheduledFolderName() {
+    public synchronized String getScheduledFolderName() {
         return scheduledFolderName;
     }
 
-    public void setScheduledFolderName(String scheduledFolderName) {
+    public synchronized void setScheduledFolderName(String scheduledFolderName) {
         this.scheduledFolderName = scheduledFolderName;
+    }
+
+    /**
+     * Checks if this account has a scheduled folder set.
+     * @return true if account has a scheduled folder set.
+     */
+    public synchronized boolean hasScheduledFolder() {
+        return !K9.FOLDER_NONE.equalsIgnoreCase(scheduledFolderName);
     }
 
     public boolean isSpecialFolder(String folderName) {
