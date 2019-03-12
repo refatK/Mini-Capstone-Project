@@ -30,7 +30,7 @@ public class ScheduledEmailsToSendNowService extends IntentService {
 
         for (ScheduledEmail e : allScheduledEmails) {
             long timeNow = Calendar.getInstance().getTimeInMillis();
-            if (e.getScheduledDateTime() < timeNow) {
+            if (e.getScheduledDateTime() <= timeNow) {
                 emailsToSendNow.add(e);
             }
         }
