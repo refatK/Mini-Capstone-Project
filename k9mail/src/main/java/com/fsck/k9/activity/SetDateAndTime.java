@@ -3,6 +3,7 @@ package com.fsck.k9.activity;
 import android.app.DatePickerDialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +18,7 @@ import com.fsck.k9.fragment.SendLaterTimePicker;
 
 import java.util.Calendar;
 
-public class SetDateAndTime  extends K9Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
+public class SetDateAndTime extends K9Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
 
     private Button setTimeButton;
     private Button setDateButton;
@@ -63,26 +64,24 @@ public class SetDateAndTime  extends K9Activity implements DatePickerDialog.OnDa
         setDateAndTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Calendar currentDateAndTime = Calendar.getInstance();
-                long currentDateAndTimeInMilis = currentDateAndTime.getTimeInMillis();
-                long chosenDateAndTimeInMilis = chosenDateAndTime.getTimeInMillis();
-
-                if(chosenDateAndTimeInMilis <= currentDateAndTimeInMilis){
-                    Toast.makeText(getApplicationContext(), "Pick another date",
-                            Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(getApplicationContext(), "Setting time to: "
-                                    + (chosenDateAndTime.get(Calendar.MONTH) + 1) + "/"
-                                    + chosenDateAndTime.get(Calendar.DAY_OF_MONTH) + "/"
-                                    + chosenDateAndTime.get(Calendar.YEAR) + " @ "
-                                    + chosenDateAndTime.get(Calendar.HOUR_OF_DAY) + ":"
-                                    + ((chosenDateAndTime.get(Calendar.MINUTE) < 10) ? "0" : "")
-                                    + (chosenDateAndTime.get(Calendar.MINUTE)),
-                            Toast.LENGTH_SHORT).show();
-                }
+                setDateAndTimeForMessage();
             }
         });
 
+    }
+
+    public void setDateAndTimeForMessage() {
+        Calendar currentDateAndTime = Calendar.getInstance();
+        long currentDateAndTimeInMilis = currentDateAndTime.getTimeInMillis();
+        long chosenDateAndTimeInMilis = chosenDateAndTime.getTimeInMillis();
+
+        if(chosenDateAndTimeInMilis <= currentDateAndTimeInMilis){
+            Toast.makeText(getApplicationContext(), "Pick another date",
+                    Toast.LENGTH_SHORT).show();
+        }else{
+            // The time is good, so it will be set on the message
+            this.finish();
+        }
     }
 
     @Override
@@ -103,4 +102,15 @@ public class SetDateAndTime  extends K9Activity implements DatePickerDialog.OnDa
         this.chosenDateAndTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
         this.chosenDateAndTime.set(Calendar.MINUTE, minute);
     }
+
+    @Override
+    public void finish() {
+        // intent used to send data back to MessageCompose.java
+        Intent data = new Intent();
+        // we want to send back the date for sending later
+        data.putExtra("ScheduledSendDate", chosenDateAndTime.getTimeInMillis());
+        setResult(RESULT_OK, data);
+        super.finish();
+    }
+
 }

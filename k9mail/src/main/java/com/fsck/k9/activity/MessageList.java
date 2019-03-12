@@ -3,6 +3,7 @@ package com.fsck.k9.activity;
 
 import java.util.Collection;
 import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.FragmentManager;
