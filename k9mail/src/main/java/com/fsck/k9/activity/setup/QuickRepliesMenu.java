@@ -86,7 +86,10 @@ public class QuickRepliesMenu extends K9ListActivity {
             }
 
             case R.id.delete:{
-                //TODO: Add Delete QR Functionality here.
+                Intent intent = new Intent(this, RemoveQuickReply.class);
+                intent.putExtra("quickReplyId", quickReplies.get(info.position).getId());
+                startActivity(intent);
+                break;
             }
 
         }
