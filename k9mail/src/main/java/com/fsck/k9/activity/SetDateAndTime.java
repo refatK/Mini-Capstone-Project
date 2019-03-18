@@ -57,7 +57,7 @@ public class SetDateAndTime extends K9Activity implements DatePickerDialog.OnDat
         }
         else{
 
-            SimpleDateFormat inputDateFormat = new SimpleDateFormat("MM/dd/YYYY");
+            SimpleDateFormat inputDateFormat = new SimpleDateFormat("MM/dd/yyyy");
             strDate = inputDateFormat.format(dateIncomingIntent);
             chosenDateTextView.setText(strDate);
 
