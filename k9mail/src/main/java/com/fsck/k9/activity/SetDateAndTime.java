@@ -44,7 +44,7 @@ public class SetDateAndTime extends K9Activity implements DatePickerDialog.OnDat
         chosenTimeTextView = (TextView) findViewById(R.id.send_later_time);
         String strDate;
         String strTime;
-        chosenDateAndTime = null;
+        chosenDateAndTime = Calendar.getInstance();
 
         if(dateIncomingIntent == null) {
 
@@ -53,7 +53,7 @@ public class SetDateAndTime extends K9Activity implements DatePickerDialog.OnDat
 
             strTime = "hh:mm";
             chosenTimeTextView.setText(strTime);
-            chosenDateAndTime = Calendar.getInstance();
+
         }
         else{
 
