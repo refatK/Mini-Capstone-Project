@@ -542,6 +542,7 @@ public class K9 extends Application {
         if(daoSession.getMailingListDao().loadAll().size() == 0){
             daoSession.getMailingListDao().insert(new MailingList(1L,"FirstList"));
             daoSession.getEmailAddressDao().insert(new EmailAddress(null,(daoSession.getMailingListDao().loadByRowId(1L).getId()), "first@mail.com"));
+            daoSession.getQuickReplyDao().insert(new QuickReply(null, "Hello World, how are you doing?!"));
         }
         app = this;
         Globals.setContext(this);
