@@ -94,7 +94,7 @@ public class QuickRepliesMenu extends K9ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         Toast.makeText(this, quickReplyBodies.get(position), Toast.LENGTH_SHORT).show();
-        //TODO: Make the user able to send this QR after selection but also able to view the whole QR body in a toast notif when they long press it when the intent's action is SEND
+        //TODO: Make the user able to send this QR after selection
     }
 }
 
