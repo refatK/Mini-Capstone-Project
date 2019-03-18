@@ -9,8 +9,6 @@ import com.fsck.k9.K9;
 import com.fsck.k9.QuickReply;
 import com.fsck.k9.R;
 
-import java.util.List;
-
 public class RemoveQuickReply extends AppCompatActivity {
     private DaoSession daoSession;
 
