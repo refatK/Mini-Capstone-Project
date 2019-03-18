@@ -27,6 +27,7 @@ import com.fsck.k9.K9;
 import com.fsck.k9.K9.NotificationHideSubject;
 import com.fsck.k9.K9.NotificationQuickDelete;
 import com.fsck.k9.K9.SplitViewMode;
+import com.fsck.k9.MailingList;
 import com.fsck.k9.Preferences;
 import com.fsck.k9.R;
 import com.fsck.k9.activity.ColorPickerDialog;
@@ -53,6 +54,7 @@ public class Prefs extends K9PreferenceActivity {
     /*
      * Keys of the preferences defined in res/xml/global_preferences.xml
      */
+    private static final String PREFERENCE_QUICK_REPLIES = "QR";
     private static final String PREFERENCE_LANGUAGE = "language";
     private static final String PREFERENCE_THEME = "theme";
     private static final String PREFERENCE_MESSAGE_VIEW_THEME = "messageViewTheme";
@@ -206,6 +208,16 @@ public class Prefs extends K9PreferenceActivity {
                 themeIdToName(K9.getK9MessageViewThemeSetting()));
         mComposerTheme = setupListPreference(PREFERENCE_COMPOSER_THEME,
                 themeIdToName(K9.getK9ComposerThemeSetting()));
+
+        findPreference(PREFERENCE_QUICK_REPLIES).setOnPreferenceClickListener(
+                new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        startActivity(new Intent(getApplicationContext(), QuickRepliesMenu.class));
+                        return true;
+                    }
+                }
+        );
 
         findPreference(PREFERENCE_FONT_SIZE).setOnPreferenceClickListener(
         new Preference.OnPreferenceClickListener() {

@@ -447,6 +447,7 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="archive_folder_label">Archive folder</string>
     <string name="spam_folder_label">Spam folder</string>
 
+    <string name="edit">Edit</string>
     <string name="rename">Rename</string>
     <string name="delete">Delete</string>
 
