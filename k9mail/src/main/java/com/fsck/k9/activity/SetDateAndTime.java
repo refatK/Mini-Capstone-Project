@@ -18,6 +18,7 @@ import com.fsck.k9.fragment.SendLaterTimePicker;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 import java.util.Date;
 
 public class SetDateAndTime extends K9Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
@@ -99,8 +100,19 @@ public class SetDateAndTime extends K9Activity implements DatePickerDialog.OnDat
             Toast.makeText(getApplicationContext(), "Pick another date",
                     Toast.LENGTH_SHORT).show();
         }else{
-            // The time is good, so it will be set on the message
-            this.finish();
+            Toast.makeText(getApplicationContext(), "Setting time to: "
+                            + (chosenDateAndTime.get(Calendar.MONTH) + 1) + "/"
+                            + chosenDateAndTime.get(Calendar.DAY_OF_MONTH) + "/"
+                            + chosenDateAndTime.get(Calendar.YEAR) + " @ "
+                            + (chosenDateAndTime.get(Calendar.HOUR_OF_DAY)%12) + ":"
+                            + ((chosenDateAndTime.get(Calendar.MINUTE) < 10) ? "0" : "")
+                            + (chosenDateAndTime.get(Calendar.MINUTE))
+                            + (chosenDateAndTime.get(Calendar.HOUR_OF_DAY) > 12 ? "PM" : "AM"),
+                    Toast.LENGTH_SHORT).show();
+            if(!getIntent().getBooleanExtra("testingSetDateAndTime",false)){
+                this.finish();
+            }
+
         }
     }
 
@@ -109,18 +121,28 @@ public class SetDateAndTime extends K9Activity implements DatePickerDialog.OnDat
         //VERY IMPORTANT
         //MONTH IS GIVEN STARTING FROM 0
         String strDate = (month + 1) + "/" + dayOfMonth + "/" + year;
-        chosenDateTextView.setText(strDate);
         this.chosenDateAndTime.set(Calendar.YEAR, year);
         this.chosenDateAndTime.set(Calendar.MONTH, month);
         this.chosenDateAndTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        chosenDateTextView.setText(strDate);
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        String strTime = hourOfDay + ":" + ((minute < 10) ? "0" + minute : minute);
-        chosenTimeTextView.setText(strTime);
+        String strTime = (hourOfDay%12) + ":" + ((minute < 10) ? "0" + minute : minute) + (hourOfDay > 12 ? "PM" : "AM");
         this.chosenDateAndTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
         this.chosenDateAndTime.set(Calendar.MINUTE, minute);
+        chosenTimeTextView.setText(strTime);
+    }
+
+    public void supersedeChosenDateTextView(TextView chosenDateTextView){
+        this.chosenDateTextView = chosenDateTextView;
+    }
+    public void supersedeChosenTimeTextView(TextView chosenTimeTextView){
+        this.chosenTimeTextView = chosenTimeTextView;
+    }
+    public void supersedeChosenDateAndTime(Calendar chosenDateAndTime){
+        this.chosenDateAndTime = chosenDateAndTime;
     }
 
     @Override

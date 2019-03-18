@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
@@ -46,11 +47,13 @@ import android.widget.Toast;
 import com.fsck.k9.Account;
 import com.fsck.k9.Account.MessageFormat;
 import com.fsck.k9.DaoSession;
+import com.fsck.k9.ScheduledEmailsToSendNowService;
 import com.fsck.k9.Identity;
 import com.fsck.k9.K9;
 import com.fsck.k9.MailingList;
 import com.fsck.k9.Preferences;
 import com.fsck.k9.R;
+import com.fsck.k9.ScheduledEmail;
 import com.fsck.k9.activity.MessageLoaderHelper.MessageLoaderCallbacks;
 import com.fsck.k9.activity.compose.AttachmentPresenter;
 import com.fsck.k9.activity.compose.AttachmentPresenter.AttachmentMvpView;
@@ -767,6 +770,26 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                         + ((scheduledSendDate.get(Calendar.MINUTE) < 10) ? "0" : "")
                         + (scheduledSendDate.get(Calendar.MINUTE)),
                 Toast.LENGTH_LONG).show();
+
+        daoSession = ((K9)getApplication()).getDaoSession();
+
+        ScheduledEmail scheduledEmail = new ScheduledEmail(null, account.getUuid(), scheduledId,
+                scheduledSendDate.getTimeInMillis());
+
+        daoSession.getScheduledEmailDao().insert(scheduledEmail);
+
+        Intent i = new Intent(getApplicationContext(), ScheduledEmailsToSendNowService.class);
+
+       Context context = getApplicationContext();
+
+        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        long frequency = 10 * 1000;
+
+        PendingIntent pi = PendingIntent.getService(context,0, i,
+                PendingIntent.FLAG_CANCEL_CURRENT);
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+                Calendar.getInstance().getTimeInMillis(),frequency,pi);
     }
 
     private void checkToSaveDraftAndSave() {
@@ -1140,32 +1163,31 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
         getMenuInflater().inflate(R.menu.message_compose_option, menu);
 
-
         Bundle bundle = getIntent().getExtras();
-        String change = bundle.getString("change");
-
+        String change = null;
+        if (bundle != null) {
+            change = bundle.getString("change");
+        }
 
         //disable scheduled save option if in draft message
-         if(change!= null && change.equals("drafts")) {
+        if (change != null && change.equals("drafts")) {
             menu.findItem(R.id.save_scheduled).setVisible(false);
             menu.findItem(R.id.save_scheduled).setEnabled(false);
-        }
-        else if(change!= null && change.equals("scheduled")) {
+        } else if (change != null && change.equals("scheduled")) {
             //disable draft save option if in scheduled message
             menu.findItem(R.id.save).setVisible(false);
             menu.findItem(R.id.save).setEnabled(false);
             //disable send option
-            menu.findItem(R.id.send).setVisible(false); //TODO Refat maybe don't disable
+            menu.findItem(R.id.send).setVisible(false);
             menu.findItem(R.id.send).setEnabled(false);
             //disable send later option
-            //menu.findItem(R.id.send_later).setVisible(false);
-            //menu.findItem(R.id.send_later).setEnabled(false);
+           // menu.findItem(R.id.send_later).setVisible(false);
+           // menu.findItem(R.id.send_later).setEnabled(false);
+        } else {
+            //disable save scheduled option for other folders (inbox, outbox, etc)
+            menu.findItem(R.id.save_scheduled).setVisible(false);
+            menu.findItem(R.id.save_scheduled).setEnabled(false);
         }
-        else {
-             //disable save scheduled option for other folders (inbox, outbox, etc)
-             menu.findItem(R.id.save_scheduled).setVisible(false);
-             menu.findItem(R.id.save_scheduled).setEnabled(false);
-         }
 
         // Disable the 'Save' menu option if Drafts folder is set to -NONE-
         if (!account.hasDraftsFolder()) {
