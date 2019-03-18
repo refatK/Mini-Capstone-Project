@@ -42,6 +42,7 @@ public class QuickRepliesMenu extends K9ListActivity {
             daoSession = ((K9)getApplication()).getDaoSession();
             quickReplies = daoSession.getQuickReplyDao().loadAll();
         }
+        setTitle("Quick Replies");
         setContentView(R.layout.activity_quick_replies_menu);
 
         for (QuickReply qR : quickReplies ) {
