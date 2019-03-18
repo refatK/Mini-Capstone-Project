@@ -360,6 +360,11 @@
     </PreferenceScreen>
 
     <PreferenceScreen
+        android:title = "Quick Replies"
+        android:key="QR">
+    </PreferenceScreen>
+
+    <PreferenceScreen
         android:title="@string/miscellaneous_preferences"
         android:key="misc_preferences">
 

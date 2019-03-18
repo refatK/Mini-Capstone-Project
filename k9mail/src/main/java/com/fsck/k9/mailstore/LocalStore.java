@@ -389,6 +389,16 @@ public class LocalStore extends Store {
         });
     }
 
+    public LocalMessage getLocalMessageByMessageId(long messageId) {
+        LocalMessage localMessage = null;
+        try {
+            localMessage = loadLocalMessageByMessageId(messageId);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+        return localMessage;		
+	}	
+	
     @Override
     public LocalFolder getFolder(String name) {
         return new LocalFolder(this, name);
@@ -815,7 +825,7 @@ public class LocalStore extends Store {
 
         return loadLocalMessageByMessageId(messageId);
     }
-
+	
     @Nullable
     private LocalMessage loadLocalMessageByMessageId(long messageId) throws MessagingException {
         Map<String, List<String>> foldersAndUids =
