@@ -543,6 +543,7 @@ public class K9 extends Application {
             daoSession.getMailingListDao().insert(new MailingList(1L,"FirstList"));
             daoSession.getEmailAddressDao().insert(new EmailAddress(null,(daoSession.getMailingListDao().loadByRowId(1L).getId()), "first@mail.com"));
             daoSession.getQuickReplyDao().insert(new QuickReply(null, "Hello World, how are you doing?!"));
+            daoSession.getQuickReplyDao().insert(new QuickReply(null, "Hello World, This is a very long QR to test what happens when they get really long! BYE!"));
         }
         app = this;
         Globals.setContext(this);

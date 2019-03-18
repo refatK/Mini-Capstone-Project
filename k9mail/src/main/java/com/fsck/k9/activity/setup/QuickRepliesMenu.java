@@ -1,6 +1,5 @@
 package com.fsck.k9.activity.setup;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -9,14 +8,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.fsck.k9.DaoSession;
-import com.fsck.k9.EmailAddress;
 import com.fsck.k9.K9;
-import com.fsck.k9.MailingList;
 import com.fsck.k9.QuickReply;
 import com.fsck.k9.R;
-import com.fsck.k9.ScheduledEmail;
 import com.fsck.k9.activity.K9ListActivity;
 
 import java.util.ArrayList;
@@ -63,8 +60,41 @@ public class QuickRepliesMenu extends K9ListActivity {
             {
                 //TODO: Add the functionality for adding QRs
             }
-
         });
+
+        registerForContextMenu(getListView());
+    }
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+
+        getMenuInflater().inflate(R.menu.quick_replies_floating_context_menu, menu);
+        super.onCreateContextMenu(menu, v, menuInfo);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        switch(item.getItemId())
+        {
+            case R.id.rename:{
+                //TODO: Add Edit QR Functionality here
+            }
+
+            case R.id.delete:{
+                //TODO: Add Delete QR Functionality here.
+            }
+
+        }
+        return super.onContextItemSelected(item);
+    }
+
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        Toast.makeText(this, quickReplyBodies.get(position), Toast.LENGTH_SHORT).show();
+        //TODO: Make the user able to send this QR after selection but also able to view the whole QR body in a toast notif when they long press it when the intent's action is SEND
     }
 }
 
