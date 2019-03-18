@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.fsck.k9.DaoSession;
 import com.fsck.k9.K9;
 import com.fsck.k9.QuickReply;
+import com.fsck.k9.R;
 
 import java.util.List;
 
