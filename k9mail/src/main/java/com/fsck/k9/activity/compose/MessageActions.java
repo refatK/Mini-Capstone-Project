@@ -51,6 +51,15 @@ public class MessageActions {
         return intent;
     }
 
+    public static Intent getActionQuickReplyIntent(Context context, MessageReference messageReference) {
+        Intent intent = new Intent(context, MessageCompose.class);
+        intent.setAction(MessageCompose.ACTION_REPLY);
+        intent.putExtra(MessageCompose.EXTRA_MESSAGE_REFERENCE, messageReference.toIdentityString());
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        return intent;
+    }
+
     /**
      * Compose a new message as a reply to the given message. If replyAll is true the function
      * is reply all instead of simply reply.
