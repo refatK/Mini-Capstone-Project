@@ -776,7 +776,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         ScheduledEmail scheduledEmail = new ScheduledEmail(null, account.getUuid(), scheduledId,
                 scheduledSendDate.getTimeInMillis());
 
-        daoSession.getScheduledEmailDao().insert(scheduledEmail);
+        daoSession.getScheduledEmailDao().insertOrReplace(scheduledEmail);
 
         Intent i = new Intent(getApplicationContext(), ScheduledEmailsToSendNowService.class);
 

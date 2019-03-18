@@ -31,7 +31,6 @@ public class SetDateAndTime extends K9Activity implements DatePickerDialog.OnDat
     private TextView chosenTimeTextView;
 
     private Calendar chosenDateAndTime;
-
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -45,7 +44,7 @@ public class SetDateAndTime extends K9Activity implements DatePickerDialog.OnDat
         chosenTimeTextView = (TextView) findViewById(R.id.send_later_time);
         String strDate;
         String strTime;
-        chosenDateAndTime = Calendar.getInstance();
+        chosenDateAndTime = null;
 
         if(dateIncomingIntent == null) {
 
@@ -54,6 +53,7 @@ public class SetDateAndTime extends K9Activity implements DatePickerDialog.OnDat
 
             strTime = "hh:mm";
             chosenTimeTextView.setText(strTime);
+            chosenDateAndTime = Calendar.getInstance();
         }
         else{
 
@@ -99,17 +99,17 @@ public class SetDateAndTime extends K9Activity implements DatePickerDialog.OnDat
         if(chosenDateAndTimeInMilis <= currentDateAndTimeInMilis){
             Toast.makeText(getApplicationContext(), "Pick another date",
                     Toast.LENGTH_SHORT).show();
-        }else{
+        }else {
             Toast.makeText(getApplicationContext(), "Setting time to: "
                             + (chosenDateAndTime.get(Calendar.MONTH) + 1) + "/"
                             + chosenDateAndTime.get(Calendar.DAY_OF_MONTH) + "/"
                             + chosenDateAndTime.get(Calendar.YEAR) + " @ "
-                            + (chosenDateAndTime.get(Calendar.HOUR_OF_DAY)%12) + ":"
+                            + (chosenDateAndTime.get(Calendar.HOUR_OF_DAY) % 12) + ":"
                             + ((chosenDateAndTime.get(Calendar.MINUTE) < 10) ? "0" : "")
                             + (chosenDateAndTime.get(Calendar.MINUTE))
                             + (chosenDateAndTime.get(Calendar.HOUR_OF_DAY) > 12 ? "PM" : "AM"),
                     Toast.LENGTH_SHORT).show();
-            if(!getIntent().getBooleanExtra("testingSetDateAndTime",false)){
+            if (!getIntent().getBooleanExtra("testingSetDateAndTime", false)) {
                 this.finish();
             }
 
