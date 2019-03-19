@@ -2122,13 +2122,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 case MSG_SAVED_SCHEDULED:
                     scheduledId = (Long)  msg.obj;
 
-                    if (action == Action.EDIT_SCHEDULED) {
-                        Toast.makeText(
-                                MessageCompose.this,
-                                getString(R.string.message_saved_scheduled_toast),
-                                Toast.LENGTH_LONG).show();
-
-                    }
+                    Toast.makeText(
+                            MessageCompose.this,
+                            getString(R.string.message_saved_scheduled_toast), Toast.LENGTH_LONG).show();
                     sendLaterConfirmationToast();
 
                     break;
