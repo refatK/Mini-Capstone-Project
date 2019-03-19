@@ -1,5 +1,6 @@
 package com.fsck.k9.activity.setup;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -59,7 +60,8 @@ public class QuickRepliesMenu extends K9ListActivity {
         {
             public void onClick(View v)
             {
-                //TODO: Add the functionality for adding QRs
+                Intent intent = new Intent(getApplicationContext(), AddQuickReply.class);
+                startActivity(intent);
             }
         });
 
@@ -84,7 +86,10 @@ public class QuickRepliesMenu extends K9ListActivity {
             }
 
             case R.id.delete:{
-                //TODO: Add Delete QR Functionality here.
+                Intent intent = new Intent(this, RemoveQuickReply.class);
+                intent.putExtra("quickReplyId", quickReplies.get(info.position).getId());
+                startActivity(intent);
+                break;
             }
 
         }
