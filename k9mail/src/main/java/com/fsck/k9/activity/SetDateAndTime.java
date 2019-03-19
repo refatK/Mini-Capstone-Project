@@ -16,8 +16,10 @@ import com.fsck.k9.R;
 import com.fsck.k9.fragment.SendLaterDatePicker;
 import com.fsck.k9.fragment.SendLaterTimePicker;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
+import java.util.Date;
 
 public class SetDateAndTime extends K9Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
 
@@ -29,25 +31,43 @@ public class SetDateAndTime extends K9Activity implements DatePickerDialog.OnDat
     private TextView chosenTimeTextView;
 
     private Calendar chosenDateAndTime;
-
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.send_later_set_date_and_time);
-        setDateButton = (Button) findViewById(R.id.send_later_set_date_button);
         setTimeButton = (Button) findViewById(R.id.send_later_set_time_button);
+        setDateButton = (Button) findViewById(R.id.send_later_set_date_button);
         setDateAndTimeButton = (Button) findViewById(R.id.send_later_set_date_and_time_button);
 
+        Date dateIncomingIntent = (Date)getIntent().getSerializableExtra("currentDate");
         chosenDateTextView = (TextView) findViewById(R.id.send_later_date);
-        String strDate = "MM/DD/YYYY";
-        chosenDateTextView.setText(strDate);
-
         chosenTimeTextView = (TextView) findViewById(R.id.send_later_time);
-        String strTime = "hh:mm";
-        chosenTimeTextView.setText(strTime);
-
+        String strDate;
+        String strTime;
         chosenDateAndTime = Calendar.getInstance();
 
+        if(dateIncomingIntent == null) {
+
+            strDate = "MM/DD/YYYY";
+            chosenDateTextView.setText(strDate);
+
+            strTime = "hh:mm";
+            chosenTimeTextView.setText(strTime);
+
+        }
+        else{
+
+            SimpleDateFormat inputDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+            strDate = inputDateFormat.format(dateIncomingIntent);
+            chosenDateTextView.setText(strDate);
+
+            SimpleDateFormat inputTimeFormat = new SimpleDateFormat ("h:mm a");
+            strTime = inputTimeFormat.format(dateIncomingIntent);
+            chosenTimeTextView.setText(strTime);
+
+            this.chosenDateAndTime.setTime(dateIncomingIntent);
+
+        }
         setDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,18 +99,18 @@ public class SetDateAndTime extends K9Activity implements DatePickerDialog.OnDat
         if(chosenDateAndTimeInMilis <= currentDateAndTimeInMilis){
             Toast.makeText(getApplicationContext(), "Pick another date",
                     Toast.LENGTH_SHORT).show();
-        }else{
+        }else {
             Toast.makeText(getApplicationContext(), "Setting time to: "
                             + (chosenDateAndTime.get(Calendar.MONTH) + 1) + "/"
                             + chosenDateAndTime.get(Calendar.DAY_OF_MONTH) + "/"
                             + chosenDateAndTime.get(Calendar.YEAR) + " @ "
-                            + (chosenDateAndTime.get(Calendar.HOUR_OF_DAY)%12) + ":"
+                            + (chosenDateAndTime.get(Calendar.HOUR_OF_DAY) % 12) + ":"
                             + ((chosenDateAndTime.get(Calendar.MINUTE) < 10) ? "0" : "")
                             + (chosenDateAndTime.get(Calendar.MINUTE))
                             + (chosenDateAndTime.get(Calendar.HOUR_OF_DAY) > 12 ? "PM" : "AM"),
                     Toast.LENGTH_SHORT).show();
-            if(!getIntent().getBooleanExtra("testingSetDateAndTime",false)){
-                this.finish();
+            if (!getIntent().getBooleanExtra("testingSetDateAndTime", false)) {
+                this.saveAndFinish();
             }
 
         }
@@ -125,8 +145,7 @@ public class SetDateAndTime extends K9Activity implements DatePickerDialog.OnDat
         this.chosenDateAndTime = chosenDateAndTime;
     }
 
-    @Override
-    public void finish() {
+    public void saveAndFinish() {
         // intent used to send data back to MessageCompose.java
         Intent data = new Intent();
         // we want to send back the date for sending later
