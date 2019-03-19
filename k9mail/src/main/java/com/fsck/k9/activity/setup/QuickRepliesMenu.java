@@ -15,6 +15,7 @@ import com.fsck.k9.DaoSession;
 import com.fsck.k9.K9;
 import com.fsck.k9.QuickReply;
 import com.fsck.k9.R;
+import com.fsck.k9.SendQuickReplyService;
 import com.fsck.k9.activity.K9ListActivity;
 
 import java.util.ArrayList;
@@ -66,11 +67,6 @@ public class QuickRepliesMenu extends K9ListActivity {
 
         registerForContextMenu(getListView());
 
-
-        Intent i = getIntent();
-        final String messageId = i.getStringExtra("messageIdentityString");
-        Toast.makeText(this, messageId, Toast.LENGTH_LONG).show();
-
     }
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -103,6 +99,16 @@ public class QuickRepliesMenu extends K9ListActivity {
         super.onListItemClick(l, v, position, id);
         Toast.makeText(this, quickReplyBodies.get(position), Toast.LENGTH_SHORT).show();
         //TODO: Make the user able to send this QR after selection
+
+        Intent i = getIntent();
+        final String messageId = i.getStringExtra("messageIdentityString");
+        Toast.makeText(this, messageId, Toast.LENGTH_LONG).show();
+
+        Intent intent = new Intent(this, SendQuickReplyService.class);
+        intent.putExtra("messageIdentityString", messageId);
+        intent.putExtra( "quickReply", quickReplyBodies.get(position));
+        startService(intent);
+
     }
 }
 
