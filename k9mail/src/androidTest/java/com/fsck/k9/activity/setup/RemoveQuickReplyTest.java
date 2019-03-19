@@ -18,7 +18,7 @@ public class RemoveQuickReplyTest {
     public ActivityTestRule<QuickRepliesMenu> testRule = new ActivityTestRule<QuickRepliesMenu>(QuickRepliesMenu.class);
 
     @Test
-    public void removeMailingListTest()
+    public void removeQuickReplyTest()
     {
         Espresso.onView(withId(android.R.id.list));
         onData(anything()).inAdapterView(withId(android.R.id.list)).atPosition(0).perform(longClick());
