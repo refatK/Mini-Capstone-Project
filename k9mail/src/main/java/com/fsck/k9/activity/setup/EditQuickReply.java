@@ -25,6 +25,7 @@ public class EditQuickReply extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.quick_reply_edit);
 
+
         Intent intent = getIntent();
         final Long quickReplyID = intent.getLongExtra("quickReplyId", -1);
 
