@@ -47,6 +47,7 @@ import android.widget.Toast;
 import com.fsck.k9.Account;
 import com.fsck.k9.Account.MessageFormat;
 import com.fsck.k9.DaoSession;
+import com.fsck.k9.ScheduledEmailDao;
 import com.fsck.k9.ScheduledEmailsToSendNowService;
 import com.fsck.k9.Identity;
 import com.fsck.k9.K9;
@@ -741,13 +742,15 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     }
 
     private void sendMessageLater(){
-
         // a scheduled save should be set up with someone to send to
         if (recipientPresenter.checkRecipientsOkForSending()) {
             return;
         }
 
         Intent intent = new Intent(this, SetDateAndTime.class);
+        if(action == Action.EDIT_SCHEDULED){
+            intent.putExtra("currentDate",scheduledSendDate);
+        }
         isInSubActivity = true;
         startActivityForResult(intent, MSG_SAVED_SCHEDULED);
     }
@@ -770,15 +773,25 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 Toast.LENGTH_LONG).show();
 
         daoSession = ((K9)getApplication()).getDaoSession();
+        ScheduledEmail scheduledEmail = null;
+        List<ScheduledEmail> allScheduled = daoSession.getScheduledEmailDao().loadAll();
 
-        ScheduledEmail scheduledEmail = new ScheduledEmail(null, account.getUuid(), scheduledId,
-                scheduledSendDate.getTimeInMillis());
+        for(ScheduledEmail sE: allScheduled){
+            if(sE.getEmailID() == scheduledId)
+                scheduledEmail = sE;
+        }
 
-        daoSession.getScheduledEmailDao().insert(scheduledEmail);
+        if(scheduledEmail == null)
+            scheduledEmail = new ScheduledEmail(null, account.getUuid(), scheduledId,
+                    scheduledSendDate.getTimeInMillis());
+
+        daoSession.getScheduledEmailDao().insertOrReplace(scheduledEmail);
+
+
 
         Intent i = new Intent(getApplicationContext(), ScheduledEmailsToSendNowService.class);
 
-       Context context = getApplicationContext();
+        Context context = getApplicationContext();
 
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         long frequency = 10 * 1000;
@@ -1179,8 +1192,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             menu.findItem(R.id.send).setVisible(false);
             menu.findItem(R.id.send).setEnabled(false);
             //disable send later option
-            menu.findItem(R.id.send_later).setVisible(false);
-            menu.findItem(R.id.send_later).setEnabled(false);
+           // menu.findItem(R.id.send_later).setVisible(false);
+           // menu.findItem(R.id.send_later).setEnabled(false);
         } else {
             //disable save scheduled option for other folders (inbox, outbox, etc)
             menu.findItem(R.id.save_scheduled).setVisible(false);
@@ -2112,9 +2125,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                                 MessageCompose.this,
                                 getString(R.string.message_saved_scheduled_toast),
                                 Toast.LENGTH_LONG).show();
-                    } else {
                         sendLaterConfirmationToast();
                     }
+
 
                     break;
 
