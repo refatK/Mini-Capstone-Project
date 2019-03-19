@@ -777,8 +777,10 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         List<ScheduledEmail> allScheduled = daoSession.getScheduledEmailDao().loadAll();
 
         for(ScheduledEmail sE: allScheduled){
-            if(sE.getEmailID() == scheduledId)
+            if(sE.getEmailID() == scheduledId) {
                 scheduledEmail = sE;
+                sE.setScheduledDateTime(scheduledSendDate.getTimeInMillis());
+            }
         }
 
         if(scheduledEmail == null)
