@@ -777,8 +777,10 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         List<ScheduledEmail> allScheduled = daoSession.getScheduledEmailDao().loadAll();
 
         for(ScheduledEmail sE: allScheduled){
-            if(sE.getEmailID() == scheduledId)
+            if(sE.getEmailID() == scheduledId) {
                 scheduledEmail = sE;
+                sE.setScheduledDateTime(scheduledSendDate.getTimeInMillis());
+            }
         }
 
         if(scheduledEmail == null)
@@ -2120,14 +2122,10 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 case MSG_SAVED_SCHEDULED:
                     scheduledId = (Long)  msg.obj;
 
-                    if (action == Action.EDIT_SCHEDULED) {
-                        Toast.makeText(
-                                MessageCompose.this,
-                                getString(R.string.message_saved_scheduled_toast),
-                                Toast.LENGTH_LONG).show();
-                        sendLaterConfirmationToast();
-                    }
-
+                    Toast.makeText(
+                            MessageCompose.this,
+                            getString(R.string.message_saved_scheduled_toast), Toast.LENGTH_LONG).show();
+                    sendLaterConfirmationToast();
 
                     break;
 
