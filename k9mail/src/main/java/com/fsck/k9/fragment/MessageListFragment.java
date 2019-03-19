@@ -1158,13 +1158,7 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
             case R.id.delete: {
                 MessageReference message = getMessageAtPosition(adapterPosition);
                 onDelete(message);
-                if(folderName.equals(account.getScheduledFolderName())) {
-                    for(ScheduledEmail sE : K9.daoSession.getScheduledEmailDao().loadAll()) {
-                        if(sE.getEmailID() == messageID) {
-                            K9.daoSession.getScheduledEmailDao().delete(sE);
-                        }
-                    }
-                }
+                checkIfScheduledMsg_toDelete();
                 break;
             }
             case R.id.mark_as_read: {
@@ -1211,6 +1205,16 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
 
         contextMenuUniqueId = 0;
         return true;
+    }
+
+    private void checkIfScheduledMsg_toDelete() {
+        if(folderName.equals(account.getScheduledFolderName())) {
+            for(ScheduledEmail sE : K9.daoSession.getScheduledEmailDao().loadAll()) {
+                if(sE.getEmailID() == messageID) {
+                    K9.daoSession.getScheduledEmailDao().delete(sE);
+                }
+            }
+        }
     }
 
     @Override
