@@ -16,7 +16,7 @@
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         android:layout_marginBottom="4dp"
-        android:hint="Enter new quick reply name"
+        android:hint="Enter new quick reply body"
         />
 
     <Button
