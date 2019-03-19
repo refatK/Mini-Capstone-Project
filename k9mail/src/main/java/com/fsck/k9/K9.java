@@ -50,7 +50,7 @@ import timber.log.Timber.DebugTree;
 
 public class K9 extends Application {
 
-    private DaoSession daoSession;
+    public static DaoSession daoSession;
     /**
      * Components that are interested in knowing when the K9 instance is
      * available and ready (Android invokes Application.onCreate() after other
