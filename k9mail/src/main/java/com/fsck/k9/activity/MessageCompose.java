@@ -2125,9 +2125,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                                 MessageCompose.this,
                                 getString(R.string.message_saved_scheduled_toast),
                                 Toast.LENGTH_LONG).show();
-                        sendLaterConfirmationToast();
-                    }
 
+                    }
+                    sendLaterConfirmationToast();
 
                     break;
 
