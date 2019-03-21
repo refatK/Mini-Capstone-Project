@@ -28,7 +28,7 @@ jobs:
   # runs tests
   - stage: "Tests"
     language: android
-    script: ./gradlew test testDebug
+    script: ./gradlew test testDebugUnitTest
 
   # static analysis using Android lint
   - stage: "Static Analysis"
