@@ -8,6 +8,9 @@ import com.fsck.k9.Account;
 import com.fsck.k9.Preferences;
 import com.fsck.k9.activity.MessageCompose;
 import com.fsck.k9.activity.MessageReference;
+import com.fsck.k9.activity.setup.QuickRepliesMenu;
+import com.fsck.k9.controller.MessagingController;
+import com.fsck.k9.mail.Message;
 
 public class MessageActions {
     /**
@@ -48,6 +51,12 @@ public class MessageActions {
         intent.putExtra(MessageCompose.EXTRA_MESSAGE_REFERENCE, messageReference.toIdentityString());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
+        return intent;
+    }
+
+    public static Intent getActionQuickReplyIntent(Context context, MessageReference messageReference) {
+        Intent intent = new Intent(context, QuickRepliesMenu.class);
+        intent.putExtra("messageIdentityString" ,messageReference.toIdentityString());
         return intent;
     }
 
