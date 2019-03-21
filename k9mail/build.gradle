@@ -140,6 +140,8 @@ android {
     lintOptions {
         abortOnError false
         htmlReport true
+        textReport = true
+
         htmlOutput file("lint-report.html")
         lintConfig file("$rootProject.projectDir/config/lint/lint.xml")
     }

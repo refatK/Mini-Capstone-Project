@@ -21,19 +21,22 @@ before_install:
 jobs:
   include:
   # build of app without any other task
-  - stage: Build
+  - stage: "Build"
     language: android
     script: ./gradlew assemble
+
+  # runs tests
+  - stage: "Tests"
+    language: android
+    script: ./gradlew test testDebug
+
   # static analysis using Android lint
-  - stage: Static Analysis
+  - stage: "Static Analysis"
     language: android
     script: ./gradlew lint
-  # runs tests
-  - stage: Tests
-    language: android
-    script: ./gradlew test
+
   # runs static analysis
-  - stage: Test Coverage
+  - stage: "Test Coverage"
     language: android
-    script: ./gradlew jacocoTestDebugUnitTestReport
+#    script: ./gradlew jacocoTestDebugUnitTestReport TODO fix this
 
