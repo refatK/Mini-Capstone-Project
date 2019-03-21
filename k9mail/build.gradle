@@ -138,7 +138,9 @@ android {
 
     // Do not abort build if lint finds errors
     lintOptions {
-        //abortOnError false
+        abortOnError false
+        htmlReport true
+        htmlOutput file("lint-report.html")
         lintConfig file("$rootProject.projectDir/config/lint/lint.xml")
     }
 

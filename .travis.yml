@@ -2,17 +2,38 @@ language: android
 jdk: oraclejdk8
 
 android:
- components:
-    - tools
-    - build-tools-28.0.3
-    - android-27
-    - extra-android-m2repository
+  components:
+  - tools
+  - build-tools-28.0.3
+  - android-27
+  - extra-android-m2repository
 
 before_install:
 - yes | sdkmanager "platforms;android-27"
 - chmod +x gradlew
 
-script:
-- ./gradlew build jacocoTestReport
-- ./gradlew test
-- ./gradlew testDebug
+#script:
+#- ./gradlew build jacocoTestReport
+#- ./gradlew test
+#- ./gradlew testDebug
+
+
+jobs:
+  include:
+  # build of app without any other task
+  - stage: Build
+    language: android
+    script: ./gradlew assemble
+  # static analysis using Android lint
+  - stage: Static Analysis
+    language: android
+    script: ./gradlew lint
+  # runs tests
+  - stage: Tests
+    language: android
+    script: ./gradlew test
+  # runs static analysis
+  - stage: Test Coverage
+    language: android
+    script: ./gradlew jacocoTestDebugUnitTestReport
+

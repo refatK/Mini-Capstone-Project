@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <lint>
+    <issue id="all">
+        <ignore regexp="^(?!.*K9MAIL\k9mail\src\main\java\com\fsck\k9)" />
+    </issue>
+
     <issue id="MissingTranslation" severity="ignore" />
     <issue id="OldTargetApi" severity="ignore" />
     <issue id="GoogleAppIndexingWarning" severity="ignore" />

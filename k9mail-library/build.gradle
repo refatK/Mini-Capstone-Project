@@ -55,7 +55,7 @@ android {
     }
 
     lintOptions {
-        //abortOnError false
+        abortOnError false
         lintConfig file("$rootProject.projectDir/config/lint/lint.xml")
     }
 
