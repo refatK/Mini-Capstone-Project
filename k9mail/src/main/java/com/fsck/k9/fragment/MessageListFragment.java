@@ -1134,6 +1134,10 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
                 onReplyAll(getMessageAtPosition(adapterPosition));
                 break;
             }
+            case R.id.quick_reply: {
+                onReply(getMessageAtPosition(adapterPosition));
+                return true;
+            }
             case R.id.forward: {
                 onForward(getMessageAtPosition(adapterPosition));
                 break;

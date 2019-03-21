@@ -95,6 +95,9 @@
                 android:id="@+id/reply_all"
                 android:title="@string/reply_all_action"/>
             <item
+                android:id="@+id/quick_reply"
+                android:title="@string/quick_reply_action"/>
+            <item
                 android:id="@+id/forward"
                 android:title="@string/forward_action"/>
             <item

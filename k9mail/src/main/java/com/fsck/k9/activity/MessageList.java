@@ -892,6 +892,10 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
                 messageViewFragment.onReplyAll();
                 return true;
             }
+            case R.id.quick_reply: {
+                messageViewFragment.onReply();
+                return true;
+            }
             case R.id.forward: {
                 messageViewFragment.onForward();
                 return true;
