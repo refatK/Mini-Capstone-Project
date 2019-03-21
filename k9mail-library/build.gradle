@@ -2,14 +2,14 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 
-if (!rootProject.optimizeForDevelopment) {
-    apply from: '../gradle/plugins/checkstyle-android.gradle'
-    apply from: '../gradle/plugins/findbugs-android.gradle'
-}
-
-if (rootProject.testCoverage) {
-    apply plugin: 'jacoco'
-}
+//if (!rootProject.optimizeForDevelopment) {
+//    apply from: '../gradle/plugins/checkstyle-android.gradle'
+//    apply from: '../gradle/plugins/findbugs-android.gradle'
+//}
+//
+//if (rootProject.testCoverage) {
+//    apply plugin: 'jacoco'
+//}
 
 dependencies {
     implementation 'org.apache.james:apache-mime4j-core:0.8.1'
@@ -50,12 +50,12 @@ android {
 
     buildTypes {
         debug {
-            testCoverageEnabled rootProject.testCoverage
+            testCoverageEnabled false
         }
     }
 
     lintOptions {
-        abortOnError false
+        //abortOnError false
         lintConfig file("$rootProject.projectDir/config/lint/lint.xml")
     }
 

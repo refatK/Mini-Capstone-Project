@@ -2,15 +2,18 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'jacoco'
+apply plugin: 'jacoco-android'
 
-if (!rootProject.optimizeForDevelopment) {
-    apply from: '../gradle/plugins/checkstyle-android.gradle'
-    apply from: '../gradle/plugins/findbugs-android.gradle'
-}
 
-if (rootProject.testCoverage) {
-    apply plugin: 'jacoco'
-}
+//if (!rootProject.optimizeForDevelopment) {
+//    apply from: '../gradle/plugins/checkstyle-android.gradle'
+//    apply from: '../gradle/plugins/findbugs-android.gradle'
+//}
+
+//if (rootProject.testCoverage) {
+//    apply plugin: 'jacoco'
+//}
 
 //noinspection GroovyAssignabilityCheck
 configurations.all {
@@ -66,6 +69,21 @@ dependencies {
     testImplementation 'org.greenrobot:greendao:3.2.2'
 }
 
+
+jacoco {
+    toolVersion = "0.8.3"
+}
+
+tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
+}
+
+jacocoAndroidUnitTestReport {
+    csv.enabled false
+    html.enabled true
+    xml.enabled false
+}
+
 android {
     compileSdkVersion androidCompileSdkVersion.toInteger()
     buildToolsVersion '28.0.3'
@@ -89,6 +107,15 @@ android {
         release
     }
 
+    testOptions {
+        unitTests.all {
+            jacoco {
+                includeNoLocationClasses = true
+            }
+        }
+    }
+
+
     buildTypes {
         release {
             if (project.hasProperty('storeFile')) {
@@ -103,15 +130,15 @@ android {
 
         debug {
             applicationIdSuffix ".debug"
-            testCoverageEnabled rootProject.testCoverage
+            testCoverageEnabled true
 
-            buildConfigField "boolean", "DEVELOPER_MODE", "true"
+            buildConfigField "boolean", "DEVELOPER_MODE", "false"
         }
     }
 
     // Do not abort build if lint finds errors
     lintOptions {
-        abortOnError false
+        //abortOnError false
         lintConfig file("$rootProject.projectDir/config/lint/lint.xml")
     }
 
