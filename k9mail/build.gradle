@@ -115,14 +115,6 @@ android {
         release
     }
 
-    testOptions {
-        unitTests.all {
-            jacoco {
-                includeNoLocationClasses = true
-            }
-        }
-    }
-
 
     buildTypes {
         release {

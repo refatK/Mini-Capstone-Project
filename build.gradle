@@ -20,7 +20,7 @@ buildscript {
 project.ext {
 //    testCoverage = project.hasProperty('testCoverage')
 //    optimizeForDevelopment = project.hasProperty('optimizeForDevelopment') && optimizeForDevelopment == 'true'
-    jacocoExcludes = []
+   // jacocoExcludes = []
 }
 
 subprojects {
