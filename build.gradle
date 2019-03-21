@@ -17,10 +17,11 @@ buildscript {
 
 
 
-//project.ext {
+project.ext {
 //    testCoverage = project.hasProperty('testCoverage')
 //    optimizeForDevelopment = project.hasProperty('optimizeForDevelopment') && optimizeForDevelopment == 'true'
-//}
+    jacocoExcludes = []
+}
 
 subprojects {
     project.plugins.whenPluginAdded { plugin ->

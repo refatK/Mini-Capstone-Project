@@ -38,5 +38,5 @@ jobs:
   # runs static analysis
   - stage: "Test Coverage"
     language: android
-#    script: ./gradlew jacocoTestDebugUnitTestReport TODO fix this
+    script: ./gradlew testDebugUnitTestCoverage
 
