@@ -137,6 +137,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     public static final String EXTRA_ACCOUNT = "account";
     public static final String EXTRA_MESSAGE_REFERENCE = "message_reference";
     public static final String EXTRA_MESSAGE_DECRYPTION_RESULT = "message_decryption_result";
+    public static final String EXTRA_QUICK_REPLY_MESSAGE = "quickReply";
 
     private static final String STATE_KEY_SOURCE_MESSAGE_PROCED =
             "com.fsck.k9.activity.MessageCompose.stateKeySourceMessageProced";
@@ -267,6 +268,12 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         setProgressBarIndeterminateVisibility(false);
 
         final Intent intent = getIntent();
+
+        // Hide view if sending a quick reply so the user has no access to the view inputs
+        if (intent.getStringExtra(EXTRA_QUICK_REPLY_MESSAGE) != null) {
+            LinearLayout wholeView = (LinearLayout) findViewById(R.id.full_compose_view);
+            wholeView.setVisibility(View.INVISIBLE);
+        }
 
         String messageReferenceString = intent.getStringExtra(EXTRA_MESSAGE_REFERENCE);
         relatedMessageReference = MessageReference.parse(messageReferenceString);
@@ -1487,7 +1494,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 switchToIdentity(useIdentity);
             }
         }
-        String predefinedMessageBody = getIntent().getStringExtra("quickReply");
+
+        // If its a quick reply, set the message body and send immediatley
+        String predefinedMessageBody = getIntent().getStringExtra(EXTRA_QUICK_REPLY_MESSAGE);
         if (predefinedMessageBody!=null) {
             messageContentView.setCharacters(predefinedMessageBody);
             handleQuickReplySend();
@@ -1495,6 +1504,11 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
     }
 
+
+    /**
+     * Once a quick reply is set up, handle the sending with a delay so that it is ensured
+     * the message is fully prepped to send
+     */
     private void handleQuickReplySend() {
         new Handler().postDelayed(new Runnable() {
             public void run() {
@@ -1504,6 +1518,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         }, 2000);
     }
 
+    
     private void processMessageToForward(MessageViewInfo messageViewInfo, boolean asAttachment) throws MessagingException {
         Message message = messageViewInfo.message;
 
