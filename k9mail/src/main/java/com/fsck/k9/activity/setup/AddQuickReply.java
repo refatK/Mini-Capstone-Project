@@ -43,7 +43,7 @@ public class AddQuickReply extends AppCompatActivity {
                     finish();
                     startActivity(i);
                 }else{
-                    Toast.makeText(getApplicationContext(), "Invalid Quick Reply input. Please add another one.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.toast_invalid_quick_reply, Toast.LENGTH_SHORT).show();
                 }
                 finish();
             }
