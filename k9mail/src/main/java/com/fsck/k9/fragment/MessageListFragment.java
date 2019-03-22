@@ -62,6 +62,7 @@ import com.fsck.k9.activity.ChooseFolder;
 import com.fsck.k9.activity.FolderInfoHolder;
 import com.fsck.k9.activity.MessageReference;
 import com.fsck.k9.activity.misc.ContactPictureLoader;
+import com.fsck.k9.activity.setup.QuickRepliesMenu;
 import com.fsck.k9.cache.EmailProviderCache;
 import com.fsck.k9.controller.MessagingController;
 import com.fsck.k9.fragment.ConfirmationDialogFragment.ConfirmationDialogFragmentListener;
@@ -1133,6 +1134,11 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
             case R.id.reply_all: {
                 onReplyAll(getMessageAtPosition(adapterPosition));
                 break;
+            }
+            case R.id.quick_reply: {
+                Intent viewQuickReplies = new Intent(this.getActivity(), QuickRepliesMenu.class);
+                startActivity(viewQuickReplies);
+                return true;
             }
             case R.id.forward: {
                 onForward(getMessageAtPosition(adapterPosition));
