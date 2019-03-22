@@ -1490,8 +1490,18 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         String predefinedMessageBody = getIntent().getStringExtra("quickReply");
         if (predefinedMessageBody!=null) {
             messageContentView.setCharacters(predefinedMessageBody);
+            handleQuickReplySend();
         }
 
+    }
+
+    private void handleQuickReplySend() {
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                Timber.d("Sending Quick Reply");
+                performSendAfterChecks();
+            }
+        }, 2000);
     }
 
     private void processMessageToForward(MessageViewInfo messageViewInfo, boolean asAttachment) throws MessagingException {
