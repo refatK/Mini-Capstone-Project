@@ -1,6 +1,8 @@
 package com.fsck.k9.activity.setup;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -69,6 +71,9 @@ public class QuickRepliesMenu extends K9ListActivity {
         if(getIntent().getBooleanExtra("Sending",false)) {
             add_quick_reply.setText("Select A Quick Reply To Send");
             add_quick_reply.setClickable(false);
+            add_quick_reply.setWidth(1080);
+            add_quick_reply.setBackgroundColor(Color.DKGRAY);
+            add_quick_reply.setTextColor(Color.LTGRAY);
         }
         else{
             registerForContextMenu(getListView());
