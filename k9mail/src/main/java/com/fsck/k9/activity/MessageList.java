@@ -1294,6 +1294,11 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
         MessageActions.actionReply(this, messageReference, false, decryptionResultForReply);
     }
     @Override
+    public void onQuickReply(MessageReference messageReference, String quickReplyBody) {
+       onQuickReply(messageReference, null, quickReplyBody);
+    }
+
+    @Override
     public void onQuickReply(MessageReference messageReference, Parcelable decryptionResultForReply, String quickReplyBody) {
         MessageActions.actionQuickReply(this, messageReference, false, decryptionResultForReply, quickReplyBody );
     }
@@ -1662,7 +1667,7 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
 
             String quickReplyBody = data.getStringExtra("quickReply");
 
-           if (quickReplyBody == null) {
+            if (quickReplyBody == null) {
                 Toast.makeText(getApplicationContext(), "The quick reply message provided seems to be invalid",
                        Toast.LENGTH_SHORT).show();
                 return;

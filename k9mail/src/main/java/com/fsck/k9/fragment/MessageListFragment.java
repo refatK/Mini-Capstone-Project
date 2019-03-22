@@ -127,6 +127,7 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
 
     private static final int ACTIVITY_CHOOSE_FOLDER_MOVE = 1;
     private static final int ACTIVITY_CHOOSE_FOLDER_COPY = 2;
+    private static final int SELECTED_QR_TO_SEND = 3;
 
     private static final String ARG_SEARCH = "searchObject";
     private static final String ARG_THREADED_LIST = "showingThreadedList";
@@ -136,6 +137,9 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
     private static final String STATE_ACTIVE_MESSAGE = "activeMessage";
     private static final String STATE_REMOTE_SEARCH_PERFORMED = "remoteSearchPerformed";
     private static final String STATE_MESSAGE_LIST = "listState";
+    private int adapterPosition;
+
+
 
     /**
      * Maps a {@link SortType} to a {@link Comparator} implementation.
@@ -802,7 +806,9 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
     private void onReplyAll(MessageReference messageReference) {
         fragmentListener.onReplyAll(messageReference);
     }
-
+    private void onQuickReply(MessageReference messageReference, String quickReplyBody) {
+        fragmentListener.onQuickReply(messageReference,quickReplyBody);
+    }
     private void onForward(MessageReference messageReference) {
         fragmentListener.onForward(messageReference);
     }
@@ -948,6 +954,13 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
         }
 
         switch (requestCode) {
+            case SELECTED_QR_TO_SEND:
+                if(resultCode == Activity.RESULT_OK){
+                    String quickReplyBody = data.getStringExtra("quickReply");
+                    MessageReference messageReference = getMessageAtPosition(adapterPosition);
+                    onQuickReply(messageReference, quickReplyBody);
+                }
+                break;
             case ACTIVITY_CHOOSE_FOLDER_MOVE:
             case ACTIVITY_CHOOSE_FOLDER_COPY: {
                 if (data == null) {
@@ -1110,14 +1123,19 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
         messagingController.sendPendingMessages(account, null);
     }
 
+    private void selectQuickReplyToSend(){
+        Intent viewQuickReplies = new Intent(this.getActivity(), QuickRepliesMenu.class);
+        startActivityForResult(viewQuickReplies,SELECTED_QR_TO_SEND);
+    }
+
     @Override
     public boolean onContextItemSelected(android.view.MenuItem item) {
         if (contextMenuUniqueId == 0) {
             return false;
         }
 
-        int adapterPosition = getPositionForUniqueId(contextMenuUniqueId);
-        if (adapterPosition == AdapterView.INVALID_POSITION) {
+        this.adapterPosition = getPositionForUniqueId(contextMenuUniqueId);
+        if (this.adapterPosition == AdapterView.INVALID_POSITION) {
             return false;
         }
 
@@ -1136,8 +1154,7 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
                 break;
             }
             case R.id.quick_reply: {
-                Intent viewQuickReplies = new Intent(this.getActivity(), QuickRepliesMenu.class);
-                startActivity(viewQuickReplies);
+                selectQuickReplyToSend();
                 return true;
             }
             case R.id.forward: {
@@ -2429,6 +2446,7 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
         void onForward(MessageReference message);
         void onForwardAsAttachment(MessageReference message);
         void onReply(MessageReference message);
+        void onQuickReply(MessageReference messageReference, String quickReplyBody);
         void onReplyAll(MessageReference message);
         void openMessage(MessageReference messageReference);
         void setMessageListTitle(String title);
