@@ -86,7 +86,7 @@ public class MessageActions {
 
     public static void actionQuickReply(
             Context context, MessageReference messageReference, boolean replyAll, Parcelable decryptionResult, String quickReplyBody) {
-        context.startActivity(getActionQuickReplyIntent(context, messageReference, replyAll, decryptionResult, quickReplyBody);
+        context.startActivity(getActionQuickReplyIntent(context, messageReference, replyAll, decryptionResult, quickReplyBody));
     }
 
     /**

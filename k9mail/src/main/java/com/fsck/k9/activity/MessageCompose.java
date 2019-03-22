@@ -1487,6 +1487,10 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 switchToIdentity(useIdentity);
             }
         }
+        String predefinedMessageBody = getIntent().getStringExtra("quickReply");
+        if (predefinedMessageBody!=null) {
+            messageContentView.setCharacters(predefinedMessageBody);
+        }
 
     }
 
