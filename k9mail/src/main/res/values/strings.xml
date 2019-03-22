@@ -1304,5 +1304,6 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="dialog_autocrypt_mutual_learn_more">You can <a href="https://k9mail.github.io/2018/02/26/OpenPGP-Considerations-Part-III-Autocrypt.html">click here</a> to learn more.</string>
     <string name="title_activity_remove_mailing_list">RemoveMailingList</string>
     <string name="title_activity_remove_quick_reply">RemoveQuickReply</string>
+    <string name="toast_invalid_quick_reply">Invalid Quick Reply input. Please add another one.</string>
     <string name="title_activity_remove_email_address">RemoveEmailAddress</string>
 </resources>

@@ -83,8 +83,11 @@ public class QuickRepliesMenu extends K9ListActivity {
 
         switch(item.getItemId())
         {
-            case R.id.rename:{
-                //TODO: Add Edit QR Functionality here
+            case R.id.edit:{
+                Intent intent = new Intent(this, EditQuickReply.class);
+                intent.putExtra("quickReplyId", quickReplies.get(info.position).getId());
+                startActivity(intent);
+                break;
             }
 
             case R.id.delete:{
