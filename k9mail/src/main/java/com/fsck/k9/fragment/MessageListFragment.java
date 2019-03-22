@@ -1125,6 +1125,7 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
 
     private void selectQuickReplyToSend(){
         Intent viewQuickReplies = new Intent(this.getActivity(), QuickRepliesMenu.class);
+        viewQuickReplies.putExtra("Sending", true);
         startActivityForResult(viewQuickReplies,SELECTED_QR_TO_SEND);
     }
 

@@ -799,6 +799,7 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
 
     private void selectQuickReplyToSend(){
         Intent viewQuickReplies = new Intent(this, QuickRepliesMenu.class);
+        viewQuickReplies.putExtra("Sending", true);
         startActivityForResult(viewQuickReplies,SELECTED_QR_TO_SEND);
     }
 

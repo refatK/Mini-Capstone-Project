@@ -66,7 +66,13 @@ public class QuickRepliesMenu extends K9ListActivity {
             }
         });
 
-        registerForContextMenu(getListView());
+        if(getIntent().getBooleanExtra("Sending",false)) {
+            add_quick_reply.setText("Select A Quick Reply To Send");
+            add_quick_reply.setClickable(false);
+        }
+        else{
+            registerForContextMenu(getListView());
+        }
 
     }
     @Override
@@ -104,18 +110,19 @@ public class QuickRepliesMenu extends K9ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        Toast.makeText(this, quickReplyBodies.get(position), Toast.LENGTH_SHORT).show();
-        //TODO: Make the user able to send this QR after selection
 
         Intent i = getIntent();
-        final String messageId = i.getStringExtra("messageIdentityString");
-        Toast.makeText(this, messageId, Toast.LENGTH_LONG).show();
+        if(i.getBooleanExtra("Sending", false)){
+            final String messageId = i.getStringExtra("messageIdentityString");
+            Toast.makeText(this, "Sending QR: "+quickReplyBodies.get(position), Toast.LENGTH_SHORT).show();
 
-        Intent intent = new Intent(this, SendQuickReplyService.class);
-        intent.putExtra("messageIdentityString", messageId);
-        intent.putExtra( "quickReply", quickReplyBodies.get(position));
-        setResult(RESULT_OK, intent);
-        super.finish();
+            Intent intent = new Intent(this, SendQuickReplyService.class);
+            intent.putExtra("messageIdentityString", messageId);
+            intent.putExtra( "quickReply", quickReplyBodies.get(position));
+            setResult(RESULT_OK, intent);
+            super.finish();
+        }
+
 
     }
 
