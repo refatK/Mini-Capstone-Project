@@ -44,6 +44,21 @@ public class MessageActions {
         }
         return i;
     }
+    public static Intent getActionQuickReplyIntent(
+            Context context, MessageReference messageReference, boolean replyAll, Parcelable decryptionResult, String quickReplyBody) {
+            Intent i = new Intent(context, MessageCompose.class);
+            i.putExtra( "quickReply",quickReplyBody );
+            i.putExtra(MessageCompose.EXTRA_MESSAGE_DECRYPTION_RESULT, decryptionResult);
+            i.putExtra(MessageCompose.EXTRA_MESSAGE_REFERENCE, messageReference.toIdentityString());
+            if (replyAll) {
+                i.setAction(MessageCompose.ACTION_REPLY_ALL);
+            } else {
+                i.setAction(MessageCompose.ACTION_REPLY);
+            }
+            return i;
+
+    }
+
 
     public static Intent getActionReplyIntent(Context context, MessageReference messageReference) {
         Intent intent = new Intent(context, MessageCompose.class);
@@ -67,6 +82,11 @@ public class MessageActions {
     public static void actionReply(
             Context context, MessageReference messageReference, boolean replyAll, Parcelable decryptionResult) {
         context.startActivity(getActionReplyIntent(context, messageReference, replyAll, decryptionResult));
+    }
+
+    public static void actionQuickReply(
+            Context context, MessageReference messageReference, boolean replyAll, Parcelable decryptionResult, String quickReplyBody) {
+        context.startActivity(getActionQuickReplyIntent(context, messageReference, replyAll, decryptionResult, quickReplyBody);
     }
 
     /**

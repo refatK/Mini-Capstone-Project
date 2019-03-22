@@ -111,8 +111,11 @@ public class QuickRepliesMenu extends K9ListActivity {
         Intent intent = new Intent(this, SendQuickReplyService.class);
         intent.putExtra("messageIdentityString", messageId);
         intent.putExtra( "quickReply", quickReplyBodies.get(position));
-        startService(intent);
+        setResult(RESULT_OK, intent);
+        super.finish();
 
     }
+
+
 }
 
