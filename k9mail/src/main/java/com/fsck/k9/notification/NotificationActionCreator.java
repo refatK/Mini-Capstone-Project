@@ -96,6 +96,13 @@ class NotificationActionCreator {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
     }
 
+    public PendingIntent createQuickReplyPendingIntent(MessageReference messageReference, int notificationId) {
+        Intent intent = MessageActions.getActionQuickReplyIntent(context, messageReference);
+
+        return PendingIntent.getActivity(context, notificationId, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+    }
+
     public PendingIntent createMarkMessageAsReadPendingIntent(MessageReference messageReference, int notificationId) {
         Intent intent = NotificationActionService.createMarkMessageAsReadIntent(context, messageReference);
 

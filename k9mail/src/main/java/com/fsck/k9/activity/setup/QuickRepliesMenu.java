@@ -1,6 +1,8 @@
 package com.fsck.k9.activity.setup;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -15,6 +17,7 @@ import com.fsck.k9.DaoSession;
 import com.fsck.k9.K9;
 import com.fsck.k9.QuickReply;
 import com.fsck.k9.R;
+import com.fsck.k9.SendQuickReplyService;
 import com.fsck.k9.activity.K9ListActivity;
 
 import java.util.ArrayList;
@@ -65,7 +68,17 @@ public class QuickRepliesMenu extends K9ListActivity {
             }
         });
 
-        registerForContextMenu(getListView());
+        if(getIntent().getBooleanExtra("Sending",false)) {
+            add_quick_reply.setText("Select A Quick Reply To Send");
+            add_quick_reply.setClickable(false);
+            add_quick_reply.setWidth(1080);
+            add_quick_reply.setBackgroundColor(Color.DKGRAY);
+            add_quick_reply.setTextColor(Color.LTGRAY);
+        }
+        else{
+            registerForContextMenu(getListView());
+        }
+
     }
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -81,8 +94,11 @@ public class QuickRepliesMenu extends K9ListActivity {
 
         switch(item.getItemId())
         {
-            case R.id.rename:{
-                //TODO: Add Edit QR Functionality here
+            case R.id.edit:{
+                Intent intent = new Intent(this, EditQuickReply.class);
+                intent.putExtra("quickReplyId", quickReplies.get(info.position).getId());
+                startActivity(intent);
+                break;
             }
 
             case R.id.delete:{
@@ -99,8 +115,22 @@ public class QuickRepliesMenu extends K9ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        Toast.makeText(this, quickReplyBodies.get(position), Toast.LENGTH_SHORT).show();
-        //TODO: Make the user able to send this QR after selection
+
+        Intent i = getIntent();
+        if(i.getBooleanExtra("Sending", false)){
+            final String messageId = i.getStringExtra("messageIdentityString");
+            Toast.makeText(this, "Sending QR: "+quickReplyBodies.get(position), Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(this, SendQuickReplyService.class);
+            intent.putExtra("messageIdentityString", messageId);
+            intent.putExtra( "quickReply", quickReplyBodies.get(position));
+            setResult(RESULT_OK, intent);
+            super.finish();
+        }
+
+
     }
+
+
 }
 

@@ -43,6 +43,7 @@ import com.fsck.k9.activity.misc.SwipeGestureDetector.OnSwipeGestureListener;
 import com.fsck.k9.activity.setup.AccountSettings;
 import com.fsck.k9.activity.setup.FolderSettings;
 import com.fsck.k9.activity.setup.MailingListMenu;
+import com.fsck.k9.activity.setup.QuickRepliesMenu;
 import com.fsck.k9.activity.setup.Prefs;
 import com.fsck.k9.fragment.MessageListFragment;
 import com.fsck.k9.fragment.MessageListFragment.MessageListFragmentListener;
@@ -94,6 +95,8 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
     private static final int NEXT = 2;
 
     public static final int REQUEST_MASK_PENDING_INTENT = 1 << 15;
+
+    public static final int SELECTED_QR_TO_SEND = 1;
 
     public static void actionDisplaySearch(Context context, SearchSpecification search,
             boolean noThreading, boolean newTask) {
@@ -794,6 +797,12 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
         return messageListFragment.onSearchRequested();
     }
 
+    private void selectQuickReplyToSend(){
+        Intent viewQuickReplies = new Intent(this, QuickRepliesMenu.class);
+        viewQuickReplies.putExtra("Sending", true);
+        startActivityForResult(viewQuickReplies,SELECTED_QR_TO_SEND);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
@@ -890,6 +899,10 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
             }
             case R.id.reply_all: {
                 messageViewFragment.onReplyAll();
+                return true;
+            }
+            case R.id.quick_reply: {
+                selectQuickReplyToSend();
                 return true;
             }
             case R.id.forward: {
@@ -1281,6 +1294,15 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
     public void onReply(MessageReference messageReference, Parcelable decryptionResultForReply) {
         MessageActions.actionReply(this, messageReference, false, decryptionResultForReply);
     }
+    @Override
+    public void onQuickReply(MessageReference messageReference, String quickReplyBody) {
+       onQuickReply(messageReference, null, quickReplyBody);
+    }
+
+    @Override
+    public void onQuickReply(MessageReference messageReference, Parcelable decryptionResultForReply, String quickReplyBody) {
+        MessageActions.actionQuickReply(this, messageReference, false, decryptionResultForReply, quickReplyBody );
+    }
 
     @Override
     public void onReplyAll(MessageReference messageReference) {
@@ -1641,6 +1663,19 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
             if (messageViewFragment != null) {
                 messageViewFragment.onPendingIntentResult(requestCode, resultCode, data);
             }
+        }
+        if (resultCode == RESULT_OK && requestCode == SELECTED_QR_TO_SEND) {
+
+            String quickReplyBody = data.getStringExtra("quickReply");
+
+            if (quickReplyBody == null) {
+                Toast.makeText(getApplicationContext(), "The quick reply message provided seems to be invalid",
+                       Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            messageViewFragment.onQuickReply(quickReplyBody);
+
         }
     }
 }
