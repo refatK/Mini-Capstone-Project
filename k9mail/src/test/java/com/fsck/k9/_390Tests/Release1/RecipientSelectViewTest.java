@@ -1,8 +1,9 @@
-package com.fsck.k9.view;
+package com.fsck.k9._390Tests.Release1;
 
 import com.fsck.k9.EmailAddress;
 import com.fsck.k9.K9RobolectricTestRunner;
 import com.fsck.k9.MailingList;
+import com.fsck.k9.view.RecipientSelectView;
 
 import org.junit.Before;
 import org.junit.Test;

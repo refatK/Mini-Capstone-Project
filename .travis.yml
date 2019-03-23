@@ -25,8 +25,24 @@ jobs:
     language: android
     script: ./gradlew assemble
 
-  # runs tests
-  - stage: "Tests"
+# After Build, run all our tests first to ensure we wrote passing tests
+  # run Release 1 Tests Only
+  - stage: "Release 1 Tests"
+    language: android
+    script: ./gradlew testDebug --tests="*.Release1.*"
+
+  # run Release 2 Tests Only
+  - stage: "Release 2 Tests"
+    language: android
+    script: ./gradlew testDebug --tests="*.Release2.*"
+
+  # run Release 3 Tests Only
+  - stage: "Release 3 tests"
+    language: android
+    script: ./gradlew testDebug --tests="*.Release3.*"
+
+  # runs all tests
+  - stage: "All Tests"
     language: android
     script: ./gradlew test testDebugUnitTest
 

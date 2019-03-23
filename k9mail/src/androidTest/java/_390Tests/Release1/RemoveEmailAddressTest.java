@@ -1,4 +1,4 @@
-package com.fsck.k9.activity.setup;
+package _390Tests.Release1;
 
 
 import android.support.test.espresso.Espresso;

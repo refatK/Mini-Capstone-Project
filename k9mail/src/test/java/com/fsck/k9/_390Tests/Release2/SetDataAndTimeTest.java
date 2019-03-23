@@ -1,10 +1,11 @@
-package com.fsck.k9.activity;
+package com.fsck.k9._390Tests.Release2;
 
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.fsck.k9.K9RobolectricTestRunner;
+import com.fsck.k9.activity.SetDateAndTime;
 
 import org.junit.Before;
 import org.junit.Test;
