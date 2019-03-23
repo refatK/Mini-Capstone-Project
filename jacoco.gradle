@@ -1,3 +1,5 @@
+// This was added by refat and was considered to be a workaround for running the roboelectric tests, but no luck
+
 apply plugin: 'jacoco'
 
 jacoco {

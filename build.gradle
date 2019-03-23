@@ -9,7 +9,8 @@ buildscript {
         classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2'
         classpath 'com.android.tools.build:gradle:3.3.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.20"
-        classpath 'com.dicedmelon.gradle:jacoco-android:0.1.4'
+        // added this plugin as it seemed to be an easy way to run the tests, but had issues
+//        classpath 'com.dicedmelon.gradle:jacoco-android:0.1.4'
 
     }
 }
@@ -18,8 +19,8 @@ buildscript {
 
 
 project.ext {
-//    testCoverage = project.hasProperty('testCoverage')
-//    optimizeForDevelopment = project.hasProperty('optimizeForDevelopment') && optimizeForDevelopment == 'true'
+    testCoverage = project.hasProperty('testCoverage')
+    optimizeForDevelopment = project.hasProperty('optimizeForDevelopment') && optimizeForDevelopment == 'true'
    // jacocoExcludes = []
 }
 

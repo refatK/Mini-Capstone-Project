@@ -35,8 +35,9 @@ jobs:
     language: android
     script: ./gradlew lint
 
-  # runs static analysis
-  - stage: "Test Coverage"
-    language: android
-    script: ./gradlew testDebugUnitTestCoverage
+#  # runs static analysis
+#  - stage: "Test Coverage"
+#    language: android
+#    script: ./gradlew build test createDebugCoverageReport
+
 
