@@ -325,9 +325,9 @@ public class MessageViewFragment extends Fragment implements ConfirmationDialogF
             mFragmentListener.onReply(mMessage.makeMessageReference(), messageCryptoPresenter.getDecryptionResultForReply());
         }
     }
-    public void onQuickReply(String quickReplyBody){
+    public void onQuickReply(){
         if (mMessage != null) {
-        mFragmentListener.onQuickReply(mMessage.makeMessageReference(), messageCryptoPresenter.getDecryptionResultForReply(), quickReplyBody);
+        mFragmentListener.onQuickReply(mMessage.makeMessageReference(), messageCryptoPresenter.getDecryptionResultForReply());
         }
 
     }
@@ -739,7 +739,7 @@ public class MessageViewFragment extends Fragment implements ConfirmationDialogF
         void disableDeleteAction();
         void onReplyAll(MessageReference messageReference, Parcelable decryptionResultForReply);
         void onReply(MessageReference messageReference, Parcelable decryptionResultForReply);
-        void onQuickReply(MessageReference messageReference, Parcelable decryptionResultForReply, String quickReplyBody);
+        void onQuickReply(MessageReference messageReference, Parcelable decryptionResultForReply);
         void displayMessageSubject(String title);
         void setProgress(boolean b);
         void showNextMessageOrReturn();

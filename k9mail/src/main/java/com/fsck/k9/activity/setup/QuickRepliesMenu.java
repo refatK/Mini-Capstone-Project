@@ -15,12 +15,16 @@ import com.fsck.k9.DaoSession;
 import com.fsck.k9.K9;
 import com.fsck.k9.QuickReply;
 import com.fsck.k9.R;
-import com.fsck.k9.SendQuickReplyService;
 import com.fsck.k9.activity.K9ListActivity;
+import com.fsck.k9.activity.MessageCompose;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The view used for adding, deleting and editing quick replies. Also used for choosing a quick
+ * reply to send as an email.
+ */
 public class QuickRepliesMenu extends K9ListActivity {
 
     private List<QuickReply> quickReplies;
@@ -51,7 +55,7 @@ public class QuickRepliesMenu extends K9ListActivity {
             quickReplyBodies.add(qR.getBody());
         }
 
-        ArrayAdapter<String> quickReplyAdapter = new ArrayAdapter<String>(
+        ArrayAdapter<String> quickReplyAdapter = new ArrayAdapter<>(
                 this, R.layout.quick_reply_menu_item,  quickReplyBodies);
         setListAdapter(quickReplyAdapter);
 
@@ -107,25 +111,31 @@ public class QuickRepliesMenu extends K9ListActivity {
         return super.onContextItemSelected(item);
     }
 
+    /**
+     * Used to send a quick reply. If not in the menu version of the list clicking a quick
+     * reply will cause a message to be created with the qr as the body.
+     */
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
         Intent i = getIntent();
-        if(i.getBooleanExtra("Sending", false)){
-            final String messageId = i.getStringExtra("messageIdentityString");
-            Toast.makeText(this, "Sending QR: "+quickReplyBodies.get(position), Toast.LENGTH_SHORT).show();
 
-            Intent intent = new Intent(this, SendQuickReplyService.class);
-            intent.putExtra("messageIdentityString", messageId);
-            intent.putExtra( "quickReply", quickReplyBodies.get(position));
-            setResult(RESULT_OK, intent);
-            super.finish();
+        // ignore if in a view
+        if (i.getBooleanExtra("Sending", false)) {
+            Toast.makeText(this, "Sending QR: " + quickReplyBodies.get(position), Toast.LENGTH_SHORT).show();
+
+            // extract all information from intent passed to this view
+            Intent intent = new Intent(this, MessageCompose.class);
+            intent.putExtras(i);
+            intent.setAction(i.getAction());
+            intent.setFlags(i.getFlags());
+
+            // same as reply info but we add the quick reply body
+            intent.putExtra(MessageCompose.EXTRA_QUICK_REPLY_MESSAGE, quickReplyBodies.get(position));
+            startActivity(intent);
+            finish();
         }
-
-
     }
 
-
 }
-
