@@ -12,12 +12,6 @@ before_install:
 - yes | sdkmanager "platforms;android-27"
 - chmod +x gradlew
 
-#script:
-#- ./gradlew build jacocoTestReport
-#- ./gradlew test
-#- ./gradlew testDebug
-
-
 jobs:
   include:
   # build of app without any other task
@@ -26,34 +20,29 @@ jobs:
     script: ./gradlew assemble
 
 # After Build, run all our tests first to ensure we wrote passing tests
-  # run Release 1 Tests Only
-  - stage: "Release 1 Tests"
+  - stage: "Tests"
     language: android
+    
+    name: "Release One Tests"
     script: ./gradlew testDebugUnitTest -Prelease="one"
 
-  # run Release 2 Tests Only
-  - stage: "Release 2 Tests"
-    language: android
-    script: ./gradlew testDebugUnitTest -Prelease="two"*
+    name: "Release Two Tests"
+    script: ./gradlew testDebugUnitTest -Prelease="two"
 
-#  # run Release 3 Tests Only
-#  - stage: "Release 3 tests"
-#    language: android
+#    name: "Release Three Tests"
 #    script: ./gradlew testDebugUnitTest -Prelease="three"
 
-  # runs all tests
-  - stage: "All Tests"
-    language: android
+    name: "All Tests"
     script: ./gradlew test testDebugUnitTest
 
-  # static analysis using Android lint
-  - stage: "Static Analysis"
+# Static Analysis and Code Coverage
+  - stage: "Code Analysis"
     language: android
+
+    name: "Static Analysis"
     script: ./gradlew lint
 
-  # runs static analysis
-  - stage: "Test Coverage"
-    language: android
+    name: "Test Coverage"
     script: ./gradlew jacocoTestReport
     after_success:
     - bash <(curl -s https://codecov.io/bash)
