@@ -29,17 +29,17 @@ jobs:
   # run Release 1 Tests Only
   - stage: "Release 1 Tests"
     language: android
-    script: ./gradlew cleanTest testDebugUnitTest --tests com.fsck.k9._390Tests.Release1* --debug
+    script: ./gradlew cleanTest testDebugUnitTest --tests *com.fsck.k9._390Tests.Release1*
 
   # run Release 2 Tests Only
   - stage: "Release 2 Tests"
     language: android
-    script: ./gradlew cleanTest testDebugUnitTest --tests com.fsck.k9._390Tests.Release2* --debug
+    script: ./gradlew cleanTest testDebugUnitTest --tests *com.fsck.k9._390Tests.Release2*
 
   # run Release 3 Tests Only
   - stage: "Release 3 tests"
     language: android
-    script: ./gradlew cleanTest testDebugUnitTest --tests com.fsck.k9._390Tests.Release3* --debug
+    script: ./gradlew cleanTest testDebugUnitTest --tests *com.fsck.k9._390Tests.Release3*
 
   # runs all tests
   - stage: "All Tests"
