@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'kotlin-android-extensions'
 //apply from: "$rootDir/jacoco.gradle" //Only enable to to try to use the work around
-//apply plugin: 'jacoco' // I didnt use the if below, to ensure jacoc was always applied
+apply plugin: 'jacoco' // I didnt use the if below, to ensure jacoc was always applied
 //apply plugin: 'jacoco-android'  // This was that plugin I tried to use
 
 
@@ -12,9 +12,9 @@ if (!rootProject.optimizeForDevelopment) {
     apply from: '../gradle/plugins/findbugs-android.gradle'
 }
 
-if (rootProject.testCoverage) {
-    apply plugin: 'jacoco'
-}
+//if (rootProject.testCoverage) {
+//    apply plugin: 'jacoco'
+//}
 
 //noinspection GroovyAssignabilityCheck
 configurations.all {
@@ -107,8 +107,8 @@ android {
 
         debug {
             applicationIdSuffix ".debug"
-            testCoverageEnabled rootProject.testCoverage // like with if above, I set it true to always run
-            //testCoverageEnabled true
+            //testCoverageEnabled rootProject.testCoverage // like with if above, I set it true to always run
+            testCoverageEnabled true
 
             buildConfigField "boolean", "DEVELOPER_MODE", "true"
         }
