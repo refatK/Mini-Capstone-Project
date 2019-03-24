@@ -25,34 +25,20 @@ jobs:
     language: android
     name: "Release One Tests"
     script: ./gradlew testDebugUnitTest -Prelease="one"
-
-  - stage: "Tests"
-    language: android
+  - script: ./gradlew testDebugUnitTest -Prelease="two"
     name: "Release Two Tests"
-    script: ./gradlew testDebugUnitTest -Prelease="two"
-
-#  - stage: "Tests"
-#    language: android
+#  - script: ./gradlew testDebugUnitTest -Prelease="three"
 #    name: "Release Three Tests"
-#    script: ./gradlew testDebugUnitTest -Prelease="three"
-
-  - stage: "Tests"
-    language: android
+  - script: ./gradlew test
     name: "All Tests"
-    script: ./gradlew test testDebugUnitTest
-
 
 # Static Analysis and Code Coverage
   - stage: "Code Analysis"
+    if: branch = master
     language: android
     name: "Static Analysis"
     script: ./gradlew lint
-
-  - stage: "Code Analysis"
-    language: android
+  - script: ./gradlew jacocoTestReport
     name: "Test Coverage"
-    script: ./gradlew jacocoTestReport
     after_success:
     - bash <(curl -s https://codecov.io/bash)
-
-
