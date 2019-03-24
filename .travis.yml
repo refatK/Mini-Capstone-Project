@@ -15,13 +15,13 @@ before_install:
 jobs:
   include:
 # Build of app without any other task
-  - stage: "Build"
+  - stage: Build
     language: android
     script: ./gradlew assemble
 
 
 # After Build, run all our tests first to ensure we wrote passing tests
-  - stage: "Tests"
+  - stage: Test
     language: android
     name: "Release One Tests"
     script: ./gradlew testDebugUnitTest -Prelease="one"
@@ -33,13 +33,17 @@ jobs:
     name: "All Tests"
 
 # Static Analysis and Code Coverage
-  - stage: "Code Analysis"
-    if: branch = master
+  - stage: Analyze
     language: android
     name: "Static Analysis"
     script: ./gradlew lint
   - script: ./gradlew jacocoTestReport
-    if: branch = master
     name: "Test Coverage"
     after_success:
     - bash <(curl -s https://codecov.io/bash)
+stages:
+  - Build
+  - Test
+  - name: Analyze
+    if: branch = master
+
