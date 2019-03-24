@@ -45,12 +45,12 @@ public class MessageActions {
         return i;
     }
     public static Intent getActionQuickReplyIntent(
-            Context context, MessageReference messageReference, boolean replyAll, Parcelable decryptionResult, String quickReplyBody) {
-            Intent i = new Intent(context, MessageCompose.class);
-            i.putExtra( "quickReply",quickReplyBody );
+            Context context, MessageReference messageReference, boolean replyAll, Parcelable decryptionResult) {
+            Intent i = new Intent(context, QuickRepliesMenu.class);
             i.putExtra(MessageCompose.EXTRA_MESSAGE_DECRYPTION_RESULT, decryptionResult);
             i.putExtra(MessageCompose.EXTRA_MESSAGE_REFERENCE, messageReference.toIdentityString());
-            if (replyAll) {
+            i.putExtra("Sending", true);
+        if (replyAll) {
                 i.setAction(MessageCompose.ACTION_REPLY_ALL);
             } else {
                 i.setAction(MessageCompose.ACTION_REPLY);
@@ -71,7 +71,10 @@ public class MessageActions {
 
     public static Intent getActionQuickReplyIntent(Context context, MessageReference messageReference) {
         Intent intent = new Intent(context, QuickRepliesMenu.class);
-        intent.putExtra("messageIdentityString" ,messageReference.toIdentityString());
+        intent.setAction(MessageCompose.ACTION_REPLY);
+        intent.putExtra(MessageCompose.EXTRA_MESSAGE_REFERENCE, messageReference.toIdentityString());
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("Sending", true);
         return intent;
     }
 
@@ -85,8 +88,8 @@ public class MessageActions {
     }
 
     public static void actionQuickReply(
-            Context context, MessageReference messageReference, boolean replyAll, Parcelable decryptionResult, String quickReplyBody) {
-        context.startActivity(getActionQuickReplyIntent(context, messageReference, replyAll, decryptionResult, quickReplyBody));
+            Context context, MessageReference messageReference, boolean replyAll, Parcelable decryptionResult) {
+        context.startActivity(getActionQuickReplyIntent(context, messageReference, replyAll, decryptionResult));
     }
 
     /**
