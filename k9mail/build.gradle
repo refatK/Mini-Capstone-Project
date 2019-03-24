@@ -3,14 +3,30 @@ apply plugin: 'kotlin-android'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'kotlin-android-extensions'
 //apply from: "$rootDir/jacoco.gradle" //Only enable to to try to use the work around
-apply plugin: 'jacoco' // I didnt use the if below, to ensure jacoc was always applied
-//apply plugin: 'jacoco-android'  // This was that plugin I tried to use
+//apply plugin: 'jacoco' // I didnt use the if below, to ensure jacoc was always applied
+apply plugin: 'jacoco-android'  // This was that plugin I tried to use
 
 
 if (!rootProject.optimizeForDevelopment) {
     apply from: '../gradle/plugins/checkstyle-android.gradle'
     apply from: '../gradle/plugins/findbugs-android.gradle'
 }
+
+
+jacoco {
+    toolVersion = "0.8.3"
+}
+
+tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
+}
+
+jacocoAndroidUnitTestReport {
+    csv.enabled false
+    html.enabled true
+    xml.enabled true
+}
+
 
 //if (rootProject.testCoverage) {
 //    apply plugin: 'jacoco'

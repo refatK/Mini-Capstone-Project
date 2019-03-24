@@ -51,9 +51,11 @@ jobs:
     language: android
     script: ./gradlew lint
 
-#  # runs static analysis
-#  - stage: "Test Coverage"
-#    language: android
-#    script: ./gradlew build test createDebugCoverageReport
+  # runs static analysis
+  - stage: "Test Coverage"
+    language: android
+    script: ./gradlew jacocoTestReport
+    after_success:
+    - bash <(curl -s https://codecov.io/bash)
 
 
