@@ -14,34 +14,42 @@ before_install:
 
 jobs:
   include:
-  # build of app without any other task
+# Build of app without any other task
   - stage: "Build"
     language: android
     script: ./gradlew assemble
 
+
 # After Build, run all our tests first to ensure we wrote passing tests
   - stage: "Tests"
     language: android
-    
     name: "Release One Tests"
     script: ./gradlew testDebugUnitTest -Prelease="one"
 
+  - stage: "Tests"
+    language: android
     name: "Release Two Tests"
     script: ./gradlew testDebugUnitTest -Prelease="two"
 
+  - stage: "Tests"
+    language: android
 #    name: "Release Three Tests"
 #    script: ./gradlew testDebugUnitTest -Prelease="three"
 
+  - stage: "Tests"
+    language: android
     name: "All Tests"
     script: ./gradlew test testDebugUnitTest
+
 
 # Static Analysis and Code Coverage
   - stage: "Code Analysis"
     language: android
-
     name: "Static Analysis"
     script: ./gradlew lint
 
+  - stage: "Code Analysis"
+    language: android
     name: "Test Coverage"
     script: ./gradlew jacocoTestReport
     after_success:
