@@ -28,10 +28,6 @@ jacocoAndroidUnitTestReport {
 }
 
 
-//if (rootProject.testCoverage) {
-//    apply plugin: 'jacoco'
-//}
-
 //noinspection GroovyAssignabilityCheck
 configurations.all {
     resolutionStrategy {
@@ -153,6 +149,22 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    testOptions {
+        unitTests.all {
+            if (project.findProperty("release") == "one") {
+                include '**/Release1/**'
+            }
+
+            if (project.findProperty("release") == "two") {
+                include '**/Release2/**'
+            }
+
+            if (project.findProperty("release") == "three") {
+                include '**/Release3/**'
+            }
+        }
     }
 }
 
