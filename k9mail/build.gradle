@@ -24,8 +24,13 @@ jacocoAndroidUnitTestReport {
     html.enabled true
     xml.enabled true
 
-    // TODO only include classes we touched
-//    excludes += ['**/activity/**']
+    // TODO add all exclusions
+    excludes += ['**/account/**', '**/autocrypt/**', '**/cache/**', '**/crypto/**', '**/helper/**',
+                 '**/power/**', '**/preferences/**', '**/remotecontrol/**', '**/search/**', '**/service/**',
+                 '**/setup/**', '**/widget/**', '**/search/**', '**/search/**', '**/search/**',
+                 '**/AccountStats.*', '**/BaseAccount.*', '**/Clock.*', '**/EmailAddressValidator.*',
+                 '**/FontSizes.*', '**/Globals.*', '**/Identity.*', '**/NotificationSetting.*',
+                 '**/PRNGFixes.*', '**/Preferences.*', '**/QuietTimeChecker.*', '**/Throttle.*' ]
 }
 
 

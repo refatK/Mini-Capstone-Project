@@ -31,8 +31,8 @@ jobs:
     name: "Release Two Tests"
     script: ./gradlew testDebugUnitTest -Prelease="two"
 
-  - stage: "Tests"
-    language: android
+#  - stage: "Tests"
+#    language: android
 #    name: "Release Three Tests"
 #    script: ./gradlew testDebugUnitTest -Prelease="three"
 
