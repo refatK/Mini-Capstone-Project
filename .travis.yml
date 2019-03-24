@@ -39,6 +39,7 @@ jobs:
     name: "Static Analysis"
     script: ./gradlew lint
   - script: ./gradlew jacocoTestReport
+    if: branch = master
     name: "Test Coverage"
     after_success:
     - bash <(curl -s https://codecov.io/bash)
