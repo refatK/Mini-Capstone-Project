@@ -179,7 +179,7 @@ public class RecipientSelectView extends TokenCompleteTextView<Recipient> implem
     }
 
     @Override
-    protected Recipient defaultObject(String completionText) {
+    public Recipient defaultObject(String completionText) {
 
         for (MailingList ml : mailingLists) {
             String name = ml.getName();

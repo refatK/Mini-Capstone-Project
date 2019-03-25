@@ -1,4 +1,4 @@
-package com.fsck.k9.activity;
+package com.fsck.k9._390Tests.Release1;
 
 import android.os.Bundle;
 import android.widget.ListView;

@@ -1,9 +1,10 @@
-package com.fsck.k9.activity;
+package _390Tests.Release1;
 
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 
 import com.fsck.k9.R;
+import com.fsck.k9.activity.MessageCompose;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -19,7 +20,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 
-public class MessageComposeTest {
+public class ComposeMessageWithMailingListTest {
 
     @Rule
     public ActivityTestRule<MessageCompose> mActivityTestRule = new ActivityTestRule<>(MessageCompose.class);

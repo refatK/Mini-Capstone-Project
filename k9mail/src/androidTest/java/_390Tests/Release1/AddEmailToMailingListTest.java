@@ -1,8 +1,12 @@
-package com.fsck.k9.activity.setup;
+package _390Tests.Release1;
 
 import android.support.test.espresso.Espresso;
+import android.support.test.rule.ActivityTestRule;
 import android.view.View;
 import android.widget.ListView;
+
+import com.fsck.k9.R;
+import com.fsck.k9.activity.setup.MailingListEmailListMenu;
 
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
@@ -17,27 +21,25 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.anything;
 import static org.hamcrest.CoreMatchers.is;
-import android.support.test.rule.ActivityTestRule;
-import com.fsck.k9.R;
 
-public class AddQuickReplyTest {
+public class AddEmailToMailingListTest {
     /*
-     * The following are tested:
-     *
-     * Clicking the add button to add an email
-     * Typing the right email, then clicking add
-     * Typing the wrong email, then clicking add
-     * Clicking on cancel
-     *
+    * The following are tested:
+    *
+    * Clicking the add button to add an email
+    * Typing the right email, then clicking add
+    * Typing the wrong email, then clicking add
+    * Clicking on cancel
+    *
      */
 
     @Rule
-    public ActivityTestRule<QuickRepliesMenu> testRule = new ActivityTestRule<QuickRepliesMenu>(QuickRepliesMenu.class);
-    private String quickReply = "Bye";
-    private String emptyString = "";
+    public ActivityTestRule<MailingListEmailListMenu> testRule = new ActivityTestRule<MailingListEmailListMenu>(MailingListEmailListMenu.class);
+    private String correctEmail = "test1@test.com";
+    private String badEmail = "BadTest";
 
     @Test
-    public void testAddReply(){
+    public void testAddEmail(){
         // For some reason, counter can't be a variable
         final int[] counter = new int[1];
 
@@ -54,15 +56,15 @@ public class AddQuickReplyTest {
                 return true;
             }
         }));
-        Espresso.onView(withId(R.id.add_quick_reply)).perform(click());
-        Espresso.onView(withId(R.id.quickReply)).perform(typeText(quickReply));
+        Espresso.onView(withId(R.id.mailing_list_add_email)).perform(click());
+        Espresso.onView(withId(R.id.emailAddress)).perform(typeText(correctEmail));
         Espresso.closeSoftKeyboard();
         Espresso.onView(withId(R.id.button_add)).perform(click());
-        Espresso.onData(anything()).inAdapterView(withId(android.R.id.list)).atPosition(counter[0]).check(matches(withText(quickReply)));
+        Espresso.onData(anything()).inAdapterView(withId(android.R.id.list)).atPosition(counter[0]).check(matches(withText(correctEmail)));
     }
 
     @Test
-    public void testNoReply(){
+    public void testWrongEmail(){
         // For some reason, counter can't be a variable
         final int[] counter = new int[1];
         final int[] newCounter = new int[1];
@@ -80,8 +82,8 @@ public class AddQuickReplyTest {
                 return true;
             }
         }));
-        Espresso.onView(withId(R.id.add_quick_reply)).perform(click());
-        Espresso.onView(withId(R.id.quickReply)).perform(typeText(emptyString));
+        Espresso.onView(withId(R.id.mailing_list_add_email)).perform(click());
+        Espresso.onView(withId(R.id.emailAddress)).perform(typeText(badEmail));
         Espresso.closeSoftKeyboard();
         Espresso.onView(withId(R.id.button_add)).perform(click());
 
@@ -120,7 +122,7 @@ public class AddQuickReplyTest {
                 return true;
             }
         }));
-        Espresso.onView(withId(R.id.add_quick_reply)).perform(click());
+        Espresso.onView(withId(R.id.mailing_list_add_email)).perform(click());
         Espresso.onView(withId(R.id.button_cancel)).perform(click());
 
         Espresso.onView(withId(android.R.id.list)).check(matches(new TypeSafeMatcher<View>(){
@@ -138,4 +140,5 @@ public class AddQuickReplyTest {
         }));
         assertThat(newCounter[0], is(counter[0]));
     }
+
 }

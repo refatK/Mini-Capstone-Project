@@ -1,4 +1,4 @@
-package com.fsck.k9.activity;
+package _390Tests.Release2;
 
 import android.content.Intent;
 import android.support.test.espresso.contrib.PickerActions;
@@ -17,6 +17,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.not;
 
 import com.fsck.k9.R;
+import com.fsck.k9.activity.SetDateAndTime;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
