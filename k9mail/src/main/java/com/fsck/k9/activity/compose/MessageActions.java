@@ -119,6 +119,10 @@ public class MessageActions {
      * handles certain actions.
      * Save will attempt to replace the message in the given folder with the updated version.
      * Discard will delete the message from the given folder.
+     *   @param context context of the activity
+     *   @param messageReference message identification and reference
+     *   @param change this variable determines what changes occur to the message view
+     *   ertain buttons will not be visible in either case (scheduled or draft)
      */
     public static void actionEditDraft(Context context, MessageReference messageReference, String change) {
 

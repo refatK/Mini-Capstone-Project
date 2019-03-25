@@ -226,6 +226,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
     private Date scheduledSendDate;
     private boolean isScheduledSaved = false;
+    //messagesaved variable for testing
+    private boolean messageSavedTest = false;
 
     private String referencedMessageIds;
     private String repliedToMessageId;
@@ -2170,6 +2172,95 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             }
         }
     };
+
+
+    /**
+     * Modified version of checkToSaveAndConfirmScheduledSave() used for unit testing
+     */
+    public void checkToSaveAndConfirmScheduledSaveTest() {
+
+        isScheduledSaved = true;
+        finishAfterDraftSaved = true;
+        //performSaveAfterChecks();
+    }
+
+    /**
+     * Modified version of onMessageBuildSuccess used for unit testing
+     * @param message mocked
+     * @param isDraft boolean set to true
+     */
+    public void onMessageBuildSuccessTest(MimeMessage message, boolean isDraft) {
+        if (isDraft) {
+            changesMadeSinceLastSave = false;
+            currentMessageBuilder = null;
+
+            if ((action == Action.EDIT_DRAFT || action == Action.EDIT_SCHEDULED)
+                    && relatedMessageReference != null) {
+                message.setUid(relatedMessageReference.getUid());
+            }
+
+            //  boolean saveRemotely = recipientPresenter.shouldSaveRemotely();
+
+            if (isScheduledSaved) {
+                //   new SaveScheduledMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
+                //         message, draftId, saveRemotely, scheduledId).execute();
+                //test method called when saved
+                messageSavedTest = true;
+            } else if (action != Action.EDIT_SCHEDULED) { // never do draft saves in scheduled message editor
+                //   new SaveDraftMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
+                //         message, draftId, saveRemotely).execute();
+            }
+
+            if (finishAfterDraftSaved) {
+                //  finish();
+            } else {
+                //  setProgressBarIndeterminateVisibility(false);
+            }
+        } else {
+            currentMessageBuilder = null;
+            // new SendMessageTask(getApplicationContext(), account, contacts, message,
+            //draftId != INVALID_DRAFT_ID ? draftId : null, relatedMessageReference).execute();
+            // finish();
+        }
+    }
+
+    /**
+     * testing purposes
+     * setter for messagetest
+     * @param test setting variable as true/false to indicate message was saved
+     */
+    public void setMessageSavedTest(boolean test)
+    {
+        messageSavedTest = test;
+    }
+
+    /**
+     * testing purposes
+     * @return boolean variable
+     */
+    public boolean getMessageSavedTest()
+    {
+        return messageSavedTest;
+    }
+
+    /**
+     * testing purposes
+     * @return boolean variable
+     */
+    public boolean getScheduledTest()
+    {
+        return isScheduledSaved;
+    }
+
+    /**
+     * testing purposes
+     * setter for isscheduledsaved
+     * @param test
+     */
+    public void setScheduledTest(boolean test)
+    {
+        isScheduledSaved = test;
+    }
 
     public enum Action {
         COMPOSE(R.string.compose_title_compose),

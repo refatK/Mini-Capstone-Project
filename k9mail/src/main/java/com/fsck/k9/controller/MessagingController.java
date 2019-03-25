@@ -3102,6 +3102,13 @@ public class MessagingController {
         }
     }
 
+
+    /**
+     * Will delete the scheduled message from database
+     *
+     * @param account account that the message belongs to
+     * @param id schedule message id
+     */
     public void deleteScheduled(final Account account, long id) {
         LocalFolder localFolder = null;
         try {
