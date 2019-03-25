@@ -95,8 +95,5 @@ public class ScheduledFolderTest {
 
         onView(withText("Folders")).perform(click());
 
-        onData(anything())
-                .inAdapterView(withContentDescription("Scheduled")).perform(click());
-
     }
 }
