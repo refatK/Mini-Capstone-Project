@@ -9,7 +9,7 @@ buildscript {
         classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2'
         classpath 'com.android.tools.build:gradle:3.3.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.20"
-        // added this plugin as it seemed to be an easy way to run the tests, but had issues
+        // added this plugin to make jacoco run our unit tests
         classpath 'com.dicedmelon.gradle:jacoco-android:0.1.4'
 
     }

@@ -24,7 +24,6 @@ jacocoAndroidUnitTestReport {
     html.enabled true
     xml.enabled true
 
-    // TODO add all exclusions
     excludes += ['**/k9/account/**', '**/k9/autocrypt/**', '**/k9/cache/**', '**/k9/crypto/**', '**/k9/helper/**',
                  '**/k9/power/**', '**/k9/preferences/**', '**/k9/remotecontrol/**', '**/k9/search/**',
                  '**/k9/service/**', '**/k9/setup/**', '**/k9/widget/**', '**/AccountStats.*', '**/BaseAccount.*',
@@ -125,7 +124,7 @@ android {
 
         debug {
             applicationIdSuffix ".debug"
-            //testCoverageEnabled rootProject.testCoverage // like with if above, I set it true to always run
+            //testCoverageEnabled rootProject.testCoverage // make it always cover instead
             testCoverageEnabled true
 
             buildConfigField "boolean", "DEVELOPER_MODE", "true"
