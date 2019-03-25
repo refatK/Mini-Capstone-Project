@@ -25,12 +25,12 @@ jacocoAndroidUnitTestReport {
     xml.enabled true
 
     // TODO add all exclusions
-    excludes += ['**/account/**', '**/autocrypt/**', '**/cache/**', '**/crypto/**', '**/helper/**',
-                 '**/power/**', '**/preferences/**', '**/remotecontrol/**', '**/search/**', '**/service/**',
-                 '**/setup/**', '**/widget/**', '**/search/**', '**/search/**', '**/search/**',
-                 '**/AccountStats.*', '**/BaseAccount.*', '**/Clock.*', '**/EmailAddressValidator.*',
-                 '**/FontSizes.*', '**/Globals.*', '**/Identity.*', '**/NotificationSetting.*',
-                 '**/PRNGFixes.*', '**/Preferences.*', '**/QuietTimeChecker.*', '**/Throttle.*' ]
+    excludes += ['**/k9/account/**', '**/k9/autocrypt/**', '**/k9/cache/**', '**/k9/crypto/**', '**/k9/helper/**',
+                 '**/k9/power/**', '**/k9/preferences/**', '**/k9/remotecontrol/**', '**/k9/search/**',
+                 '**/k9/service/**', '**/k9/setup/**', '**/k9/widget/**', '**/AccountStats.*', '**/BaseAccount.*',
+                 '**/Clock.*', '**/EmailAddressValidator.*', '**/FontSizes.*', '**/Globals.*', '**/Identity.*',
+                 '**/NotificationSetting.*', '**/PRNGFixes.*', '**/Preferences.*', '**/QuietTimeChecker.*',
+                 '**/Throttle.*']
 }
 
 
