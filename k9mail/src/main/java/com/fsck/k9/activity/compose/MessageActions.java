@@ -8,6 +8,9 @@ import com.fsck.k9.Account;
 import com.fsck.k9.Preferences;
 import com.fsck.k9.activity.MessageCompose;
 import com.fsck.k9.activity.MessageReference;
+import com.fsck.k9.activity.setup.QuickRepliesMenu;
+import com.fsck.k9.controller.MessagingController;
+import com.fsck.k9.mail.Message;
 
 public class MessageActions {
     /**
@@ -41,6 +44,21 @@ public class MessageActions {
         }
         return i;
     }
+    public static Intent getActionQuickReplyIntent(
+            Context context, MessageReference messageReference, boolean replyAll, Parcelable decryptionResult) {
+            Intent i = new Intent(context, QuickRepliesMenu.class);
+            i.putExtra(MessageCompose.EXTRA_MESSAGE_DECRYPTION_RESULT, decryptionResult);
+            i.putExtra(MessageCompose.EXTRA_MESSAGE_REFERENCE, messageReference.toIdentityString());
+            i.putExtra("Sending", true);
+        if (replyAll) {
+                i.setAction(MessageCompose.ACTION_REPLY_ALL);
+            } else {
+                i.setAction(MessageCompose.ACTION_REPLY);
+            }
+            return i;
+
+    }
+
 
     public static Intent getActionReplyIntent(Context context, MessageReference messageReference) {
         Intent intent = new Intent(context, MessageCompose.class);
@@ -51,6 +69,15 @@ public class MessageActions {
         return intent;
     }
 
+    public static Intent getActionQuickReplyIntent(Context context, MessageReference messageReference) {
+        Intent intent = new Intent(context, QuickRepliesMenu.class);
+        intent.setAction(MessageCompose.ACTION_REPLY);
+        intent.putExtra(MessageCompose.EXTRA_MESSAGE_REFERENCE, messageReference.toIdentityString());
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("Sending", true);
+        return intent;
+    }
+
     /**
      * Compose a new message as a reply to the given message. If replyAll is true the function
      * is reply all instead of simply reply.
@@ -58,6 +85,11 @@ public class MessageActions {
     public static void actionReply(
             Context context, MessageReference messageReference, boolean replyAll, Parcelable decryptionResult) {
         context.startActivity(getActionReplyIntent(context, messageReference, replyAll, decryptionResult));
+    }
+
+    public static void actionQuickReply(
+            Context context, MessageReference messageReference, boolean replyAll, Parcelable decryptionResult) {
+        context.startActivity(getActionQuickReplyIntent(context, messageReference, replyAll, decryptionResult));
     }
 
     /**
@@ -87,6 +119,10 @@ public class MessageActions {
      * handles certain actions.
      * Save will attempt to replace the message in the given folder with the updated version.
      * Discard will delete the message from the given folder.
+     *   @param context context of the activity
+     *   @param messageReference message identification and reference
+     *   @param change this variable determines what changes occur to the message view
+     *   ertain buttons will not be visible in either case (scheduled or draft)
      */
     public static void actionEditDraft(Context context, MessageReference messageReference, String change) {
 

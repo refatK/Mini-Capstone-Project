@@ -43,6 +43,7 @@ import com.fsck.k9.activity.misc.SwipeGestureDetector.OnSwipeGestureListener;
 import com.fsck.k9.activity.setup.AccountSettings;
 import com.fsck.k9.activity.setup.FolderSettings;
 import com.fsck.k9.activity.setup.MailingListMenu;
+import com.fsck.k9.activity.setup.QuickRepliesMenu;
 import com.fsck.k9.activity.setup.Prefs;
 import com.fsck.k9.fragment.MessageListFragment;
 import com.fsck.k9.fragment.MessageListFragment.MessageListFragmentListener;
@@ -892,6 +893,10 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
                 messageViewFragment.onReplyAll();
                 return true;
             }
+            case R.id.quick_reply: {
+                messageViewFragment.onQuickReply();
+                return true;
+            }
             case R.id.forward: {
                 messageViewFragment.onForward();
                 return true;
@@ -1213,6 +1218,11 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
     }
 
     @Override
+    /**
+     * Takes a message reference and edits draft message or scheduled message based on its location
+     * if the message does not belong to either folder, it is simply displayed
+     * @param messageReference message reference received when tapping on a message
+     */
     public void openMessage(MessageReference messageReference) {
         Preferences prefs = Preferences.getPreferences(getApplicationContext());
         Account account = prefs.getAccount(messageReference.getAccountUuid());
@@ -1280,6 +1290,15 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
     @Override
     public void onReply(MessageReference messageReference, Parcelable decryptionResultForReply) {
         MessageActions.actionReply(this, messageReference, false, decryptionResultForReply);
+    }
+    @Override
+    public void onQuickReply(MessageReference messageReference) {
+       onQuickReply(messageReference, null);
+    }
+
+    @Override
+    public void onQuickReply(MessageReference messageReference, Parcelable decryptionResultForReply) {
+        MessageActions.actionQuickReply(this, messageReference, false, decryptionResultForReply );
     }
 
     @Override

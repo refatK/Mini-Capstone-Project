@@ -122,6 +122,7 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="empty_subject">Subject is empty, click again to send anyway</string>
     <string name="select_action">Select</string>
     <string name="deselect_action">Deselect</string>
+    <string name="quick_reply_action">Quick Reply</string>
     <string name="reply_action">Reply</string>
     <string name="reply_all_action">Reply all</string>
     <string name="delete_action">Delete</string>
@@ -216,6 +217,7 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="notification_additional_messages">+ <xliff:g id="additional_messages">%1$d</xliff:g> more on <xliff:g id="account">%2$s</xliff:g></string>
 
     <string name="notification_action_reply">Reply</string>
+    <string name="notification_action_quick_reply">Quick Reply</string>
     <string name="notification_action_mark_as_read">Mark Read</string>
     <string name="notification_action_mark_all_as_read">Mark All Read</string>
     <string name="notification_action_delete">Delete</string>
@@ -1274,7 +1276,7 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="crypto_no_provider_title">This email is encrypted</string>
     <string name="crypto_no_provider_message">This email has been encrypted with OpenPGP.\nTo read it, you need to install and configure a compatible OpenPGP App.</string>
     <string name="crypto_no_provider_button">Choose OpenPGP App</string>
-
+	
     <string name="mailing_lists">Mailing Lists</string>
     <string name="mailing_list_email_list">Email List</string>
     <string name="mail_list_widget_text">K-9 Message List</string>
@@ -1301,5 +1303,7 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="dialog_autocrypt_mutual_description_2">If both sender and recipients enable mutual mode, encryption will be enabled by default.</string>
     <string name="dialog_autocrypt_mutual_learn_more">You can <a href="https://k9mail.github.io/2018/02/26/OpenPGP-Considerations-Part-III-Autocrypt.html">click here</a> to learn more.</string>
     <string name="title_activity_remove_mailing_list">RemoveMailingList</string>
+    <string name="title_activity_remove_quick_reply">RemoveQuickReply</string>
+    <string name="toast_invalid_quick_reply">Invalid Quick Reply input. Please add another one.</string>
     <string name="title_activity_remove_email_address">RemoveEmailAddress</string>
 </resources>

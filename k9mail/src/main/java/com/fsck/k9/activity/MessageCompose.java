@@ -47,6 +47,7 @@ import android.widget.Toast;
 import com.fsck.k9.Account;
 import com.fsck.k9.Account.MessageFormat;
 import com.fsck.k9.DaoSession;
+import com.fsck.k9.ScheduledEmailDao;
 import com.fsck.k9.ScheduledEmailsToSendNowService;
 import com.fsck.k9.Identity;
 import com.fsck.k9.K9;
@@ -136,6 +137,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     public static final String EXTRA_ACCOUNT = "account";
     public static final String EXTRA_MESSAGE_REFERENCE = "message_reference";
     public static final String EXTRA_MESSAGE_DECRYPTION_RESULT = "message_decryption_result";
+    public static final String EXTRA_QUICK_REPLY_MESSAGE = "quickReply";
 
     private static final String STATE_KEY_SOURCE_MESSAGE_PROCED =
             "com.fsck.k9.activity.MessageCompose.stateKeySourceMessageProced";
@@ -224,6 +226,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
     private Date scheduledSendDate;
     private boolean isScheduledSaved = false;
+    //messagesaved variable for testing
+    private boolean messageSavedTest = false;
 
     private String referencedMessageIds;
     private String repliedToMessageId;
@@ -266,6 +270,12 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         setProgressBarIndeterminateVisibility(false);
 
         final Intent intent = getIntent();
+
+        // Hide view if sending a quick reply so the user has no access to the view inputs
+        if (intent.getStringExtra(EXTRA_QUICK_REPLY_MESSAGE) != null) {
+            LinearLayout wholeView = (LinearLayout) findViewById(R.id.full_compose_view);
+            wholeView.setVisibility(View.INVISIBLE);
+        }
 
         String messageReferenceString = intent.getStringExtra(EXTRA_MESSAGE_REFERENCE);
         relatedMessageReference = MessageReference.parse(messageReferenceString);
@@ -741,13 +751,15 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     }
 
     private void sendMessageLater(){
-
         // a scheduled save should be set up with someone to send to
         if (recipientPresenter.checkRecipientsOkForSending()) {
             return;
         }
 
         Intent intent = new Intent(this, SetDateAndTime.class);
+        if(action == Action.EDIT_SCHEDULED){
+            intent.putExtra("currentDate",scheduledSendDate);
+        }
         isInSubActivity = true;
         startActivityForResult(intent, MSG_SAVED_SCHEDULED);
     }
@@ -770,15 +782,27 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 Toast.LENGTH_LONG).show();
 
         daoSession = ((K9)getApplication()).getDaoSession();
+        ScheduledEmail scheduledEmail = null;
+        List<ScheduledEmail> allScheduled = daoSession.getScheduledEmailDao().loadAll();
 
-        ScheduledEmail scheduledEmail = new ScheduledEmail(null, account.getUuid(), scheduledId,
-                scheduledSendDate.getTimeInMillis());
+        for(ScheduledEmail sE: allScheduled){
+            if(sE.getEmailID() == scheduledId) {
+                scheduledEmail = sE;
+                sE.setScheduledDateTime(scheduledSendDate.getTimeInMillis());
+            }
+        }
 
-        daoSession.getScheduledEmailDao().insert(scheduledEmail);
+        if(scheduledEmail == null)
+            scheduledEmail = new ScheduledEmail(null, account.getUuid(), scheduledId,
+                    scheduledSendDate.getTimeInMillis());
+
+        daoSession.getScheduledEmailDao().insertOrReplace(scheduledEmail);
+
+
 
         Intent i = new Intent(getApplicationContext(), ScheduledEmailsToSendNowService.class);
 
-       Context context = getApplicationContext();
+        Context context = getApplicationContext();
 
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         long frequency = 10 * 1000;
@@ -1179,8 +1203,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             menu.findItem(R.id.send).setVisible(false);
             menu.findItem(R.id.send).setEnabled(false);
             //disable send later option
-            menu.findItem(R.id.send_later).setVisible(false);
-            menu.findItem(R.id.send_later).setEnabled(false);
+           // menu.findItem(R.id.send_later).setVisible(false);
+           // menu.findItem(R.id.send_later).setEnabled(false);
         } else {
             //disable save scheduled option for other folders (inbox, outbox, etc)
             menu.findItem(R.id.save_scheduled).setVisible(false);
@@ -1473,8 +1497,30 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             }
         }
 
+        // If its a quick reply, set the message body and send immediatley
+        String predefinedMessageBody = getIntent().getStringExtra(EXTRA_QUICK_REPLY_MESSAGE);
+        if (predefinedMessageBody!=null) {
+            messageContentView.setCharacters(predefinedMessageBody);
+            handleQuickReplySend();
+        }
+
     }
 
+
+    /**
+     * Once a quick reply is set up, handle the sending with a delay so that it is ensured
+     * the message is fully prepped to send
+     */
+    private void handleQuickReplySend() {
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                Timber.d("Sending Quick Reply");
+                performSendAfterChecks();
+            }
+        }, 2000);
+    }
+
+    
     private void processMessageToForward(MessageViewInfo messageViewInfo, boolean asAttachment) throws MessagingException {
         Message message = messageViewInfo.message;
 
@@ -2107,14 +2153,10 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 case MSG_SAVED_SCHEDULED:
                     scheduledId = (Long)  msg.obj;
 
-                    if (action == Action.EDIT_SCHEDULED) {
-                        Toast.makeText(
-                                MessageCompose.this,
-                                getString(R.string.message_saved_scheduled_toast),
-                                Toast.LENGTH_LONG).show();
-                    } else {
-                        sendLaterConfirmationToast();
-                    }
+                    Toast.makeText(
+                            MessageCompose.this,
+                            getString(R.string.message_saved_scheduled_toast), Toast.LENGTH_LONG).show();
+                    sendLaterConfirmationToast();
 
                     break;
 
@@ -2130,6 +2172,95 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             }
         }
     };
+
+
+    /**
+     * Modified version of checkToSaveAndConfirmScheduledSave() used for unit testing
+     */
+    public void checkToSaveAndConfirmScheduledSaveTest() {
+
+        isScheduledSaved = true;
+        finishAfterDraftSaved = true;
+        //performSaveAfterChecks();
+    }
+
+    /**
+     * Modified version of onMessageBuildSuccess used for unit testing
+     * @param message mocked
+     * @param isDraft boolean set to true
+     */
+    public void onMessageBuildSuccessTest(MimeMessage message, boolean isDraft) {
+        if (isDraft) {
+            changesMadeSinceLastSave = false;
+            currentMessageBuilder = null;
+
+            if ((action == Action.EDIT_DRAFT || action == Action.EDIT_SCHEDULED)
+                    && relatedMessageReference != null) {
+                message.setUid(relatedMessageReference.getUid());
+            }
+
+            //  boolean saveRemotely = recipientPresenter.shouldSaveRemotely();
+
+            if (isScheduledSaved) {
+                //   new SaveScheduledMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
+                //         message, draftId, saveRemotely, scheduledId).execute();
+                //test method called when saved
+                messageSavedTest = true;
+            } else if (action != Action.EDIT_SCHEDULED) { // never do draft saves in scheduled message editor
+                //   new SaveDraftMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
+                //         message, draftId, saveRemotely).execute();
+            }
+
+            if (finishAfterDraftSaved) {
+                //  finish();
+            } else {
+                //  setProgressBarIndeterminateVisibility(false);
+            }
+        } else {
+            currentMessageBuilder = null;
+            // new SendMessageTask(getApplicationContext(), account, contacts, message,
+            //draftId != INVALID_DRAFT_ID ? draftId : null, relatedMessageReference).execute();
+            // finish();
+        }
+    }
+
+    /**
+     * testing purposes
+     * setter for messagetest
+     * @param test setting variable as true/false to indicate message was saved
+     */
+    public void setMessageSavedTest(boolean test)
+    {
+        messageSavedTest = test;
+    }
+
+    /**
+     * testing purposes
+     * @return boolean variable
+     */
+    public boolean getMessageSavedTest()
+    {
+        return messageSavedTest;
+    }
+
+    /**
+     * testing purposes
+     * @return boolean variable
+     */
+    public boolean getScheduledTest()
+    {
+        return isScheduledSaved;
+    }
+
+    /**
+     * testing purposes
+     * setter for isscheduledsaved
+     * @param test
+     */
+    public void setScheduledTest(boolean test)
+    {
+        isScheduledSaved = test;
+    }
 
     public enum Action {
         COMPOSE(R.string.compose_title_compose),

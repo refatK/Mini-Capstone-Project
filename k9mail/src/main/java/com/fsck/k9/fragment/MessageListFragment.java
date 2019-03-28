@@ -1,17 +1,5 @@
 package com.fsck.k9.fragment;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.Future;
-
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.Fragment;
@@ -31,7 +19,6 @@ import android.os.Parcelable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
-import timber.log.Timber;
 import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -56,6 +43,7 @@ import com.fsck.k9.BuildConfig;
 import com.fsck.k9.K9;
 import com.fsck.k9.Preferences;
 import com.fsck.k9.R;
+import com.fsck.k9.ScheduledEmail;
 import com.fsck.k9.activity.ActivityListener;
 import com.fsck.k9.activity.ChooseFolder;
 import com.fsck.k9.activity.FolderInfoHolder;
@@ -94,6 +82,20 @@ import com.fsck.k9.search.SearchSpecification.SearchCondition;
 import com.fsck.k9.search.SearchSpecification.SearchField;
 import com.fsck.k9.search.SqlQueryBuilder;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.Future;
+
+import timber.log.Timber;
+
 import static com.fsck.k9.fragment.MLFProjectionInfo.ACCOUNT_UUID_COLUMN;
 import static com.fsck.k9.fragment.MLFProjectionInfo.FLAGGED_COLUMN;
 import static com.fsck.k9.fragment.MLFProjectionInfo.FOLDER_NAME_COLUMN;
@@ -109,6 +111,8 @@ import static com.fsck.k9.fragment.MLFProjectionInfo.UID_COLUMN;
 
 public class MessageListFragment extends Fragment implements OnItemClickListener,
         ConfirmationDialogFragmentListener, LoaderCallbacks<Cursor> {
+
+    private long messageID;
 
     public static MessageListFragment newInstance(
             LocalSearch search, boolean isThreadDisplay, boolean threadedList) {
@@ -776,7 +780,6 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
         listView.setFastScrollEnabled(true);
         listView.setScrollingCacheEnabled(false);
         listView.setOnItemClickListener(this);
-
         registerForContextMenu(listView);
     }
 
@@ -799,7 +802,9 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
     private void onReplyAll(MessageReference messageReference) {
         fragmentListener.onReplyAll(messageReference);
     }
-
+    private void onQuickReply(MessageReference messageReference) {
+        fragmentListener.onQuickReply(messageReference);
+    }
     private void onForward(MessageReference messageReference) {
         fragmentListener.onForward(messageReference);
     }
@@ -1132,6 +1137,10 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
                 onReplyAll(getMessageAtPosition(adapterPosition));
                 break;
             }
+            case R.id.quick_reply: {
+                onQuickReply(getMessageAtPosition(adapterPosition));
+                return true;
+            }
             case R.id.forward: {
                 onForward(getMessageAtPosition(adapterPosition));
                 break;
@@ -1156,6 +1165,7 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
             case R.id.delete: {
                 MessageReference message = getMessageAtPosition(adapterPosition);
                 onDelete(message);
+                checkIfScheduledMsg_toDelete();
                 break;
             }
             case R.id.mark_as_read: {
@@ -1202,6 +1212,16 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
 
         contextMenuUniqueId = 0;
         return true;
+    }
+
+    private void checkIfScheduledMsg_toDelete() {
+        if(folderName.equals(account.getScheduledFolderName())) {
+            for(ScheduledEmail sE : K9.daoSession.getScheduledEmailDao().loadAll()) {
+                if(sE.getEmailID() == messageID) {
+                    K9.daoSession.getScheduledEmailDao().delete(sE);
+                }
+            }
+        }
     }
 
     @Override
@@ -2410,6 +2430,7 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
         void onForward(MessageReference message);
         void onForwardAsAttachment(MessageReference message);
         void onReply(MessageReference message);
+        void onQuickReply(MessageReference messageReference);
         void onReplyAll(MessageReference message);
         void openMessage(MessageReference messageReference);
         void setMessageListTitle(String title);
@@ -2458,6 +2479,7 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
 
         String accountUuid = cursor.getString(ACCOUNT_UUID_COLUMN);
         String folderName = cursor.getString(FOLDER_NAME_COLUMN);
+        messageID = cursor.getLong(ID_COLUMN);
         String messageUid = cursor.getString(UID_COLUMN);
 
         return new MessageReference(accountUuid, folderName, messageUid, null);

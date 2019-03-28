@@ -1,5 +1,8 @@
 package com.fsck.k9.activity.setup;
 
+import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -15,10 +18,15 @@ import com.fsck.k9.K9;
 import com.fsck.k9.QuickReply;
 import com.fsck.k9.R;
 import com.fsck.k9.activity.K9ListActivity;
+import com.fsck.k9.activity.MessageCompose;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The view used for adding, deleting and editing quick replies. Also used for choosing a quick
+ * reply to send as an email.
+ */
 public class QuickRepliesMenu extends K9ListActivity {
 
     private List<QuickReply> quickReplies;
@@ -49,7 +57,7 @@ public class QuickRepliesMenu extends K9ListActivity {
             quickReplyBodies.add(qR.getBody());
         }
 
-        ArrayAdapter<String> quickReplyAdapter = new ArrayAdapter<String>(
+        ArrayAdapter<String> quickReplyAdapter = new ArrayAdapter<>(
                 this, R.layout.quick_reply_menu_item,  quickReplyBodies);
         setListAdapter(quickReplyAdapter);
 
@@ -59,11 +67,22 @@ public class QuickRepliesMenu extends K9ListActivity {
         {
             public void onClick(View v)
             {
-                //TODO: Add the functionality for adding QRs
+                Intent intent = new Intent(getApplicationContext(), AddQuickReply.class);
+                startActivity(intent);
             }
         });
 
-        registerForContextMenu(getListView());
+        if(getIntent().getBooleanExtra("Sending",false)) {
+            add_quick_reply.setText("Select A Quick Reply To Send");
+            add_quick_reply.setClickable(false);
+            add_quick_reply.setWidth(1080);
+            add_quick_reply.setBackgroundColor(Color.DKGRAY);
+            add_quick_reply.setTextColor(Color.LTGRAY);
+        }
+        else{
+            registerForContextMenu(getListView());
+        }
+
     }
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -79,23 +98,49 @@ public class QuickRepliesMenu extends K9ListActivity {
 
         switch(item.getItemId())
         {
-            case R.id.rename:{
-                //TODO: Add Edit QR Functionality here
+            case R.id.edit:{
+                Intent intent = new Intent(this, EditQuickReply.class);
+                intent.putExtra("quickReplyId", quickReplies.get(info.position).getId());
+                startActivity(intent);
+                break;
             }
 
             case R.id.delete:{
-                //TODO: Add Delete QR Functionality here.
+                Intent intent = new Intent(this, RemoveQuickReply.class);
+                intent.putExtra("quickReplyId", quickReplies.get(info.position).getId());
+                startActivity(intent);
+                break;
             }
 
         }
         return super.onContextItemSelected(item);
     }
 
+    /**
+     * Used to send a quick reply. If not in the menu version of the list clicking a quick
+     * reply will cause a message to be created with the qr as the body.
+     */
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        Toast.makeText(this, quickReplyBodies.get(position), Toast.LENGTH_SHORT).show();
-        //TODO: Make the user able to send this QR after selection
-    }
-}
 
+        Intent i = getIntent();
+
+        // ignore if in a view
+        if (i.getBooleanExtra("Sending", false)) {
+            Toast.makeText(this, "Sending QR: " + quickReplyBodies.get(position), Toast.LENGTH_SHORT).show();
+
+            // extract all information from intent passed to this view
+            Intent intent = new Intent(this, MessageCompose.class);
+            intent.putExtras(i);
+            intent.setAction(i.getAction());
+            intent.setFlags(i.getFlags());
+
+            // same as reply info but we add the quick reply body
+            intent.putExtra(MessageCompose.EXTRA_QUICK_REPLY_MESSAGE, quickReplyBodies.get(position));
+            startActivity(intent);
+            finish();
+        }
+    }
+
+}
