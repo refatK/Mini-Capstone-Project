@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "174363471104",
+    "firebase_url": "https://soen390-k9-mail.firebaseio.com",
+    "project_id": "soen390-k9-mail",
+    "storage_bucket": "soen390-k9-mail.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:174363471104:android:1fdb40932477e01e",
+        "android_client_info": {
+          "package_name": "com.fsck.k9"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "174363471104-5pecf84p0mg9n52l94hpjd1ogp32mdr7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhRXCMD-LSLzyNRTWYiqWVSXSAh05_DMA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:174363471104:android:c5197b51b4a58381",
+        "android_client_info": {
+          "package_name": "com.fsck.k9.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "174363471104-5pecf84p0mg9n52l94hpjd1ogp32mdr7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhRXCMD-LSLzyNRTWYiqWVSXSAh05_DMA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

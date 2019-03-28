@@ -96,6 +96,9 @@
         <meta-data
             android:name="android.app.default_searchable"
             android:value="com.fsck.k9.activity.Search" />
+        <meta-data
+            android:name="firebase_performance_logcat_enabled"
+            android:value="true" />
 
         <activity
             android:name=".activity.Accounts"
