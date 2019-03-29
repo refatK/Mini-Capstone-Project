@@ -5,11 +5,13 @@ import android.widget.LinearLayout;
 
 import com.fsck.k9.activity.MessageCompose;
 
+import static junit.framework.Assert.assertFalse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -39,15 +41,27 @@ public class QuickReplySendTest {
         verify(messageComposeView).setVisibility(View.INVISIBLE);
     }
 
-    @Test
-    public void actionIsQuickReply_MakesSendInstant() {
-        //TODO maybe test processMessageToReplyTo() , make sure to make the method public if issues
-        // Would check that the handle send thing happens
-    }
 
     @Test
     public void quickReplySend_SendsWithSmallDelay() {
-        //TODO Idk if possible, but maybe test the handleQuickReplySend() actuaaly takes 2 seconds
-        // Once Again, make sure to make the method public if issues
+        // sending causes this to be set true
+        messageComposeActivity.changesMadeSinceLastSave = true;
+
+        // do quick reply send
+        messageComposeActivity.handleQuickReplySend();
+
+        // check still not change because not run instantally
+        assertTrue(messageComposeActivity.changesMadeSinceLastSave);
+
+        //assert finished after expected send
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        assertFalse(messageComposeActivity.isFinishing());
+                    }
+                },
+                2000
+        );
     }
 }

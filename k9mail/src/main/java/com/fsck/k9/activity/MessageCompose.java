@@ -201,7 +201,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     private MessageBuilder currentMessageBuilder;
     private boolean finishAfterDraftSaved;
     private boolean alreadyNotifiedUserOfEmptySubject = false;
-    private boolean changesMadeSinceLastSave = false;
+    public boolean changesMadeSinceLastSave = false;
 
     /**
      * The database ID of this message's draft. This is used when saving drafts so the message in
