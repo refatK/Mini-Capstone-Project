@@ -1,8 +1,9 @@
-package com.fsck.k9;
+package com.fsck.k9._390Tests.Release2;
 
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.fsck.k9.K9RobolectricTestRunner;
 import com.fsck.k9.activity.MessageCompose;
 
 import static junit.framework.Assert.assertFalse;
@@ -50,7 +51,7 @@ public class QuickReplySendTest {
         // do quick reply send
         messageComposeActivity.handleQuickReplySend();
 
-        // check still not change because not run instantally
+        // check still not change because not run instantly
         assertTrue(messageComposeActivity.changesMadeSinceLastSave);
 
         //assert finished after expected send
