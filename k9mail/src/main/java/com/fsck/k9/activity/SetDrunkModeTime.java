@@ -30,12 +30,12 @@ public class SetDrunkModeTime extends K9Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.set_drunk_mode_time);
 
-        setStarTime = (Button) findViewById(R.id.send_later_set_time_button);
-        setEndTime = (Button) findViewById(R.id.send_later_set_date_button);
-        setTime = (Button) findViewById(R.id.send_later_set_date_and_time_button);
+        setStarTime = (Button) findViewById(R.id.drunk_mode_set_start_time_button);
+        setEndTime = (Button) findViewById(R.id.drunk_mode_set_end_time_button);
+        setTime = (Button) findViewById(R.id.drunk_mode_set_time_button);
 
-        startTimeText = (TextView) findViewById(R.id.send_later_date);
-        endTimeText = (TextView) findViewById(R.id.send_later_time);
+        startTimeText = (TextView) findViewById(R.id.drunk_mode_start_time);
+        endTimeText = (TextView) findViewById(R.id.drunk_mode_end_time);
 
         String strStartTime;
         String strEndTime;

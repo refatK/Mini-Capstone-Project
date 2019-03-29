@@ -16,14 +16,18 @@ public class DrunkMode {
     @Property(nameInDb = "is_drunk")
     private Boolean isDrunk;
 
-    @Property(nameInDb = "time")
-    private Date time;
+    @Property(nameInDb = "start_time")
+    private Date startTime;
 
-    @Generated(hash = 405359390)
-    public DrunkMode(Long id, Boolean isDrunk, Date time) {
+    @Property(nameInDb = "end_time")
+    private Date endTime;
+
+    @Generated(hash = 1801453768)
+    public DrunkMode(Long id, Boolean isDrunk, Date startTime, Date endTime) {
         this.id = id;
         this.isDrunk = isDrunk;
-        this.time = time;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     @Generated(hash = 1874578310)
@@ -46,11 +50,19 @@ public class DrunkMode {
         this.isDrunk = isDrunk;
     }
 
-    public Date getTime() {
-        return this.time;
+    public Date getStartTime() {
+        return this.startTime;
     }
 
-    public void setTime(Date time) {
-        this.time = time;
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return this.endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 }
