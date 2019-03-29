@@ -548,7 +548,7 @@ public class K9 extends Application {
             //Initialize time to 00:00:00 GMT in milliseconds
             Date initialTime = new Date();
             initialTime.setTime(0);
-            daoSession.getDrunkModeDao().insert(new DrunkMode(null, false, initialTime));
+            daoSession.getDrunkModeDao().insert(new DrunkMode(null, false, initialTime, initialTime));
         }
         app = this;
         Globals.setContext(this);
