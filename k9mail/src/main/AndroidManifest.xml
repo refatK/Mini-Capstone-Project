@@ -473,6 +473,9 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/temp_file_provider_paths" />
         </provider>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="817359b8d4bc6f98e5460b6a0fcc62273aceaa01" />
     </application>
 
 </manifest>
