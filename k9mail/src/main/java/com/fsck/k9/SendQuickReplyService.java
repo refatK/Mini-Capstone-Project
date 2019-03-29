@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
 
+import com.fsck.k9.activity.MessageCompose;
 import com.fsck.k9.activity.MessageReference;
 import com.fsck.k9.controller.MessagingController;
 
@@ -21,7 +22,7 @@ public class SendQuickReplyService extends IntentService {
     @Override
     protected void onHandleIntent(Intent i) {
         messageReferenceString = i.getStringExtra("messageIdentityString");
-        quickReply = i.getStringExtra("quickReply");
+        quickReply = i.getStringExtra(MessageCompose.EXTRA_QUICK_REPLY_MESSAGE);
         relatedMessageReference = MessageReference.parse(messageReferenceString);
 
         final String accountUuid = relatedMessageReference.getAccountUuid();

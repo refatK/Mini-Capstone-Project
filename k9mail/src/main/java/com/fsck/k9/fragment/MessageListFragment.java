@@ -1,17 +1,5 @@
 package com.fsck.k9.fragment;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.Future;
-
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.Fragment;
@@ -31,7 +19,6 @@ import android.os.Parcelable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
-import timber.log.Timber;
 import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -62,7 +49,6 @@ import com.fsck.k9.activity.ChooseFolder;
 import com.fsck.k9.activity.FolderInfoHolder;
 import com.fsck.k9.activity.MessageReference;
 import com.fsck.k9.activity.misc.ContactPictureLoader;
-import com.fsck.k9.activity.setup.QuickRepliesMenu;
 import com.fsck.k9.cache.EmailProviderCache;
 import com.fsck.k9.controller.MessagingController;
 import com.fsck.k9.fragment.ConfirmationDialogFragment.ConfirmationDialogFragmentListener;
@@ -96,6 +82,20 @@ import com.fsck.k9.search.SearchSpecification.SearchCondition;
 import com.fsck.k9.search.SearchSpecification.SearchField;
 import com.fsck.k9.search.SqlQueryBuilder;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.Future;
+
+import timber.log.Timber;
+
 import static com.fsck.k9.fragment.MLFProjectionInfo.ACCOUNT_UUID_COLUMN;
 import static com.fsck.k9.fragment.MLFProjectionInfo.FLAGGED_COLUMN;
 import static com.fsck.k9.fragment.MLFProjectionInfo.FOLDER_NAME_COLUMN;
@@ -127,7 +127,6 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
 
     private static final int ACTIVITY_CHOOSE_FOLDER_MOVE = 1;
     private static final int ACTIVITY_CHOOSE_FOLDER_COPY = 2;
-    private static final int SELECTED_QR_TO_SEND = 3;
 
     private static final String ARG_SEARCH = "searchObject";
     private static final String ARG_THREADED_LIST = "showingThreadedList";
@@ -137,9 +136,6 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
     private static final String STATE_ACTIVE_MESSAGE = "activeMessage";
     private static final String STATE_REMOTE_SEARCH_PERFORMED = "remoteSearchPerformed";
     private static final String STATE_MESSAGE_LIST = "listState";
-    private int adapterPosition;
-
-
 
     /**
      * Maps a {@link SortType} to a {@link Comparator} implementation.
@@ -806,8 +802,8 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
     private void onReplyAll(MessageReference messageReference) {
         fragmentListener.onReplyAll(messageReference);
     }
-    private void onQuickReply(MessageReference messageReference, String quickReplyBody) {
-        fragmentListener.onQuickReply(messageReference,quickReplyBody);
+    private void onQuickReply(MessageReference messageReference) {
+        fragmentListener.onQuickReply(messageReference);
     }
     private void onForward(MessageReference messageReference) {
         fragmentListener.onForward(messageReference);
@@ -954,13 +950,6 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
         }
 
         switch (requestCode) {
-            case SELECTED_QR_TO_SEND:
-                if(resultCode == Activity.RESULT_OK){
-                    String quickReplyBody = data.getStringExtra("quickReply");
-                    MessageReference messageReference = getMessageAtPosition(adapterPosition);
-                    onQuickReply(messageReference, quickReplyBody);
-                }
-                break;
             case ACTIVITY_CHOOSE_FOLDER_MOVE:
             case ACTIVITY_CHOOSE_FOLDER_COPY: {
                 if (data == null) {
@@ -1123,20 +1112,14 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
         messagingController.sendPendingMessages(account, null);
     }
 
-    private void selectQuickReplyToSend(){
-        Intent viewQuickReplies = new Intent(this.getActivity(), QuickRepliesMenu.class);
-        viewQuickReplies.putExtra("Sending", true);
-        startActivityForResult(viewQuickReplies,SELECTED_QR_TO_SEND);
-    }
-
     @Override
     public boolean onContextItemSelected(android.view.MenuItem item) {
         if (contextMenuUniqueId == 0) {
             return false;
         }
 
-        this.adapterPosition = getPositionForUniqueId(contextMenuUniqueId);
-        if (this.adapterPosition == AdapterView.INVALID_POSITION) {
+        int adapterPosition = getPositionForUniqueId(contextMenuUniqueId);
+        if (adapterPosition == AdapterView.INVALID_POSITION) {
             return false;
         }
 
@@ -1155,7 +1138,7 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
                 break;
             }
             case R.id.quick_reply: {
-                selectQuickReplyToSend();
+                onQuickReply(getMessageAtPosition(adapterPosition));
                 return true;
             }
             case R.id.forward: {
@@ -2447,7 +2430,7 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
         void onForward(MessageReference message);
         void onForwardAsAttachment(MessageReference message);
         void onReply(MessageReference message);
-        void onQuickReply(MessageReference messageReference, String quickReplyBody);
+        void onQuickReply(MessageReference messageReference);
         void onReplyAll(MessageReference message);
         void openMessage(MessageReference messageReference);
         void setMessageListTitle(String title);

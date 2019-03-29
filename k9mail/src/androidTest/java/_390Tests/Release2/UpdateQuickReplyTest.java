@@ -1,4 +1,4 @@
-package com.fsck.k9.activity.setup;
+package _390Tests.Release2;
 
 import android.support.test.espresso.Espresso;
 import android.view.View;
@@ -20,13 +20,15 @@ import static org.hamcrest.CoreMatchers.anything;
 import static org.hamcrest.CoreMatchers.is;
 import android.support.test.rule.ActivityTestRule;
 import com.fsck.k9.R;
+import com.fsck.k9.activity.setup.QuickRepliesMenu;
+
 import static android.support.test.espresso.action.ViewActions.longClick;
 
 
 public class UpdateQuickReplyTest {
 
     @Rule
-    public ActivityTestRule<QuickRepliesMenu> testRule = new ActivityTestRule<QuickRepliesMenu>(QuickRepliesMenu.class);
+    public ActivityTestRule<QuickRepliesMenu> testRule = new ActivityTestRule<>(QuickRepliesMenu.class);
     private String editedReply = "Edited";
 
 

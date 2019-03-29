@@ -1,10 +1,12 @@
-package com.fsck.k9.activity.setup;
+package _390Tests.Release1;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.test.rule.ActivityTestRule;
 import android.view.View;
 import android.widget.ListView;
+
+import com.fsck.k9.activity.setup.MailingListEmailListMenu;
 
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
