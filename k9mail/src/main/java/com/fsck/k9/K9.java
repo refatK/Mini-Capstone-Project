@@ -545,8 +545,7 @@ public class K9 extends Application {
             daoSession.getEmailAddressDao().insert(new EmailAddress(null,(daoSession.getMailingListDao().loadByRowId(1L).getId()), "first@mail.com"));
             daoSession.getQuickReplyDao().insert(new QuickReply(null, "Hello World, how are you doing?!"));
             daoSession.getQuickReplyDao().insert(new QuickReply(null, "Hello World, This is a very long QR to test what happens when they get really long! BYE!"));
-
-            //Initialize time to 00:00:00 GMT
+            //Initialize time to 00:00:00 GMT in milliseconds
             Date initialTime = new Date();
             initialTime.setTime(0);
             daoSession.getDrunkModeDao().insert(new DrunkMode(null, false, initialTime));

@@ -13,7 +13,7 @@ public class DrunkMode {
     @Id(autoincrement = true)
     private Long id;
 
-    @Property(nameInDb = "drunk")
+    @Property(nameInDb = "is_drunk")
     private Boolean isDrunk;
 
     @Property(nameInDb = "time")
