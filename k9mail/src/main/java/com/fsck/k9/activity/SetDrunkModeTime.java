@@ -49,7 +49,7 @@ public class SetDrunkModeTime extends K9Activity {
             @Override
             public void onClick(View v) {
                 DialogFragment newFragment = new DrunkModeTimePicker();
-                ((DrunkModeTimePicker) newFragment).setCurrentContext(getActivity());
+                ((DrunkModeTimePicker) newFragment).setCurrentContext(SetDrunkModeTime.this);
                 ((DrunkModeTimePicker) newFragment).setCurrentCalendar(chosenStartTime);
                 ((DrunkModeTimePicker) newFragment).setCurrentTextView(startTimeText);
                 newFragment.show(getFragmentManager(), "startTime");
@@ -60,7 +60,7 @@ public class SetDrunkModeTime extends K9Activity {
             @Override
             public void onClick(View v) {
                 DialogFragment newFragment = new DrunkModeTimePicker();
-                ((DrunkModeTimePicker) newFragment).setCurrentContext(getActivity());
+                ((DrunkModeTimePicker) newFragment).setCurrentContext(SetDrunkModeTime.this);
                 ((DrunkModeTimePicker) newFragment).setCurrentCalendar(chosenEndTime);
                 ((DrunkModeTimePicker) newFragment).setCurrentTextView(endTimeText);
                 newFragment.show(getFragmentManager(), "endTime");
