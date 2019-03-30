@@ -73,6 +73,7 @@ import com.fsck.k9.activity.misc.ExtendedAsyncTask;
 import com.fsck.k9.activity.misc.NonConfigurationInstance;
 import com.fsck.k9.activity.setup.AccountSettings;
 import com.fsck.k9.activity.setup.AccountSetupBasics;
+import com.fsck.k9.activity.setup.DrunkModeMenu;
 import com.fsck.k9.activity.setup.MailingListMenu;
 import com.fsck.k9.activity.setup.Prefs;
 import com.fsck.k9.activity.setup.WelcomeMessage;
@@ -1269,7 +1270,6 @@ public class Accounts extends K9ListActivity implements OnItemClickListener {
             onImport();
             break;
         case R.id.drunk_mode: {
-            //TODO: Make DrunkMode Menu Class
             Intent drunkModeMenu = new Intent(this, DrunkModeMenu.class);
             startActivity(drunkModeMenu);
             break;
