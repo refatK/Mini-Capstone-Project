@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.fsck.k9.DaoSession;
 import com.fsck.k9.DrunkMode;
 import com.fsck.k9.K9;
+import com.fsck.k9.activity.setup.DrunkModeSettings;
 import com.fsck.k9.fragment.DrunkModeTimePicker;
 
 import java.util.Calendar;
@@ -138,9 +139,11 @@ public class SetDrunkModeTime extends K9Activity {
         daoSession.getDrunkModeDao().update(drunkModeSettings);
         daoSession.clear();
 
-        Intent data = new Intent();
-        setResult(RESULT_OK, data);
-        super.finish();
+        Intent i = new Intent(getApplicationContext(), DrunkModeSettings.class);
+        i.putExtra("refresh needed", true);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+        finish();
     }
 
 }
