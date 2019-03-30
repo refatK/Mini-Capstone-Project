@@ -8,9 +8,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fsck.k9.DaoSession;
+import com.fsck.k9.DrunkMode;
+import com.fsck.k9.K9;
 import com.fsck.k9.fragment.DrunkModeTimePicker;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import com.fsck.k9.R;
 
@@ -25,6 +29,13 @@ public class SetDrunkModeTime extends K9Activity {
 
     private Calendar chosenStartTime;
     private Calendar chosenEndTime;
+
+    private DaoSession daoSession;
+    private DrunkMode drunkModeSettings;
+
+    private String strStartDate;
+    private String strEndDate;
+
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -40,7 +51,13 @@ public class SetDrunkModeTime extends K9Activity {
         chosenStartTime = Calendar.getInstance();
         chosenEndTime = Calendar.getInstance();
 
-        //TODO: Call DATABASE
+        daoSession = ((K9)getApplication()).getDaoSession();
+        drunkModeSettings = daoSession.getDrunkModeDao().loadByRowId(1);
+
+        strStartDate = dateToCalendarFormat(drunkModeSettings.getStartTime());
+        strEndDate = dateToCalendarFormat(drunkModeSettings.getEndTime());
+        startTimeText.setText(strStartDate);
+        endTimeText.setText(strEndDate);
 
         setStarTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,17 +84,21 @@ public class SetDrunkModeTime extends K9Activity {
         setTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setDateAndTimeForMessage();
+                if(strStartDate.equals(strEndDate)){
+                    Toast.makeText(getApplicationContext(), "Start time and end time can't be the same!",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                confirmSetTime();
             }
         });
 
     }
 
-    public void setDateAndTimeForMessage() {
-        Toast.makeText(getApplicationContext(), "TODO:CONFIRMATION MESSAGE",
+    public void confirmSetTime() {
+        Toast.makeText(getApplicationContext(), "Time Set!",
                 Toast.LENGTH_SHORT).show();
 
-        //For testing purposes only
         if (!getIntent().getBooleanExtra("testingSetTime", false)) {
             this.saveAndFinish();
         }
@@ -100,8 +121,20 @@ public class SetDrunkModeTime extends K9Activity {
         this.chosenEndTime = chosenEndTime;
     }
 
+    private String dateToCalendarFormat(Date time){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(time);
+        int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        String strTime = (hourOfDay%12) + ":" + ((minute < 10) ? "0" + minute : minute) + (hourOfDay > 12 ? " PM" : " AM");
+        return strTime;
+    }
+
     public void saveAndFinish() {
-        //TODO: Database Addition
+        Date startTime = chosenStartTime.getTime();
+        Date endTime = chosenEndTime.getTime();
+        drunkModeSettings.setStartTime(startTime);
+        drunkModeSettings.setEndTime(endTime);
         Intent data = new Intent();
         setResult(RESULT_OK, data);
         super.finish();
