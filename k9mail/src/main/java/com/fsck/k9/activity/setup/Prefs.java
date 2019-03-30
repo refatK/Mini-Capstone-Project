@@ -54,7 +54,7 @@ public class Prefs extends K9PreferenceActivity {
      * Keys of the preferences defined in res/xml/global_preferences.xml
      */
     private static final String PREFERENCE_QUICK_REPLIES = "QR";
-    private static final String PREFERENCE_DRUNK_MODE_SETTINGS = "drunk_mode";
+    private static final String PREFERENCE_DRUNK_MODE_SETTINGS = "drunk_mode_settings";
     private static final String PREFERENCE_LANGUAGE = "language";
     private static final String PREFERENCE_THEME = "theme";
     private static final String PREFERENCE_MESSAGE_VIEW_THEME = "messageViewTheme";

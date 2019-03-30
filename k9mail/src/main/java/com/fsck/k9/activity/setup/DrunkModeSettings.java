@@ -23,8 +23,9 @@ public class DrunkModeSettings extends K9PreferenceActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Always picks the single entry
         daoSession = ((K9)getApplication()).getDaoSession();
-        drunkModeSettings = daoSession.getDrunkModeDao().loadByRowId(0);
+        drunkModeSettings = daoSession.getDrunkModeDao().loadByRowId(1);
 
         addPreferencesFromResource(R.xml.drunk_mode_settings_preferences);
 

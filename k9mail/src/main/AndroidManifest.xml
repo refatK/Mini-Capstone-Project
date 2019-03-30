@@ -187,6 +187,9 @@
             android:launchMode="singleTop"
             android:taskAffinity=""
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name=".activity.setup.DrunkModeSettings"
+            android:label="@string/drunk_mode_settings_title" />
         <!--
  XXX Note: this activity is hacked to ignore config changes,
              since it doesn't currently handle them correctly in code.

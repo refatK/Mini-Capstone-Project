@@ -1284,6 +1284,7 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="crypto_no_provider_button">Choose OpenPGP App</string>
 
     <string name="drunk_mode">Drunk Mode</string>
+    <string name="drunk_mode_settings_title">Drunk Mode Settings</string>
 
     <string name="mailing_lists">Mailing Lists</string>
     <string name="mailing_list_email_list">Email List</string>
