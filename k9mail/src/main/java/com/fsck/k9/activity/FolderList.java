@@ -558,10 +558,16 @@ public class FolderList extends K9ListActivity {
             setDisplayMode(FolderMode.ALL);
             return true;
         }
-            case R.id.mailing_lists:
-                Intent viewMailLists = new Intent(this, MailingListMenu.class);
-                startActivity(viewMailLists);
-                return true;
+        case R.id.drunk_mode: {
+            //TODO: Make DrunkMode Menu Class
+            Intent drunkModeMenu = new Intent(this, DrunkModeMenu.class);
+            startActivity(drunkModeMenu);
+            break;
+        }
+        case R.id.mailing_lists:
+            Intent viewMailLists = new Intent(this, MailingListMenu.class);
+            startActivity(viewMailLists);
+            return true;
         default:
             return super.onOptionsItemSelected(item);
         }

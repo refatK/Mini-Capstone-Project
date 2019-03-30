@@ -37,9 +37,6 @@ public class SetDrunkModeTime extends K9Activity {
         startTimeText = (TextView) findViewById(R.id.drunk_mode_start_time);
         endTimeText = (TextView) findViewById(R.id.drunk_mode_end_time);
 
-        String strStartTime;
-        String strEndTime;
-
         chosenStartTime = Calendar.getInstance();
         chosenEndTime = Calendar.getInstance();
 

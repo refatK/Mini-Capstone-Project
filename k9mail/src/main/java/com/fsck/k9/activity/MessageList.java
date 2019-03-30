@@ -943,6 +943,12 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
                 updateMenu();
                 return true;
             }
+            case R.id.drunk_mode: {
+                //TODO: Make DrunkMode Menu Class
+                Intent drunkModeMenu = new Intent(this, DrunkModeMenu.class);
+                startActivity(drunkModeMenu);
+                break;
+            }
             case R.id.mailing_lists:
                 Intent viewMailLists = new Intent(this, MailingListMenu.class);
                 startActivity(viewMailLists);

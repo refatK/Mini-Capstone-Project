@@ -1268,10 +1268,16 @@ public class Accounts extends K9ListActivity implements OnItemClickListener {
         case R.id.import_settings:
             onImport();
             break;
-            case R.id.mailing_lists:
-                Intent viewMailLists = new Intent(this, MailingListMenu.class);
-                startActivity(viewMailLists);
-                break;
+        case R.id.drunk_mode: {
+            //TODO: Make DrunkMode Menu Class
+            Intent drunkModeMenu = new Intent(this, DrunkModeMenu.class);
+            startActivity(drunkModeMenu);
+            break;
+        }
+        case R.id.mailing_lists:
+            Intent viewMailLists = new Intent(this, MailingListMenu.class);
+            startActivity(viewMailLists);
+            break;
         default:
             return super.onOptionsItemSelected(item);
         }
