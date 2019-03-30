@@ -16,6 +16,7 @@ import com.fsck.k9.R;
 public class DrunkModeSettings extends K9PreferenceActivity {
 
     private CheckBoxPreference isDrunkCheckbox;
+    private Preference setDrunkTimePreference;
     private DaoSession daoSession;
     private DrunkMode drunkModeSettings;
 
@@ -29,20 +30,26 @@ public class DrunkModeSettings extends K9PreferenceActivity {
 
         addPreferencesFromResource(R.xml.drunk_mode_settings_preferences);
 
+        setDrunkTimePreference = findPreference("drunk_mode_settings_time");
         isDrunkCheckbox = (CheckBoxPreference)findPreference("drunk_mode_settings_toggle");
+
         isDrunkCheckbox.setChecked(drunkModeSettings.getIsDrunk());
+        setDrunkTimePreference.setEnabled(drunkModeSettings.getIsDrunk());
+
         isDrunkCheckbox.setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
                         Boolean isDrunk = !drunkModeSettings.getIsDrunk();
+                        setDrunkTimePreference.setEnabled(isDrunk);
                         isDrunkCheckbox.setChecked(isDrunk);
                         drunkModeSettings.setIsDrunk(isDrunk);
                         return true;
                     }
                 }
         );
-        findPreference("drunk_mode_settings_time").setOnPreferenceClickListener(
+
+        setDrunkTimePreference.setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
