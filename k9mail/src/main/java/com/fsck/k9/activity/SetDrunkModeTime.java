@@ -33,13 +33,13 @@ public class SetDrunkModeTime extends K9Activity {
     private DaoSession daoSession;
     private DrunkMode drunkModeSettings;
 
-    private String strStartDate;
-    private String strEndDate;
-
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.set_drunk_mode_time);
+
+        daoSession = ((K9)getApplication()).getDaoSession();
+        drunkModeSettings = daoSession.getDrunkModeDao().loadByRowId(1);
 
         setStarTime = (Button) findViewById(R.id.drunk_mode_set_start_time_button);
         setEndTime = (Button) findViewById(R.id.drunk_mode_set_end_time_button);
@@ -49,15 +49,14 @@ public class SetDrunkModeTime extends K9Activity {
         endTimeText = (TextView) findViewById(R.id.drunk_mode_end_time);
 
         chosenStartTime = Calendar.getInstance();
+        chosenStartTime.clear();
+        chosenStartTime.setTime(drunkModeSettings.getStartTime());
         chosenEndTime = Calendar.getInstance();
+        chosenEndTime.clear();
+        chosenEndTime.setTime(drunkModeSettings.getEndTime());
 
-        daoSession = ((K9)getApplication()).getDaoSession();
-        drunkModeSettings = daoSession.getDrunkModeDao().loadByRowId(1);
-
-        strStartDate = dateToCalendarFormat(drunkModeSettings.getStartTime());
-        strEndDate = dateToCalendarFormat(drunkModeSettings.getEndTime());
-        startTimeText.setText(strStartDate);
-        endTimeText.setText(strEndDate);
+        startTimeText.setText(dateToCalendarFormat(drunkModeSettings.getStartTime()));
+        endTimeText.setText(dateToCalendarFormat(drunkModeSettings.getEndTime()));
 
         setStarTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,7 +83,7 @@ public class SetDrunkModeTime extends K9Activity {
         setTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(strStartDate.equals(strEndDate)){
+                if(chosenStartTime.equals(chosenEndTime)){
                     Toast.makeText(getApplicationContext(), "Start time and end time can't be the same!",
                             Toast.LENGTH_SHORT).show();
                     return;
@@ -123,6 +122,7 @@ public class SetDrunkModeTime extends K9Activity {
 
     private String dateToCalendarFormat(Date time){
         Calendar calendar = Calendar.getInstance();
+        calendar.clear();
         calendar.setTime(time);
         int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
@@ -135,6 +135,9 @@ public class SetDrunkModeTime extends K9Activity {
         Date endTime = chosenEndTime.getTime();
         drunkModeSettings.setStartTime(startTime);
         drunkModeSettings.setEndTime(endTime);
+        daoSession.getDrunkModeDao().update(drunkModeSettings);
+        daoSession.clear();
+
         Intent data = new Intent();
         setResult(RESULT_OK, data);
         super.finish();

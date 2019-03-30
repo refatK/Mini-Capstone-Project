@@ -59,4 +59,10 @@ public class DrunkModeSettings extends K9PreferenceActivity {
                 }
         );
     }
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        daoSession.getDrunkModeDao().update(drunkModeSettings);
+        daoSession.clear();
+    }
 }
