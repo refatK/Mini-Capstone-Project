@@ -48,7 +48,7 @@ import com.fsck.k9.Preferences;
 import com.fsck.k9.R;
 import com.fsck.k9.activity.compose.MessageActions;
 import com.fsck.k9.activity.setup.AccountSettings;
-import com.fsck.k9.activity.setup.DrunkModeMenu;
+import com.fsck.k9.activity.setup.DrunkModeSettings;
 import com.fsck.k9.activity.setup.FolderSettings;
 import com.fsck.k9.activity.setup.MailingListMenu;
 import com.fsck.k9.activity.setup.Prefs;
@@ -558,11 +558,6 @@ public class FolderList extends K9ListActivity {
         case R.id.display_all: {
             setDisplayMode(FolderMode.ALL);
             return true;
-        }
-        case R.id.drunk_mode: {
-            Intent drunkModeMenu = new Intent(this, DrunkModeMenu.class);
-            startActivity(drunkModeMenu);
-            break;
         }
         case R.id.mailing_lists:
             Intent viewMailLists = new Intent(this, MailingListMenu.class);
