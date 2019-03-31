@@ -32,7 +32,6 @@ jacocoAndroidUnitTestReport {
                  '**/Throttle.*']
 }
 
-
 //noinspection GroovyAssignabilityCheck
 configurations.all {
     resolutionStrategy {
