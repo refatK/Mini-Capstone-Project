@@ -84,6 +84,7 @@ dependencies {
     testImplementation "org.mockito:mockito-core:${mockitoVersion}"
     testImplementation 'org.jdom:jdom2:2.0.6'
     testImplementation 'org.greenrobot:greendao:3.2.2'
+    implementation 'com.android.support:design:27.0.2'
 }
 
 android {

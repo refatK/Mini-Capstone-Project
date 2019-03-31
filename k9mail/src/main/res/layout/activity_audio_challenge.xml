@@ -6,4 +6,35 @@
     android:layout_height="match_parent"
     tools:context="com.fsck.k9.activity.AudioChallenge">
 
+
+    <EditText
+        android:id="@+id/audioChallengeInput"
+        android:inputType="text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="4dp"
+        android:hint="Please enter what you heard."
+        tools:ignore="MissingConstraints" />
+    <Button
+        android:id="@+id/button_play_sound_again"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Play Sound Again"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/audioChallengeInput"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/button_sound_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OK"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/audioChallengeInput"
+        tools:ignore="MissingConstraints" />
+
 </android.support.constraint.ConstraintLayout>

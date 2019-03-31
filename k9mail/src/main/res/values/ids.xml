@@ -8,5 +8,8 @@
     <item type="id" name="dialog_account_setup_error"/>
     <item type="id" name="rename"/>
     <item type="id" name="delete"/>
+    <item type="id" name="audioChallengeInput"/>
+    <item type="id" name="button_play_sound_again"/>
+    <item id="id" name="button_sound_ok"/>
 
 </resources>
