@@ -539,11 +539,14 @@ public class K9 extends Application {
                 new DaoMaster.DevOpenHelper(
                         this,"MailingLists.db").getWritableDb()).newSession();
 
-        if(daoSession.getMailingListDao().loadAll().size() == 0){
+        if(daoSession.getMailingListDao().loadAll().size() == 0 || daoSession.getPhotoDao().loadAll().size() == 0){
             daoSession.getMailingListDao().insert(new MailingList(1L,"FirstList"));
             daoSession.getEmailAddressDao().insert(new EmailAddress(null,(daoSession.getMailingListDao().loadByRowId(1L).getId()), "first@mail.com"));
             daoSession.getQuickReplyDao().insert(new QuickReply(null, "Hello World, how are you doing?!"));
             daoSession.getQuickReplyDao().insert(new QuickReply(null, "Hello World, This is a very long QR to test what happens when they get really long! BYE!"));
+            daoSession.getPhotoDao().insert(new Photo(null, "drawable/dog", "Dog", "Wolf", "Fox", "Dog", "Coyote"));
+            daoSession.getPhotoDao().insert(new Photo(null, "drawable/cat", "Cat", "Rabbit", "Cat", "Lion", "Lynx"));
+
         }
         app = this;
         Globals.setContext(this);

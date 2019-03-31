@@ -59,7 +59,8 @@
         android:theme="@style/Theme.K9.Startup">
         <activity
             android:name=".activity.drunk_mode_challenges.PhotoChallenge"
-            android:label="@string/title_activity_photo_challenge"></activity>
+            android:label="@string/title_activity_photo_challenge"
+            android:icon="@drawable/colorful"/>
 
         <service
             android:name=".SendQuickReplyService"
