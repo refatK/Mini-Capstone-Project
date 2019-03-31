@@ -1255,7 +1255,7 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="messageview_decrypt_retry">Retry</string>
     <string name="messageview_decrypt_incomplete">Encrypted message must be downloaded for decryption.</string>
     <string name="messageview_crypto_error_title">Error decrypting email</string>
-
+    <string name="photo_challenge_prompt">What\'s displayed in the image below?</string>
     <string name="recipient_error_non_ascii">Special characters are currently not supported!</string>
     <string name="recipient_error_parse_failed">Error parsing address!</string>
     <string name="recipient_error_empty_mailing_list">The mailing list does not contain emails!</string>
