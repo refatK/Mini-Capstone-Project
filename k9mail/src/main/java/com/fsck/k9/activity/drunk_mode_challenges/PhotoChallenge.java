@@ -16,6 +16,8 @@ import com.fsck.k9.R;
 import com.fsck.k9.activity.FolderList;
 import com.fsck.k9.activity.K9Activity;
 
+import java.util.List;
+
 
 public class PhotoChallenge extends K9Activity {
     private Button choice1;
@@ -31,18 +33,24 @@ public class PhotoChallenge extends K9Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_challenge);
-
         complete = false;
-
         prompt = findViewById(R.id.prompt);
-        challengePhoto = K9.daoSession.getPhotoDao().load(1L);
-        mysteryPicture = findViewById(R.id.imageView);
-
-        int challengePhotoID = getResources().getIdentifier(challengePhoto.getFileName(), null, this.getPackageName());
-        mysteryPicture.setImageResource(challengePhotoID);
-
+        pickChallengePhoto();
         setChoices();
         setListenters(choice1, choice2, choice3, choice4);
+    }
+
+    private void pickChallengePhoto() {
+        List<Photo> allPossiblePhotos = K9.daoSession.getPhotoDao().loadAll();
+        //gets a random photo from all the possibilities
+        challengePhoto = allPossiblePhotos
+                .get((int)(Math.random()*((allPossiblePhotos.size()))));
+        mysteryPicture = findViewById(R.id.imageView);
+
+        int challengePhotoID = getResources()
+                .getIdentifier(challengePhoto.getFileName(), null, this.getPackageName());
+
+        mysteryPicture.setImageResource(challengePhotoID);
     }
 
     private void setChoices() {
