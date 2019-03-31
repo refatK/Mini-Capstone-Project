@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -27,17 +28,21 @@ public class PhotoChallenge extends K9Activity {
     private ImageView mysteryPicture;
     private Photo challengePhoto;
     private TextView prompt;
+    private MediaPlayer winSound;
+    private MediaPlayer loseSound;
     private boolean complete;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_challenge);
+        winSound = MediaPlayer.create(this, R.raw.win_sound);
+        loseSound = MediaPlayer.create(this, R.raw.lose_sound);
         complete = false;
         prompt = findViewById(R.id.prompt);
         pickChallengePhoto();
         setChoices();
-        setListenters(choice1, choice2, choice3, choice4);
+        setListeners(choice1, choice2, choice3, choice4);
     }
 
     private void pickChallengePhoto() {
@@ -64,7 +69,7 @@ public class PhotoChallenge extends K9Activity {
         choice4.setText(challengePhoto.getChoice4());
     }
 
-    private void setListenters(Button... choices){
+    private void setListeners(Button... choices){
         for(final Button choice : choices){
             choice.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -89,14 +94,16 @@ public class PhotoChallenge extends K9Activity {
 
     private void loseChallenge(Button choice) {
         complete = true;
+        loseSound.start();
         choice.setBackgroundColor(Color.RED);
         choice.setTextColor(Color.WHITE);
-        choice.setText(choice.getText()+"❌");
+        //This value is set by the DB, it's not possible to use the strings.xml
+        choice.setText(choice.getText()+" ❌");
 
         prompt.setBackgroundColor(Color.RED);
         prompt.setTextColor(Color.WHITE);
         prompt.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        prompt.setText("Sorry, Challenge Failed! 👎");
+        prompt.setText(R.string.photo_challenge_failed);
         mysteryPicture.setColorFilter(Color.RED, PorterDuff.Mode.DARKEN);
 
         Intent failedChallenge = new Intent(getApplicationContext(), FolderList.class);
@@ -106,13 +113,15 @@ public class PhotoChallenge extends K9Activity {
 
     private void winChallenge(Button choice) {
         complete = true;
+        winSound.start();
         choice.setBackgroundColor(Color.GREEN);
         choice.setTextColor(Color.BLACK);
+        //This value is set by the DB, it's not possible to use the strings.xml
         choice.setText(choice.getText()+" ✔");
         prompt.setBackgroundColor(Color.GREEN);
         prompt.setTextColor(Color.BLACK);
         prompt.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
-        prompt.setText("Congrats, Challenge Completed! 👍");
+        prompt.setText(R.string.photo_challenge_success);
         mysteryPicture.setColorFilter(Color.GREEN, PorterDuff.Mode.DARKEN);
         finish();
     }
