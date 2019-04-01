@@ -3,12 +3,10 @@
     <item
         android:id="@+id/search"
         android:icon="?attr/iconActionSearch"
-        android:showAsAction="always"
         android:title="@string/search_action"/>
     <item
         android:id="@+id/filter_folders"
         android:icon="?attr/iconActionSearchFolder"
-        android:showAsAction="always|collapseActionView"
         android:title="@string/filter_folders_action"
         android:actionViewClass="android.widget.SearchView"/>
     <item
