@@ -3,6 +3,8 @@ package com.fsck.k9;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -544,6 +546,17 @@ public class K9 extends Application {
             daoSession.getEmailAddressDao().insert(new EmailAddress(null,(daoSession.getMailingListDao().loadByRowId(1L).getId()), "first@mail.com"));
             daoSession.getQuickReplyDao().insert(new QuickReply(null, "Hello World, how are you doing?!"));
             daoSession.getQuickReplyDao().insert(new QuickReply(null, "Hello World, This is a very long QR to test what happens when they get really long! BYE!"));
+
+            //Initialize time to 00:00:00 GMT in milliseconds
+            Calendar initial = Calendar.getInstance();
+            initial.clear();
+
+            Date startTime = initial.getTime();
+
+            initial.set(Calendar.HOUR_OF_DAY, 1);
+            Date endTime = initial.getTime();
+
+            daoSession.getDrunkModeDao().insert(new DrunkMode(null, false, startTime, endTime));
         }
         app = this;
         Globals.setContext(this);

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:key="drunk_mode_settings_preferences"
+        android:title="@string/drunk_mode">
+    <CheckBoxPreference
+        android:persistent="false"
+        android:key="drunk_mode_settings_toggle"
+        android:title="@string/drunk_mode_settings_toggle_label"
+        android:summary="@string/drunk_mode_settings_toggle_summary" />
+
+    <Preference
+        android:persistent="false"
+        android:key="drunk_mode_settings_time"
+        android:singleLine="true"
+        android:title="@string/drunk_mode_settings_time_title"
+        android:summary="@string/drunk_mode_settings_time_description" />
+    </PreferenceCategory>
+</PreferenceScreen>

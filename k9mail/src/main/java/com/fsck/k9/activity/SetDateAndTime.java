@@ -18,7 +18,6 @@ import com.fsck.k9.fragment.SendLaterTimePicker;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
 import java.util.Date;
 
 public class SetDateAndTime extends K9Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
