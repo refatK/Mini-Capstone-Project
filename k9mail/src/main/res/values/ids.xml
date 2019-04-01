@@ -10,6 +10,6 @@
     <item type="id" name="delete"/>
     <item type="id" name="audio_challenge_input"/>
     <item type="id" name="button_play_sound_again"/>
-    <item id="id" name="button_sound_ok"/>
+    <item type="id" name="button_sound_ok"/>
 
 </resources>
