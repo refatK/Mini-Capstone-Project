@@ -98,6 +98,8 @@
             android:theme="@style/Theme.AppCompat.Light.Dialog.Alert" />
         <activity android:name=".activity.SetDateAndTime" />
 
+        <activity android:name=".activity.SetDrunkModeTime" />
+
         <meta-data
             android:name="android.app.default_searchable"
             android:value="com.fsck.k9.activity.Search" />
@@ -192,6 +194,9 @@
             android:launchMode="singleTop"
             android:taskAffinity=""
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name=".activity.setup.DrunkModeSettings"
+            android:label="@string/drunk_mode_settings_title" />
         <!--
  XXX Note: this activity is hacked to ignore config changes,
              since it doesn't currently handle them correctly in code.
