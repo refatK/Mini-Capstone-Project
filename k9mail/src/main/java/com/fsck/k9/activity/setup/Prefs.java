@@ -27,7 +27,6 @@ import com.fsck.k9.K9;
 import com.fsck.k9.K9.NotificationHideSubject;
 import com.fsck.k9.K9.NotificationQuickDelete;
 import com.fsck.k9.K9.SplitViewMode;
-import com.fsck.k9.MailingList;
 import com.fsck.k9.Preferences;
 import com.fsck.k9.R;
 import com.fsck.k9.activity.ColorPickerDialog;
@@ -55,6 +54,7 @@ public class Prefs extends K9PreferenceActivity {
      * Keys of the preferences defined in res/xml/global_preferences.xml
      */
     private static final String PREFERENCE_QUICK_REPLIES = "QR";
+    private static final String PREFERENCE_DRUNK_MODE_SETTINGS = "drunk_mode_settings";
     private static final String PREFERENCE_LANGUAGE = "language";
     private static final String PREFERENCE_THEME = "theme";
     private static final String PREFERENCE_MESSAGE_VIEW_THEME = "messageViewTheme";
@@ -226,6 +226,16 @@ public class Prefs extends K9PreferenceActivity {
                 return true;
             }
         });
+
+        findPreference(PREFERENCE_DRUNK_MODE_SETTINGS).setOnPreferenceClickListener(
+                new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        startActivity(new Intent(getApplicationContext(), DrunkModeSettings.class));
+                        return true;
+                    }
+                }
+        );
 
         mAnimations = (CheckBoxPreference)findPreference(PREFERENCE_ANIMATIONS);
         mAnimations.setChecked(K9.showAnimations());

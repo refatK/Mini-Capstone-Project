@@ -840,6 +840,12 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="settings_message_theme_selection_summary_on">Use a fixed message view theme</string>
 
 
+    <string name="drunk_mode_settings_toggle_label">Enable Drunk Mode</string>
+    <string name="drunk_mode_settings_toggle_summary">Turn Drunk Mode On/Off</string>
+    <string name="drunk_mode_settings_time_title">Set Drunk Mode Time</string>
+    <string name="drunk_mode_settings_time_description">Configure time Drunk Mode activates</string>
+
+
     <string name="setting_language_system">System default</string>
 
     <string name="background_ops_label">Background sync</string>
@@ -1278,6 +1284,10 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="crypto_no_provider_title">This email is encrypted</string>
     <string name="crypto_no_provider_message">This email has been encrypted with OpenPGP.\nTo read it, you need to install and configure a compatible OpenPGP App.</string>
     <string name="crypto_no_provider_button">Choose OpenPGP App</string>
+
+    <string name="drunk_mode">Drunk Mode</string>
+    <string name="drunk_mode_settings_title">Drunk Mode Settings</string>
+
 
     <string name="mailing_lists">Mailing Lists</string>
     <string name="mailing_list_email_list">Email List</string>

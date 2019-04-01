@@ -201,7 +201,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     private MessageBuilder currentMessageBuilder;
     private boolean finishAfterDraftSaved;
     private boolean alreadyNotifiedUserOfEmptySubject = false;
-    private boolean changesMadeSinceLastSave = false;
+    public boolean changesMadeSinceLastSave = false;
 
     /**
      * The database ID of this message's draft. This is used when saving drafts so the message in
@@ -272,10 +272,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         final Intent intent = getIntent();
 
         // Hide view if sending a quick reply so the user has no access to the view inputs
-        if (intent.getStringExtra(EXTRA_QUICK_REPLY_MESSAGE) != null) {
-            LinearLayout wholeView = (LinearLayout) findViewById(R.id.full_compose_view);
-            wholeView.setVisibility(View.INVISIBLE);
-        }
+        LinearLayout wholeView = (LinearLayout) findViewById(R.id.full_compose_view);
+        hideView(wholeView);
 
         String messageReferenceString = intent.getStringExtra(EXTRA_MESSAGE_REFERENCE);
         relatedMessageReference = MessageReference.parse(messageReferenceString);
@@ -1499,7 +1497,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
         // If its a quick reply, set the message body and send immediatley
         String predefinedMessageBody = getIntent().getStringExtra(EXTRA_QUICK_REPLY_MESSAGE);
-        if (predefinedMessageBody!=null) {
+        if (predefinedMessageBody != null) {
             messageContentView.setCharacters(predefinedMessageBody);
             handleQuickReplySend();
         }
@@ -1511,7 +1509,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
      * Once a quick reply is set up, handle the sending with a delay so that it is ensured
      * the message is fully prepped to send
      */
-    private void handleQuickReplySend() {
+    public void handleQuickReplySend() {
         new Handler().postDelayed(new Runnable() {
             public void run() {
                 Timber.d("Sending Quick Reply");
@@ -1520,7 +1518,16 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         }, 2000);
     }
 
-    
+    /**
+     * When doing a quick reply, hide the specified view
+     * @param view The view that is set to be hidden
+     */
+    public void hideView(View view) {
+        if (getIntent().getStringExtra(EXTRA_QUICK_REPLY_MESSAGE) != null) {
+            view.setVisibility(View.INVISIBLE);
+        }
+    }
+
     private void processMessageToForward(MessageViewInfo messageViewInfo, boolean asAttachment) throws MessagingException {
         Message message = messageViewInfo.message;
 
