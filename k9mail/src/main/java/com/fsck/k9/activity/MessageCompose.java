@@ -55,7 +55,6 @@ import com.fsck.k9.MailingList;
 import com.fsck.k9.Preferences;
 import com.fsck.k9.R;
 import com.fsck.k9.ScheduledEmail;
-import com.fsck.k9.activity.ActivateDrunkMode;
 import com.fsck.k9.activity.MessageLoaderHelper.MessageLoaderCallbacks;
 import com.fsck.k9.activity.compose.AttachmentPresenter;
 import com.fsck.k9.activity.compose.AttachmentPresenter.AttachmentMvpView;
@@ -117,8 +116,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         OnOpenPgpInlineChangeListener, OnOpenPgpSignOnlyChangeListener, MessageBuilder.Callback,
         AttachmentPresenter.AttachmentsChangedListener, RecipientPresenter.RecipientsChangedListener,
         OnOpenPgpDisableListener {
-
-    private ActivateDrunkMode activateDrunkMode = new ActivateDrunkMode();
 
     private static final int DIALOG_SAVE_OR_DISCARD_DRAFT_MESSAGE = 1;
     private static final int DIALOG_CONFIRM_DISCARD_ON_BACK = 2;
@@ -383,7 +380,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             if (ACTION_COMPOSE.equals(action)) {
                 this.action = Action.COMPOSE;
             } else if (ACTION_REPLY.equals(action)) {
-                //activateDrunkMode.checkDrunkMode();
                 this.action = Action.REPLY;
             } else if (ACTION_REPLY_ALL.equals(action)) {
                 this.action = Action.REPLY_ALL;

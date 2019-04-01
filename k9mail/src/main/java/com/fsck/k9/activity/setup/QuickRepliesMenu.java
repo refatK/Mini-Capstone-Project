@@ -17,6 +17,7 @@ import com.fsck.k9.DaoSession;
 import com.fsck.k9.K9;
 import com.fsck.k9.QuickReply;
 import com.fsck.k9.R;
+import com.fsck.k9.activity.ActivateDrunkMode;
 import com.fsck.k9.activity.K9ListActivity;
 import com.fsck.k9.activity.MessageCompose;
 
@@ -33,6 +34,7 @@ public class QuickRepliesMenu extends K9ListActivity {
     private List<String> quickReplyBodies = new ArrayList<>();
     private DaoSession daoSession;
     Button add_quick_reply;
+    private ActivateDrunkMode activateDrunkMode = new ActivateDrunkMode();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,7 @@ public class QuickRepliesMenu extends K9ListActivity {
             add_quick_reply.setWidth(1080);
             add_quick_reply.setBackgroundColor(Color.DKGRAY);
             add_quick_reply.setTextColor(Color.LTGRAY);
+            activateDrunkMode.checkDrunkMode();
         }
         else{
             registerForContextMenu(getListView());
