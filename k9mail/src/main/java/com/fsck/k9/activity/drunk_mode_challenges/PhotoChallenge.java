@@ -108,7 +108,9 @@ public class PhotoChallenge extends K9Activity {
 
         Intent failedChallenge = new Intent(getApplicationContext(), FolderList.class);
         finish();
-        startActivity(failedChallenge);
+        if(!getIntent().getBooleanExtra("Practice", false)) {
+            startActivity(failedChallenge);
+        }
     }
 
     private void winChallenge(Button choice) {
