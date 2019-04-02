@@ -6,6 +6,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -31,6 +32,7 @@ public class PhotoChallenge extends K9Activity {
     private MediaPlayer winSound;
     private MediaPlayer loseSound;
     private boolean complete;
+    private Handler timeLimit;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,8 @@ public class PhotoChallenge extends K9Activity {
         pickChallengePhoto();
         setChoices();
         setListeners(choice1, choice2, choice3, choice4);
+        timeLimit = new Handler();
+        //timeLimit.postDelayed()
     }
 
     private void pickChallengePhoto() {
@@ -126,5 +130,21 @@ public class PhotoChallenge extends K9Activity {
         prompt.setText(R.string.photo_challenge_success);
         mysteryPicture.setColorFilter(Color.GREEN, PorterDuff.Mode.DARKEN);
         finish();
+    }
+
+    private void timeOut(){
+        complete = true;
+        loseSound.start();
+        prompt.setBackgroundColor(Color.YELLOW);
+        prompt.setTextColor(Color.BLACK);
+        prompt.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        prompt.setText(R.string.photo_challenge_timeout);
+        mysteryPicture.setColorFilter(Color.RED, PorterDuff.Mode.DARKEN);
+
+        Intent failedChallenge = new Intent(getApplicationContext(), FolderList.class);
+        finish();
+        if(!getIntent().getBooleanExtra("Practice", false)) {
+            startActivity(failedChallenge);
+        }
     }
 }
