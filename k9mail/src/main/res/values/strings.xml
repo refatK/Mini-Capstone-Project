@@ -1265,7 +1265,8 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="photo_challenge_timeout">You took longer than 10 seconds, Time\'s up! ⏰⛔</string>
     <string name="photo_challenge_failed">Sorry, Challenge Failed! 👎</string>
     <string name="photo_challenge_success">Congrats, Challenge Completed! 👍</string>
-    <string name ="test_photo_challenge">Test Photo Challenge 📷✅</string>
+    <string name="test_photo_challenge">Test Photo Challenge 📷✅</string>
+    <string name="test_math_challenge">Test Math Challenge 📏π✅</string>
     <string name="recipient_error_non_ascii">Special characters are currently not supported!</string>
     <string name="recipient_error_parse_failed">Error parsing address!</string>
     <string name="recipient_error_empty_mailing_list">The mailing list does not contain emails!</string>

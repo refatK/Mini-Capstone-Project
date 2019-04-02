@@ -1,4 +1,4 @@
-package com.fsck.k9.activity.drunkmode;
+package com.fsck.k9.activity.drunk_mode_challenges;
 
 import android.os.Bundle;
 import android.widget.NumberPicker;

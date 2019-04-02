@@ -12,6 +12,7 @@ import com.fsck.k9.activity.K9PreferenceActivity;
 import com.fsck.k9.activity.SetDrunkModeTime;
 
 import com.fsck.k9.R;
+import com.fsck.k9.activity.drunk_mode_challenges.MathChallenge;
 import com.fsck.k9.activity.drunk_mode_challenges.PhotoChallenge;
 
 import java.util.Calendar;
@@ -42,9 +43,12 @@ public class DrunkModeSettings extends K9PreferenceActivity {
         daoSession = ((K9)getApplication()).getDaoSession();
         drunkModeSettings = daoSession.getDrunkModeDao().loadByRowId(1);
 
+        // Setup test section for drunk mode
         addPreferencesFromResource(R.xml.drunk_mode_settings_preferences);
         Preference testPhotoChallengeOption = findPreference("drunk_mode_test_photo_challenge");
+        Preference testMathChallengeOption = findPreference("drunk_mode_test_math_challenge");
         setDrunkTimePreference = findPreference("drunk_mode_settings_time");
+
         isDrunkCheckbox = (CheckBoxPreference)findPreference("drunk_mode_settings_toggle");
         strStart = dateToCalendarFormat(drunkModeSettings.getStartTime());
         strEnd = dateToCalendarFormat(drunkModeSettings.getEndTime());
@@ -81,6 +85,18 @@ public class DrunkModeSettings extends K9PreferenceActivity {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
                         Intent i = new Intent(getApplicationContext(), PhotoChallenge.class);
+                        i.putExtra("Practice", true);
+                        startActivity(i);
+                        return true;
+                    }
+                }
+        );
+
+        testMathChallengeOption.setOnPreferenceClickListener(
+                new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        Intent i = new Intent(getApplicationContext(), MathChallenge.class);
                         i.putExtra("Practice", true);
                         startActivity(i);
                         return true;

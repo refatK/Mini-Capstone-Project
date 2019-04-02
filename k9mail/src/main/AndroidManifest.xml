@@ -62,7 +62,7 @@
             android:label="@string/title_activity_photo_challenge"
             android:icon="@drawable/colorful"/>
         <activity
-            android:name=".activity.drunkmode.MathChallenge"
+            android:name=".activity.drunk_mode_challenges.MathChallenge"
             android:configChanges="locale"
             android:label="@string/title_activity_math_challenge"/>
         <service
