@@ -39,7 +39,7 @@
         android:theme="@style/MathNumberPickerTextSize"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/submit_button"
+        app:layout_constraintBottom_toTopOf="@+id/submit_math_answer_button"
         app:layout_constraintTop_toBottomOf="@+id/math_challenge_equation"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/sign_guideline" />
@@ -49,7 +49,7 @@
         android:theme="@style/MathNumberPickerTextSize"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/submit_button"
+        app:layout_constraintBottom_toTopOf="@+id/submit_math_answer_button"
         app:layout_constraintEnd_toStartOf="@+id/number_guideline"
         app:layout_constraintStart_toStartOf="@+id/sign_guideline"
         app:layout_constraintTop_toBottomOf="@+id/math_challenge_equation" />
@@ -59,14 +59,14 @@
         android:theme="@style/MathNumberPickerTextSize"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/submit_button"
+        app:layout_constraintBottom_toTopOf="@+id/submit_math_answer_button"
         app:layout_constraintTop_toBottomOf="@+id/math_challenge_equation"
         app:layout_constraintStart_toStartOf="@+id/number_guideline"
         app:layout_constraintEnd_toEndOf="parent" />
 
 
     <Button
-        android:id="@+id/submit_button"
+        android:id="@+id/submit_math_answer_button"
         android:layout_width="match_parent"
         android:layout_height="82dp"
         android:text="@string/drunk_mode_math_submit"
