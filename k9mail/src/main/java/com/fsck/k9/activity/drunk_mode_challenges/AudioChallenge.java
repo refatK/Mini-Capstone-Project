@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.fsck.k9.R;
+import com.fsck.k9.activity.Accounts;
 import com.fsck.k9.activity.FolderList;
 import com.fsck.k9.activity.K9Activity;
 
@@ -50,8 +51,12 @@ public class AudioChallenge extends K9Activity {
                 else {
                     MediaPlayer loser = MediaPlayer.create(getApplicationContext(), R.raw.lose_sound);
                     loser.start();
-                    Intent i = new Intent(getApplicationContext(), FolderList.class);
-                    startActivity(i);
+                    Intent i = new Intent(getApplicationContext(), Accounts.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    finish();
+                    if(!getIntent().getBooleanExtra("Practice", false)) {
+                        startActivity(i);
+                    }
                 }
 
             }
