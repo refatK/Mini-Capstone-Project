@@ -1,4 +1,4 @@
-package com.fsck.k9.activity;
+package com.fsck.k9.activity.drunk_mode_challenges;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.fsck.k9.R;
+import com.fsck.k9.activity.FolderList;
+import com.fsck.k9.activity.K9Activity;
 
 import org.jetbrains.annotations.Nullable;
 
