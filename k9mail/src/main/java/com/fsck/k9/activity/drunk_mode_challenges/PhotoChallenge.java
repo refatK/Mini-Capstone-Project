@@ -31,6 +31,7 @@ public class PhotoChallenge extends K9Activity {
     private TextView prompt;
     private MediaPlayer winSound;
     private MediaPlayer loseSound;
+    private MediaPlayer timeoutSound;
     private boolean complete;
     private Handler timeLimit;
 
@@ -40,13 +41,26 @@ public class PhotoChallenge extends K9Activity {
         setContentView(R.layout.activity_photo_challenge);
         winSound = MediaPlayer.create(this, R.raw.win_sound);
         loseSound = MediaPlayer.create(this, R.raw.lose_sound);
+        timeoutSound = MediaPlayer.create(this, R.raw.timeup_sound);
         complete = false;
         prompt = findViewById(R.id.prompt);
         pickChallengePhoto();
         setChoices();
         setListeners(choice1, choice2, choice3, choice4);
         timeLimit = new Handler();
-        //timeLimit.postDelayed()
+        timeLimit.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                timeOut();
+            }
+        },10000);
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        timeLimit.removeCallbacksAndMessages(null);
+        timeoutSound.stop();
     }
 
     private void pickChallengePhoto() {
@@ -134,17 +148,22 @@ public class PhotoChallenge extends K9Activity {
 
     private void timeOut(){
         complete = true;
-        loseSound.start();
+        timeoutSound.start();
         prompt.setBackgroundColor(Color.YELLOW);
         prompt.setTextColor(Color.BLACK);
         prompt.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         prompt.setText(R.string.photo_challenge_timeout);
-        mysteryPicture.setColorFilter(Color.RED, PorterDuff.Mode.DARKEN);
+        mysteryPicture.setColorFilter(Color.YELLOW, PorterDuff.Mode.DARKEN);
 
-        Intent failedChallenge = new Intent(getApplicationContext(), FolderList.class);
-        finish();
-        if(!getIntent().getBooleanExtra("Practice", false)) {
-            startActivity(failedChallenge);
-        }
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent failedChallenge = new Intent(getApplicationContext(), FolderList.class);
+                finish();
+                if(!getIntent().getBooleanExtra("Practice", false)) {
+                    startActivity(failedChallenge);
+                }
+            }
+        },500);
     }
 }
