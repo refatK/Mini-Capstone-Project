@@ -1,5 +1,6 @@
 package com.fsck.k9.activity;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
@@ -37,6 +38,19 @@ public class AudioChallenge extends K9Activity {
         button_sound_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                answerInput = findViewById(R.id.audio_challenge_input);
+
+                if (answer.equalsIgnoreCase(answerInput.getText().toString())) {
+                    MediaPlayer winner = MediaPlayer.create(getApplicationContext(), R.raw.win_sound);
+                    winner.start();
+                    finish();
+                }
+                else {
+                    MediaPlayer loser = MediaPlayer.create(getApplicationContext(), R.raw.lose_sound);
+                    loser.start();
+                    Intent i = new Intent(getApplicationContext(), FolderList.class);
+                    startActivity(i);
+                }
 
             }
         });
