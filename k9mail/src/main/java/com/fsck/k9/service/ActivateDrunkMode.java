@@ -1,6 +1,5 @@
-package com.fsck.k9.activity;
+package com.fsck.k9.service;
 
-//import android.content.Intent;
 import com.fsck.k9.DrunkMode;
 import com.fsck.k9.K9;
 import com.fsck.k9.DaoSession;
@@ -9,18 +8,21 @@ import com.fsck.k9.activity.drunk_mode_challenges.PhotoChallenge;
 import java.util.Calendar;
 import java.util.Date;
 
+import android.app.IntentService;
 import android.content.Intent;
-import android.os.Bundle;
 
-public class ActivateDrunkMode extends K9PreferenceActivity {
+public class ActivateDrunkMode extends IntentService {
 
     private DaoSession daoSession;
     private DrunkMode drunkModeSettings;
 
+    public ActivateDrunkMode(){
+        super("Drunk Mode");
+    }
+
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onHandleIntent(Intent i) {
 
         daoSession = ((K9)getApplication()).getDaoSession();
         drunkModeSettings = daoSession.getDrunkModeDao().loadByRowId(1);

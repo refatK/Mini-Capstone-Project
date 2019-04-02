@@ -58,9 +58,10 @@
         android:resizeableActivity="true"
         android:theme="@style/Theme.K9.Startup">
 		
-        <activity android:name=".activity.ActivateDrunkMode">        <intent-filter>
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter></activity>
+        <service 
+			android:name=".service.ActivateDrunkMode"
+			android:exported="true" />
+			
         <activity
             android:name=".activity.drunk_mode_challenges.PhotoChallenge"
             android:label="@string/title_activity_photo_challenge"

@@ -8,7 +8,7 @@ import android.preference.Preference;
 import com.fsck.k9.DaoSession;
 import com.fsck.k9.DrunkMode;
 import com.fsck.k9.K9;
-import com.fsck.k9.activity.ActivateDrunkMode;
+import com.fsck.k9.service.ActivateDrunkMode;
 import com.fsck.k9.activity.K9PreferenceActivity;
 import com.fsck.k9.activity.SetDrunkModeTime;
 
@@ -32,7 +32,7 @@ public class DrunkModeSettings extends K9PreferenceActivity {
         super.onCreate(savedInstanceState);
 
         Intent intent = new Intent(this, ActivateDrunkMode.class);
-        startActivity(intent);
+        startService(intent);
 
         if(savedInstanceState != null &&
                 savedInstanceState.getBoolean("refresh needed", false)){
