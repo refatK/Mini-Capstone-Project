@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.fsck.k9.K9;
 import com.fsck.k9.Photo;
 import com.fsck.k9.R;
+import com.fsck.k9.activity.Accounts;
 import com.fsck.k9.activity.FolderList;
 import com.fsck.k9.activity.K9Activity;
 
@@ -61,6 +63,11 @@ public class PhotoChallenge extends K9Activity {
         super.onDestroy();
         timeLimit.removeCallbacksAndMessages(null);
         timeoutSound.stop();
+    }
+    @Override
+    public void onPause(){
+        super.onPause();
+        loseChallenge();
     }
 
     private void pickChallengePhoto() {
@@ -126,6 +133,16 @@ public class PhotoChallenge extends K9Activity {
         loseWithDelay(500);
     }
 
+    private void loseChallenge() {
+        complete = true;
+        prompt.setBackgroundColor(Color.RED);
+        prompt.setTextColor(Color.WHITE);
+        prompt.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        prompt.setText(R.string.photo_challenge_failed);
+        mysteryPicture.setColorFilter(Color.RED, PorterDuff.Mode.DARKEN);
+        loseWithDelay(0);
+    }
+
     private void winChallenge(Button choice) {
         complete = true;
         winSound.start();
@@ -147,6 +164,11 @@ public class PhotoChallenge extends K9Activity {
         }, 500);
     }
 
+    @Override
+    public void onBackPressed() {
+
+    }
+
     private void timeOut(){
         complete = true;
         timeoutSound.start();
@@ -163,7 +185,8 @@ public class PhotoChallenge extends K9Activity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent failedChallenge = new Intent(getApplicationContext(), FolderList.class);
+                Intent failedChallenge = new Intent(getApplicationContext(), Accounts.class);
+                failedChallenge.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 finish();
                 if(!getIntent().getBooleanExtra("Practice", false)) {
                     startActivity(failedChallenge);

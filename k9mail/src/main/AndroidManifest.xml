@@ -61,6 +61,11 @@
         <activity android:name=".activity.drunk_mode_challenges.AudioChallenge"
             android:label="AudioChallenge"/>
 
+		
+        <service 
+			android:name=".service.ActivateDrunkMode"
+			android:exported="true" />
+
         <activity
             android:name=".activity.drunk_mode_challenges.PhotoChallenge"
             android:label="@string/title_activity_photo_challenge"
@@ -101,7 +106,9 @@
         <activity
             android:name=".activity.setup.RenameMailingList"
             android:theme="@style/Theme.AppCompat.Light.Dialog.Alert" />
+
         <activity android:name=".activity.SetDateAndTime" />
+
 
         <activity android:name=".activity.SetDrunkModeTime" />
 
