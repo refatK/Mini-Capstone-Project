@@ -13,24 +13,33 @@ import org.jetbrains.annotations.Nullable;
 public class AudioChallenge extends K9Activity {
 
     private String answer = "";
-    private char[] chars = {'a', 'b', 'c', 'd', 'e', 'f', '1', '2', '3', '4', '5', 'g', 'h', 'i',
+    private char[] chars = { 'a', 'b', 'c', 'd', 'e', 'f', '1', '2', '3', '4', '5', 'g', 'h', 'i',
         'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-                                                                '6', '7', '8', '9', '0'};
+                                                                '6', '7', '8', '9', '0' };
 
 
     private EditText answerInput;
     private Button button_play_sound_again;
+    private Button button_sound_ok;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_audio_challenge);
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 7; i++) {
             int random = (int)(Math.random()*chars.length);
 
             answer += chars[random];
         }
+
+        button_sound_ok = findViewById(R.id.button_sound_ok);
+        button_sound_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         button_play_sound_again = findViewById(R.id.button_play_sound_again);
         button_play_sound_again.setOnClickListener(new View.OnClickListener() {
@@ -43,15 +52,64 @@ public class AudioChallenge extends K9Activity {
         playSound();
     }
 
-    private void playSound()
-    {
+    private void playSound() {
+
         final String answer = this.answer;
+
+        final MediaPlayer[] mediaPlayers = new MediaPlayer[7];
+
+        for (int i = 0; i < 7; i++) {
+            mediaPlayers[i] = getMediaPlayer(answer.charAt(i));
+        }
+
+        mediaPlayers[0].start();
+        mediaPlayers[0].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                mediaPlayers[1].start();
+            }
+        });
+
+        mediaPlayers[1].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                mediaPlayers[2].start();
+            }
+        });
+
+        mediaPlayers[2].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                mediaPlayers[3].start();
+            }
+        });
+
+        mediaPlayers[3].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                mediaPlayers[4].start();
+            }
+        });
+
+        mediaPlayers[4].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                mediaPlayers[5].start();
+            }
+        });
+
+        mediaPlayers[5].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                mediaPlayers[6].start();
+            }
+        });
+
 
     }
 
     @Nullable
-    private MediaPlayer getMediaPlayer(char ch)
-    {
+    private MediaPlayer getMediaPlayer(char ch) {
         switch (ch) {
             case '0': return MediaPlayer.create(this, R.raw.n0);
             case '1': return MediaPlayer.create(this, R.raw.n1);
