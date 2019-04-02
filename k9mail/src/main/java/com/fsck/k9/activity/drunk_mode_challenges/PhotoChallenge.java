@@ -46,9 +46,19 @@ public class PhotoChallenge extends K9Activity {
         timeoutSound = MediaPlayer.create(this, R.raw.timeup_sound);
         complete = false;
         prompt = findViewById(R.id.prompt);
-        pickChallengePhoto();
-        setChoices();
-        setListeners(choice1, choice2, choice3, choice4);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                pickChallengePhoto();
+            }
+        }).run();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                setChoices();
+                setListeners(choice1, choice2, choice3, choice4);
+            }
+        }).run();
         timeLimit = new Handler();
         timeLimit.postDelayed(new Runnable() {
             @Override
@@ -64,7 +74,6 @@ public class PhotoChallenge extends K9Activity {
         timeLimit.removeCallbacksAndMessages(null);
         timeoutSound.stop();
     }
-
     @Override
     public void onPause(){
         super.onPause();
@@ -173,6 +182,9 @@ public class PhotoChallenge extends K9Activity {
     }
 
     private void timeOut(){
+        if(complete) {
+            return;
+        }
         complete = true;
         timeoutSound.start();
         prompt.setBackgroundColor(Color.YELLOW);
