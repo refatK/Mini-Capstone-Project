@@ -4,19 +4,18 @@ package com.fsck.k9.activity;
 import com.fsck.k9.DrunkMode;
 import com.fsck.k9.K9;
 import com.fsck.k9.DaoSession;
-import com.fsck.k9.R;
+import com.fsck.k9.activity.drunk_mode_challenges.PhotoChallenge;
 
 import java.util.Calendar;
 import java.util.Date;
 
-import android.media.MediaPlayer;
+import android.content.Intent;
 import android.os.Bundle;
 
 public class ActivateDrunkMode extends K9PreferenceActivity {
 
     private DaoSession daoSession;
     private DrunkMode drunkModeSettings;
-    private MediaPlayer loseSound;
 
 
     @Override
@@ -32,10 +31,8 @@ public class ActivateDrunkMode extends K9PreferenceActivity {
         int endTime = drunkModeSettings.getEndTime().getHours()*60+drunkModeSettings.getEndTime().getMinutes();
 
         if(drunkModeSettings.getIsDrunk() && startTime <= currentTime && currentTime < endTime){
-        //    Intent drunk = new Intent(getApplicationContext(), FolderList.class);
-        //    startActivity(drunk);
-            loseSound = MediaPlayer.create(this, R.raw.lose_sound);
-            loseSound.start();
+            Intent intent = new Intent(this, PhotoChallenge.class);
+            startActivity(intent);
         }
 
     }
