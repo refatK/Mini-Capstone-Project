@@ -1,7 +1,9 @@
 package com.fsck.k9.activity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.fsck.k9.R;
 
@@ -13,7 +15,8 @@ public class AudioChallenge extends K9Activity {
                                                                 '6', '7', '8', '9', '0'};
 
 
-    private Button button_play_again;
+    private EditText answerInput;
+    private Button button_play_sound_again;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,5 +29,19 @@ public class AudioChallenge extends K9Activity {
             answer += chars[random];
         }
 
+        button_play_sound_again = findViewById(R.id.button_play_sound_again);
+        button_play_sound_again.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                playSound();
+            }
+        });
+
+        playSound();
+    }
+
+    private void playSound()
+    {
+        final String answer = this.answer;
     }
 }
