@@ -840,6 +840,12 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="settings_message_theme_selection_summary_on">Use a fixed message view theme</string>
 
 
+    <string name="drunk_mode_settings_toggle_label">Enable Drunk Mode</string>
+    <string name="drunk_mode_settings_toggle_summary">Turn Drunk Mode On/Off</string>
+    <string name="drunk_mode_settings_time_title">Set Drunk Mode Time</string>
+    <string name="drunk_mode_settings_time_description">Configure time Drunk Mode activates</string>
+
+
     <string name="setting_language_system">System default</string>
 
     <string name="background_ops_label">Background sync</string>
@@ -1255,7 +1261,11 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="messageview_decrypt_retry">Retry</string>
     <string name="messageview_decrypt_incomplete">Encrypted message must be downloaded for decryption.</string>
     <string name="messageview_crypto_error_title">Error decrypting email</string>
-
+    <string name="photo_challenge_prompt">What\'s displayed in the image below?</string>
+    <string name="photo_challenge_timeout">You took longer than 10 seconds, Time\'s up! ⏰⛔</string>
+    <string name="photo_challenge_failed">Sorry, Challenge Failed! 👎</string>
+    <string name="photo_challenge_success">Congrats, Challenge Completed! 👍</string>
+    <string name ="test_photo_challenge">Test Photo Challenge 📷✅</string>
     <string name="recipient_error_non_ascii">Special characters are currently not supported!</string>
     <string name="recipient_error_parse_failed">Error parsing address!</string>
     <string name="recipient_error_empty_mailing_list">The mailing list does not contain emails!</string>
@@ -1276,7 +1286,11 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="crypto_no_provider_title">This email is encrypted</string>
     <string name="crypto_no_provider_message">This email has been encrypted with OpenPGP.\nTo read it, you need to install and configure a compatible OpenPGP App.</string>
     <string name="crypto_no_provider_button">Choose OpenPGP App</string>
-	
+
+    <string name="drunk_mode">Drunk Mode</string>
+    <string name="drunk_mode_settings_title">Drunk Mode Settings</string>
+    <string name="drunk_mode_test_challenges_debug">Test Challenges (For Debug Only!)</string>
+
     <string name="mailing_lists">Mailing Lists</string>
     <string name="mailing_list_email_list">Email List</string>
     <string name="mail_list_widget_text">K-9 Message List</string>
@@ -1306,4 +1320,5 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="title_activity_remove_quick_reply">RemoveQuickReply</string>
     <string name="toast_invalid_quick_reply">Invalid Quick Reply input. Please add another one.</string>
     <string name="title_activity_remove_email_address">RemoveEmailAddress</string>
+    <string name="title_activity_photo_challenge">Welcome To The Photo Challenge!</string>
 </resources>
