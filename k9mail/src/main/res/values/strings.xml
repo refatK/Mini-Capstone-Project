@@ -1321,4 +1321,5 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="toast_invalid_quick_reply">Invalid Quick Reply input. Please add another one.</string>
     <string name="title_activity_remove_email_address">RemoveEmailAddress</string>
     <string name="title_activity_photo_challenge">Welcome To The Photo Challenge!</string>
+    <string name="test_audio_challenge">Test Audio Challenge🎵✅</string>
 </resources>
