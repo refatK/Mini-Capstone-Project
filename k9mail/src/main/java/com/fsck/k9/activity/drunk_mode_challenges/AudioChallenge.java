@@ -9,7 +9,6 @@ import android.widget.EditText;
 
 import com.fsck.k9.R;
 import com.fsck.k9.activity.Accounts;
-import com.fsck.k9.activity.FolderList;
 import com.fsck.k9.activity.K9Activity;
 
 import org.jetbrains.annotations.Nullable;
@@ -25,6 +24,7 @@ public class AudioChallenge extends K9Activity {
     private EditText answerInput;
     private Button button_play_sound_again;
     private Button button_sound_ok;
+    private final MediaPlayer[] mediaPlayers = new MediaPlayer[7];
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,13 +44,27 @@ public class AudioChallenge extends K9Activity {
                 answerInput = findViewById(R.id.audio_challenge_input);
 
                 if (answer.equalsIgnoreCase(answerInput.getText().toString())) {
-                    MediaPlayer winner = MediaPlayer.create(getApplicationContext(), R.raw.win_sound);
+                    final MediaPlayer winner = MediaPlayer.create(getApplicationContext(), R.raw.win_sound);
                     winner.start();
+                    winner.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mediaPlayer) {
+                            winner.stop();
+                            winner.release();
+                        }
+                    });
                     finish();
                 }
                 else {
-                    MediaPlayer loser = MediaPlayer.create(getApplicationContext(), R.raw.lose_sound);
+                    final MediaPlayer loser = MediaPlayer.create(getApplicationContext(), R.raw.lose_sound);
                     loser.start();
+                    loser.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mediaPlayer) {
+                            loser.stop();
+                            loser.release();
+                        }
+                    });
                     Intent i = new Intent(getApplicationContext(), Accounts.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     finish();
@@ -73,11 +87,20 @@ public class AudioChallenge extends K9Activity {
         playSound();
     }
 
+    @Override
+    protected void onDestroy() {
+
+        for (MediaPlayer mediaPlayer:mediaPlayers) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        }
+
+        super.onDestroy();
+    }
+
     private void playSound() {
 
         final String answer = this.answer;
-
-        final MediaPlayer[] mediaPlayers = new MediaPlayer[7];
 
         for (int i = 0; i < 7; i++) {
             mediaPlayers[i] = getMediaPlayer(answer.charAt(i));
