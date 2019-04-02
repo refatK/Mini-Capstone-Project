@@ -25,6 +25,9 @@ public class AudioChallenge extends K9Activity {
     private Button button_play_sound_again;
     private Button button_sound_ok;
     private final MediaPlayer[] mediaPlayers = new MediaPlayer[7];
+    private boolean playing = false;
+    private boolean win = false;
+    private boolean lose = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,7 @@ public class AudioChallenge extends K9Activity {
                         public void onCompletion(MediaPlayer mediaPlayer) {
                             winner.stop();
                             winner.release();
+                            win = true;
                         }
                     });
                     finish();
@@ -63,6 +67,7 @@ public class AudioChallenge extends K9Activity {
                         public void onCompletion(MediaPlayer mediaPlayer) {
                             loser.stop();
                             loser.release();
+                            lose = true;
                         }
                     });
                     Intent i = new Intent(getApplicationContext(), Accounts.class);
@@ -105,23 +110,23 @@ public class AudioChallenge extends K9Activity {
 
     @Override
     protected void onPause() {
-
-        final MediaPlayer loser = MediaPlayer.create(getApplicationContext(), R.raw.lose_sound);
-        loser.start();
-        loser.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                loser.stop();
-                loser.release();
+        if (!win && !lose) {
+            final MediaPlayer loser = MediaPlayer.create(getApplicationContext(), R.raw.lose_sound);
+            loser.start();
+            loser.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    loser.stop();
+                    loser.release();
+                }
+            });
+            Intent i = new Intent(getApplicationContext(), Accounts.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            finish();
+            if (!getIntent().getBooleanExtra("Practice", false)) {
+                startActivity(i);
             }
-        });
-        Intent i = new Intent(getApplicationContext(), Accounts.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        finish();
-        if(!getIntent().getBooleanExtra("Practice", false)) {
-            startActivity(i);
         }
-
         super.onPause();
     }
 
@@ -133,50 +138,76 @@ public class AudioChallenge extends K9Activity {
             mediaPlayers[i] = getMediaPlayer(answer.charAt(i));
         }
 
-        mediaPlayers[0].start();
-        mediaPlayers[0].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                mediaPlayers[1].start();
-            }
-        });
+        if (!playing) {
+            playing = true;
+            button_play_sound_again.setClickable(false);
+            button_play_sound_again.setEnabled(false);
+            mediaPlayers[0].start();
+            mediaPlayers[0].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    mediaPlayers[0].stop();
+                    mediaPlayers[0].release();
+                    mediaPlayers[1].start();
+                }
+            });
 
-        mediaPlayers[1].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                mediaPlayers[2].start();
-            }
-        });
+            mediaPlayers[1].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    mediaPlayers[1].stop();
+                    mediaPlayers[1].release();
+                    mediaPlayers[2].start();
+                }
+            });
 
-        mediaPlayers[2].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                mediaPlayers[3].start();
-            }
-        });
+            mediaPlayers[2].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    mediaPlayers[2].stop();
+                    mediaPlayers[2].release();
+                    mediaPlayers[3].start();
+                }
+            });
 
-        mediaPlayers[3].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                mediaPlayers[4].start();
-            }
-        });
+            mediaPlayers[3].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    mediaPlayers[3].stop();
+                    mediaPlayers[3].release();
+                    mediaPlayers[4].start();
+                }
+            });
 
-        mediaPlayers[4].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                mediaPlayers[5].start();
-            }
-        });
+            mediaPlayers[4].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    mediaPlayers[4].stop();
+                    mediaPlayers[4].release();
+                    mediaPlayers[5].start();
+                }
+            });
 
-        mediaPlayers[5].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                mediaPlayers[6].start();
-            }
-        });
+            mediaPlayers[5].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    mediaPlayers[5].stop();
+                    mediaPlayers[5].release();
+                    mediaPlayers[6].start();
+                    playing = false;
+                }
+            });
 
-
+            mediaPlayers[6].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    mediaPlayers[6].stop();
+                    mediaPlayers[6].release();
+                    button_play_sound_again.setClickable(true);
+                    button_play_sound_again.setEnabled(true);
+                }
+            });
+        }
     }
 
     @Nullable
