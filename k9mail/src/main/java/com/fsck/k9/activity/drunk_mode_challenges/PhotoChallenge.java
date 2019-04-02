@@ -7,7 +7,6 @@ import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -17,10 +16,10 @@ import com.fsck.k9.K9;
 import com.fsck.k9.Photo;
 import com.fsck.k9.R;
 import com.fsck.k9.activity.Accounts;
-import com.fsck.k9.activity.FolderList;
 import com.fsck.k9.activity.K9Activity;
 
 import java.util.List;
+
 
 
 public class PhotoChallenge extends K9Activity {
@@ -36,6 +35,7 @@ public class PhotoChallenge extends K9Activity {
     private MediaPlayer timeoutSound;
     private boolean complete;
     private Handler timeLimit;
+    boolean active = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,9 +77,18 @@ public class PhotoChallenge extends K9Activity {
     @Override
     public void onPause(){
         super.onPause();
+        active = false;
         if(!complete) {
             loseChallenge();
         }
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+        if(!active) {
+            loseChallenge();
+        }
+        active = true;
     }
 
     private void pickChallengePhoto() {
@@ -178,7 +187,7 @@ public class PhotoChallenge extends K9Activity {
 
     @Override
     public void onBackPressed() {
-
+        loseChallenge();
     }
 
     private void timeOut(){
@@ -202,6 +211,9 @@ public class PhotoChallenge extends K9Activity {
             public void run() {
                 Intent failedChallenge = new Intent(getApplicationContext(), Accounts.class);
                 failedChallenge.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                if(!active) {
+                    return;
+                }
                 finish();
                 if(!getIntent().getBooleanExtra("Practice", false)) {
                     startActivity(failedChallenge);
