@@ -244,6 +244,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Intent intent2 = new Intent(this, ActivateDrunkMode.class);
+        startService(intent2);
+
         if (UpgradeDatabases.actionUpgradeDatabases(this, getIntent())) {
             finish();
             return;
@@ -372,34 +375,24 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             relatedMessageProcessed = savedInstanceState.getBoolean(STATE_KEY_SOURCE_MESSAGE_PROCED, false);
         }
 
-
-        Intent intent2 = new Intent(this, ActivateDrunkMode.class);
-
         if (initFromIntent(intent)) {
             action = Action.COMPOSE;
             changesMadeSinceLastSave = true;
         } else {
             String action = intent.getAction();
             if (ACTION_COMPOSE.equals(action)) {
-                startService(intent2);
                 this.action = Action.COMPOSE;
             } else if (ACTION_REPLY.equals(action)) {
-                startService(intent2);
                 this.action = Action.REPLY;
             } else if (ACTION_REPLY_ALL.equals(action)) {
-                startService(intent2);
                 this.action = Action.REPLY_ALL;
             } else if (ACTION_FORWARD.equals(action)) {
-                startService(intent2);
                 this.action = Action.FORWARD;
             } else if (ACTION_FORWARD_AS_ATTACHMENT.equals(action)) {
-                startService(intent2);
                 this.action = Action.FORWARD_AS_ATTACHMENT;
             } else if (ACTION_EDIT_DRAFT.equals(action)) {
-                startService(intent2);
                 this.action= Action.EDIT_DRAFT;
             } else if (ACTION_EDIT_SCHEDULED.equals(action)){
-                startService(intent2);
                 this.action= Action.EDIT_SCHEDULED;
             } else {
                 // This shouldn't happen

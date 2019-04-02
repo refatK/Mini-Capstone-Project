@@ -34,6 +34,7 @@ public class ActivateDrunkMode extends IntentService {
 
         if(drunkModeSettings.getIsDrunk() && startTime <= currentTime && currentTime < endTime){
             Intent intent = new Intent(this, PhotoChallenge.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
 
