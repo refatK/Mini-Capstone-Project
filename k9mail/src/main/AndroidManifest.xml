@@ -57,6 +57,11 @@
         android:label="@string/app_name"
         android:resizeableActivity="true"
         android:theme="@style/Theme.K9.Startup">
+		
+        <service 
+			android:name=".service.ActivateDrunkMode"
+			android:exported="true" />
+			
         <activity
             android:name=".activity.drunk_mode_challenges.PhotoChallenge"
             android:label="@string/title_activity_photo_challenge"
@@ -97,8 +102,9 @@
         <activity
             android:name=".activity.setup.RenameMailingList"
             android:theme="@style/Theme.AppCompat.Light.Dialog.Alert" />
-        <activity android:name=".activity.SetDateAndTime" />
+			
         <activity android:name=".activity.SetDrunkModeTime" />
+        <activity android:name=".activity.SetDateAndTime" />
 
         <meta-data
             android:name="android.app.default_searchable"
