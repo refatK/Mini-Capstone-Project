@@ -74,8 +74,10 @@ public class AudioChallenge extends K9Activity {
     protected void onDestroy() {
 
         for (MediaPlayer mediaPlayer:mediaPlayers) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+                mediaPlayer.release();
+            }
         }
 
         super.onDestroy();
