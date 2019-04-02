@@ -123,12 +123,7 @@ public class PhotoChallenge extends K9Activity {
         prompt.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         prompt.setText(R.string.photo_challenge_failed);
         mysteryPicture.setColorFilter(Color.RED, PorterDuff.Mode.DARKEN);
-
-        Intent failedChallenge = new Intent(getApplicationContext(), FolderList.class);
-        finish();
-        if(!getIntent().getBooleanExtra("Practice", false)) {
-            startActivity(failedChallenge);
-        }
+        loseWithDelay(500);
     }
 
     private void winChallenge(Button choice) {
@@ -143,7 +138,13 @@ public class PhotoChallenge extends K9Activity {
         prompt.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
         prompt.setText(R.string.photo_challenge_success);
         mysteryPicture.setColorFilter(Color.GREEN, PorterDuff.Mode.DARKEN);
-        finish();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                finish();
+            }
+        }, 500);
     }
 
     private void timeOut(){
@@ -154,7 +155,11 @@ public class PhotoChallenge extends K9Activity {
         prompt.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         prompt.setText(R.string.photo_challenge_timeout);
         mysteryPicture.setColorFilter(Color.YELLOW, PorterDuff.Mode.DARKEN);
+        loseWithDelay(500);
 
+    }
+
+    private void loseWithDelay(int millis){
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -164,6 +169,6 @@ public class PhotoChallenge extends K9Activity {
                     startActivity(failedChallenge);
                 }
             }
-        },500);
+        },millis);
     }
 }
