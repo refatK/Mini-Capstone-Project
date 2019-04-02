@@ -47,9 +47,11 @@ public class AudioChallenge extends K9Activity {
                 answerInput = findViewById(R.id.audio_challenge_input);
 
                 if (answer.equalsIgnoreCase(answerInput.getText().toString())) {
-                   youWin();
+                    win = true;
+                    youWin();
                 }
                 else {
+                    lose = true;
                     youLose();
                 }
 
@@ -100,7 +102,6 @@ public class AudioChallenge extends K9Activity {
             public void onCompletion(MediaPlayer mediaPlayer) {
                 winner.stop();
                 winner.release();
-                win = true;
             }
         });
         finish();
@@ -114,7 +115,6 @@ public class AudioChallenge extends K9Activity {
             public void onCompletion(MediaPlayer mediaPlayer) {
                 loser.stop();
                 loser.release();
-                lose = true;
             }
         });
         Intent i = new Intent(getApplicationContext(), Accounts.class);
