@@ -34,7 +34,6 @@ public class QuickRepliesMenu extends K9ListActivity {
     private List<String> quickReplyBodies = new ArrayList<>();
     private DaoSession daoSession;
     Button add_quick_reply;
-    //private ActivateDrunkMode activateDrunkMode = new ActivateDrunkMode();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,13 +74,13 @@ public class QuickRepliesMenu extends K9ListActivity {
         });
 
         if(getIntent().getBooleanExtra("Sending",false)) {
+            Intent intent2 = new Intent(this, ActivateDrunkMode.class);
+            startActivity(intent2);
             add_quick_reply.setText("Select A Quick Reply To Send");
             add_quick_reply.setClickable(false);
             add_quick_reply.setWidth(1080);
             add_quick_reply.setBackgroundColor(Color.DKGRAY);
             add_quick_reply.setTextColor(Color.LTGRAY);
-            Intent intent = new Intent(this, ActivateDrunkMode.class);
-            startActivity(intent);
         }
         else{
             registerForContextMenu(getListView());
@@ -132,6 +131,7 @@ public class QuickRepliesMenu extends K9ListActivity {
 
         // ignore if in a view
         if (i.getBooleanExtra("Sending", false)) {
+
             Toast.makeText(this, "Sending QR: " + quickReplyBodies.get(position), Toast.LENGTH_SHORT).show();
 
             // extract all information from intent passed to this view

@@ -15,6 +15,7 @@ import com.fsck.k9.EmailAddress;
 import com.fsck.k9.K9;
 import com.fsck.k9.MailingList;
 import com.fsck.k9.R;
+import com.fsck.k9.activity.ActivateDrunkMode;
 import com.fsck.k9.activity.K9ListActivity;
 
 import java.util.ArrayList;
@@ -38,6 +39,9 @@ public class MailingListMenu extends K9ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = new Intent(this, ActivateDrunkMode.class);
+        startActivity(intent);
 
         if(savedInstanceState != null &&
                 savedInstanceState.getBoolean("refresh needed", false)){

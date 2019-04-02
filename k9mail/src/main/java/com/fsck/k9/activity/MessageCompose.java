@@ -56,6 +56,7 @@ import com.fsck.k9.Preferences;
 import com.fsck.k9.R;
 import com.fsck.k9.ScheduledEmail;
 import com.fsck.k9.activity.MessageLoaderHelper.MessageLoaderCallbacks;
+import com.fsck.k9.activity.ActivateDrunkMode;
 import com.fsck.k9.activity.compose.AttachmentPresenter;
 import com.fsck.k9.activity.compose.AttachmentPresenter.AttachmentMvpView;
 import com.fsck.k9.activity.compose.AttachmentPresenter.WaitingAction;
@@ -372,24 +373,33 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         }
 
 
+        Intent intent2 = new Intent(this, ActivateDrunkMode.class);
+
         if (initFromIntent(intent)) {
             action = Action.COMPOSE;
             changesMadeSinceLastSave = true;
         } else {
             String action = intent.getAction();
             if (ACTION_COMPOSE.equals(action)) {
+                startActivity(intent2);
                 this.action = Action.COMPOSE;
             } else if (ACTION_REPLY.equals(action)) {
+                startActivity(intent2);
                 this.action = Action.REPLY;
             } else if (ACTION_REPLY_ALL.equals(action)) {
+                startActivity(intent2);
                 this.action = Action.REPLY_ALL;
             } else if (ACTION_FORWARD.equals(action)) {
+                startActivity(intent2);
                 this.action = Action.FORWARD;
             } else if (ACTION_FORWARD_AS_ATTACHMENT.equals(action)) {
+                startActivity(intent2);
                 this.action = Action.FORWARD_AS_ATTACHMENT;
             } else if (ACTION_EDIT_DRAFT.equals(action)) {
+                startActivity(intent2);
                 this.action= Action.EDIT_DRAFT;
             } else if (ACTION_EDIT_SCHEDULED.equals(action)){
+                startActivity(intent2);
                 this.action= Action.EDIT_SCHEDULED;
             } else {
                 // This shouldn't happen
