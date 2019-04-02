@@ -10,17 +10,19 @@ import java.util.Calendar;
 import java.util.Date;
 
 import android.media.MediaPlayer;
+import android.os.Bundle;
 
 public class ActivateDrunkMode extends K9PreferenceActivity {
 
     private DaoSession daoSession;
     private DrunkMode drunkModeSettings;
-    private MediaPlayer loseSound= MediaPlayer.create(this, R.raw.lose_sound);
+    private MediaPlayer loseSound;
 
-    public ActivateDrunkMode() {
-    }
 
-    public void checkDrunkMode() {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
         daoSession = ((K9)getApplication()).getDaoSession();
         drunkModeSettings = daoSession.getDrunkModeDao().loadByRowId(1);
 
@@ -29,10 +31,12 @@ public class ActivateDrunkMode extends K9PreferenceActivity {
         int startTime = drunkModeSettings.getStartTime().getHours()*60+drunkModeSettings.getStartTime().getMinutes();
         int endTime = drunkModeSettings.getEndTime().getHours()*60+drunkModeSettings.getEndTime().getMinutes();
 
-        if(startTime <= currentTime && currentTime < endTime){
+        if(drunkModeSettings.getIsDrunk() && startTime <= currentTime && currentTime < endTime){
         //    Intent drunk = new Intent(getApplicationContext(), FolderList.class);
         //    startActivity(drunk);
+            loseSound = MediaPlayer.create(this, R.raw.lose_sound);
             loseSound.start();
         }
+
     }
 }

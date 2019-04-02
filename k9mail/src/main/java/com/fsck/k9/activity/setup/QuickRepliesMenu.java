@@ -34,7 +34,7 @@ public class QuickRepliesMenu extends K9ListActivity {
     private List<String> quickReplyBodies = new ArrayList<>();
     private DaoSession daoSession;
     Button add_quick_reply;
-    private ActivateDrunkMode activateDrunkMode = new ActivateDrunkMode();
+    //private ActivateDrunkMode activateDrunkMode = new ActivateDrunkMode();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,7 +80,8 @@ public class QuickRepliesMenu extends K9ListActivity {
             add_quick_reply.setWidth(1080);
             add_quick_reply.setBackgroundColor(Color.DKGRAY);
             add_quick_reply.setTextColor(Color.LTGRAY);
-            activateDrunkMode.checkDrunkMode();
+            Intent intent = new Intent(this, ActivateDrunkMode.class);
+            startActivity(intent);
         }
         else{
             registerForContextMenu(getListView());
