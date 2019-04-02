@@ -3,6 +3,7 @@
     <PreferenceCategory
         android:key="drunk_mode_settings_preferences"
         android:title="@string/drunk_mode">
+
     <CheckBoxPreference
         android:persistent="false"
         android:key="drunk_mode_settings_toggle"
@@ -16,4 +17,13 @@
         android:title="@string/drunk_mode_settings_time_title"
         android:summary="@string/drunk_mode_settings_time_description" />
     </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="drunk_mode_test_challenges"
+        android:title="@string/drunk_mode_test_challenges_debug">
+        <Preference
+            android:key="drunk_mode_test_photo_challenge"
+            android:title="@string/test_photo_challenge"/>
+    </PreferenceCategory>
+
 </PreferenceScreen>
