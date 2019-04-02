@@ -64,10 +64,13 @@ public class PhotoChallenge extends K9Activity {
         timeLimit.removeCallbacksAndMessages(null);
         timeoutSound.stop();
     }
+
     @Override
     public void onPause(){
         super.onPause();
-        loseChallenge();
+        if(!complete) {
+            loseChallenge();
+        }
     }
 
     private void pickChallengePhoto() {
