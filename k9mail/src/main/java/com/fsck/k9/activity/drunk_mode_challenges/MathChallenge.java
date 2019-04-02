@@ -11,8 +11,23 @@ import com.fsck.k9.R;
 
 public class MathChallenge extends K9Activity {
 
+    enum Operation {
+        ADD("+"), SUBTRACT("−"), MULTIPLY("x");
+
+        private String symbol;
+
+        Operation(String symbol) {
+            this.symbol = symbol;
+        }
+
+
+        @Override
+        public String toString() {
+            return this.symbol;
+        }
+    }
+
     public final String[] MATH_SIGNS = {"+", "-"};
-    public final String[] MATH_OPERATION_SYMBOLS = {"+", "−", "×"};
 
     private String sign = "+";
     private int leftNumber;
@@ -54,11 +69,15 @@ public class MathChallenge extends K9Activity {
         Button submitAnswerButton = (Button) findViewById(R.id.submit_math_answer_button);
         submitAnswerButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                System.err.println("45454 solution" + solution);
+                System.err.println("45454 solution " + solution);
+                checkSolution();
             }
         });
 
 
+    }
+
+    private void checkSolution() {
     }
 
     private String generateEquation() {
@@ -67,17 +86,20 @@ public class MathChallenge extends K9Activity {
         int secondNumber = (int)(Math.random() * 19) - 9;
 
         //get random operation
-        int operation = (int)(Math.random() * MATH_OPERATION_SYMBOLS.length - 1);
+        System.err.println("45454 op length " + Operation.values().length);
+        int randOperationChoice = (int)(Math.random() * Operation.values().length);
+        Operation operation = Operation.values()[randOperationChoice];
+        System.err.println("45454 op " + operation);
 
         switch (operation) {
-            case 0: solution = firstNumber + secondNumber;
+            case ADD: solution = firstNumber + secondNumber;
             break;
-            case 1: solution = firstNumber - secondNumber;
+            case SUBTRACT: solution = firstNumber - secondNumber;
             break;
-            case 2: solution = firstNumber * secondNumber;
+            case MULTIPLY: solution = firstNumber * secondNumber;
         }
 
-        return firstNumber + " " + MATH_OPERATION_SYMBOLS[operation] + " " + secondNumber;
+        return firstNumber + " " + operation + " " + secondNumber;
     }
 
     private void setupMathInput(NumberPicker picker, int minVal, int maxVal) {
