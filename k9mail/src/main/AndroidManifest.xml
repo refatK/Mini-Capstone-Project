@@ -59,7 +59,7 @@
         android:theme="@style/Theme.K9.Startup">
 
         <activity android:name=".activity.drunk_mode_challenges.AudioChallenge"
-            android:label="AudioChallenge"/>
+            android:label="Audio Challenge"/>
 
 		
         <service 
