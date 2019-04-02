@@ -1315,4 +1315,8 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="title_activity_remove_quick_reply">RemoveQuickReply</string>
     <string name="toast_invalid_quick_reply">Invalid Quick Reply input. Please add another one.</string>
     <string name="title_activity_remove_email_address">RemoveEmailAddress</string>
+
+    <string name="title_activity_math_challenge">Math Challenge</string>
+    <string name="drunk_mode_math_title">Solve The Math Problem!</string>
+    <string name="drunk_mode_math_submit">Submit Answer</string>
 </resources>
