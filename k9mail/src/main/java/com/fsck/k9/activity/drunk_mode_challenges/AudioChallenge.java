@@ -47,35 +47,10 @@ public class AudioChallenge extends K9Activity {
                 answerInput = findViewById(R.id.audio_challenge_input);
 
                 if (answer.equalsIgnoreCase(answerInput.getText().toString())) {
-                    final MediaPlayer winner = MediaPlayer.create(getApplicationContext(), R.raw.win_sound);
-                    winner.start();
-                    winner.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mediaPlayer) {
-                            winner.stop();
-                            winner.release();
-                            win = true;
-                        }
-                    });
-                    finish();
+                   youWin();
                 }
                 else {
-                    final MediaPlayer loser = MediaPlayer.create(getApplicationContext(), R.raw.lose_sound);
-                    loser.start();
-                    loser.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mediaPlayer) {
-                            loser.stop();
-                            loser.release();
-                            lose = true;
-                        }
-                    });
-                    Intent i = new Intent(getApplicationContext(), Accounts.class);
-                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    finish();
-                    if(!getIntent().getBooleanExtra("Practice", false)) {
-                        startActivity(i);
-                    }
+                    youLose();
                 }
 
             }
@@ -91,6 +66,7 @@ public class AudioChallenge extends K9Activity {
 
         playSound();
     }
+
 
     @Override
     protected void onDestroy() {
@@ -111,23 +87,42 @@ public class AudioChallenge extends K9Activity {
     @Override
     protected void onPause() {
         if (!win && !lose) {
-            final MediaPlayer loser = MediaPlayer.create(getApplicationContext(), R.raw.lose_sound);
-            loser.start();
-            loser.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mediaPlayer) {
-                    loser.stop();
-                    loser.release();
-                }
-            });
-            Intent i = new Intent(getApplicationContext(), Accounts.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            finish();
-            if (!getIntent().getBooleanExtra("Practice", false)) {
-                startActivity(i);
-            }
+            youLose();
         }
         super.onPause();
+    }
+
+    private void youWin() {
+        final MediaPlayer winner = MediaPlayer.create(getApplicationContext(), R.raw.win_sound);
+        winner.start();
+        winner.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                winner.stop();
+                winner.release();
+                win = true;
+            }
+        });
+        finish();
+    }
+
+    private void youLose() {
+        final MediaPlayer loser = MediaPlayer.create(getApplicationContext(), R.raw.lose_sound);
+        loser.start();
+        loser.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                loser.stop();
+                loser.release();
+                lose = true;
+            }
+        });
+        Intent i = new Intent(getApplicationContext(), Accounts.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        finish();
+        if(!getIntent().getBooleanExtra("Practice", false)) {
+            startActivity(i);
+        }
     }
 
     private void playSound() {
