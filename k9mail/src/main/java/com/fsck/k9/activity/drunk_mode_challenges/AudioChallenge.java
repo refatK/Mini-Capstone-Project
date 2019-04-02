@@ -98,6 +98,33 @@ public class AudioChallenge extends K9Activity {
         super.onDestroy();
     }
 
+    @Override
+    public void onBackPressed() {
+
+    }
+
+    @Override
+    protected void onPause() {
+
+        final MediaPlayer loser = MediaPlayer.create(getApplicationContext(), R.raw.lose_sound);
+        loser.start();
+        loser.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                loser.stop();
+                loser.release();
+            }
+        });
+        Intent i = new Intent(getApplicationContext(), Accounts.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        finish();
+        if(!getIntent().getBooleanExtra("Practice", false)) {
+            startActivity(i);
+        }
+
+        super.onPause();
+    }
+
     private void playSound() {
 
         final String answer = this.answer;
