@@ -11,6 +11,10 @@ import com.fsck.k9.R;
 
 public class MathChallenge extends K9Activity {
 
+    private NumberPicker signInput;
+    private NumberPicker leftNumberInput;
+    private NumberPicker rightNumberInput;
+
     enum Operation {
         ADD("+"), SUBTRACT("−"), MULTIPLY("x");
 
@@ -52,32 +56,39 @@ public class MathChallenge extends K9Activity {
 
         // Set up the Number pickers
         // Get number pickers
-        NumberPicker signInput = (NumberPicker) findViewById(R.id.sign);
-        NumberPicker leftNumberInput = (NumberPicker) findViewById(R.id.left_number);
-        NumberPicker rightNumberInput = (NumberPicker) findViewById(R.id.right_number);
+        signInput = (NumberPicker) findViewById(R.id.sign);
+        leftNumberInput = (NumberPicker) findViewById(R.id.left_number);
+        rightNumberInput = (NumberPicker) findViewById(R.id.right_number);
 
         // set the number pickers up
+        setupMathInput(signInput, 0, MATH_SIGNS.length - 1);
         setupMathInput(leftNumberInput, 0, 9);
         setupMathInput(rightNumberInput, 0, 9);
-        setupMathInput(signInput, 0, MATH_SIGNS.length - 1);
 
         // makes the input use array as display instead
         signInput.setDisplayedValues(MATH_SIGNS);
+
+        // setup change listeners
+        setupInputChangeListeners();
 
 
         // Setup submit button TODO actually submit
         Button submitAnswerButton = (Button) findViewById(R.id.submit_math_answer_button);
         submitAnswerButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                System.err.println("45454 solution " + solution);
                 checkSolution();
             }
         });
 
-
     }
 
     private void checkSolution() {
+        int answer = Integer.parseInt(sign + leftNumber + rightNumber);
+        if (answer != solution) {
+            System.err.println("454545: oof");
+        } else {
+            System.err.println("454545: OMG, right");
+        }
     }
 
     private String generateEquation() {
@@ -86,10 +97,8 @@ public class MathChallenge extends K9Activity {
         int secondNumber = (int)(Math.random() * 19) - 9;
 
         //get random operation
-        System.err.println("45454 op length " + Operation.values().length);
         int randOperationChoice = (int)(Math.random() * Operation.values().length);
         Operation operation = Operation.values()[randOperationChoice];
-        System.err.println("45454 op " + operation);
 
         switch (operation) {
             case ADD: solution = firstNumber + secondNumber;
@@ -111,6 +120,29 @@ public class MathChallenge extends K9Activity {
 
         // makes the scroll wheel input wrap if min/max val reached
         picker.setWrapSelectorWheel(true);
+    }
+
+    private void setupInputChangeListeners() {
+        signInput.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal){
+                sign = MATH_SIGNS[newVal];
+            }
+        });
+
+        leftNumberInput.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal){
+                leftNumber = newVal;
+            }
+        });
+
+        rightNumberInput.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal){
+                rightNumber = newVal;
+            }
+        });
     }
 
 }
