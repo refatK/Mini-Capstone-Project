@@ -73,10 +73,17 @@ public class AudioChallenge extends K9Activity {
     @Override
     protected void onDestroy() {
 
-        for (MediaPlayer mediaPlayer:mediaPlayers) {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.stop();
-                mediaPlayer.release();
+        for (MediaPlayer mediaPlayer:mediaPlayers)
+        {
+            try {
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                }
+            }
+            catch(IllegalStateException e)
+            {
+             continue;
             }
         }
 
@@ -85,7 +92,9 @@ public class AudioChallenge extends K9Activity {
 
     @Override
     public void onBackPressed() {
-
+        if (!win && !lose) {
+            youLose();
+        }
     }
 
     @Override
@@ -191,7 +200,6 @@ public class AudioChallenge extends K9Activity {
                     mediaPlayers[5].stop();
                     mediaPlayers[5].release();
                     mediaPlayers[6].start();
-                    playing = false;
                 }
             });
 
@@ -202,6 +210,7 @@ public class AudioChallenge extends K9Activity {
                     mediaPlayers[6].release();
                     button_play_sound_again.setClickable(true);
                     button_play_sound_again.setEnabled(true);
+                    playing = false;
                 }
             });
         }
