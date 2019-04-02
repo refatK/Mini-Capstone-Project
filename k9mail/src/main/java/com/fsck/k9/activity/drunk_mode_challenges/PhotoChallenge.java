@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.fsck.k9.K9;
 import com.fsck.k9.Photo;
 import com.fsck.k9.R;
+import com.fsck.k9.activity.Accounts;
 import com.fsck.k9.activity.FolderList;
 import com.fsck.k9.activity.K9Activity;
 
@@ -163,7 +164,8 @@ public class PhotoChallenge extends K9Activity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent failedChallenge = new Intent(getApplicationContext(), FolderList.class);
+                Intent failedChallenge = new Intent(getApplicationContext(), Accounts.class);
+                failedChallenge.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 finish();
                 if(!getIntent().getBooleanExtra("Practice", false)) {
                     startActivity(failedChallenge);
