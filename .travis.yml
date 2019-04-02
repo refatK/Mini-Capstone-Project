@@ -45,8 +45,6 @@ jobs:
     script: ./gradlew lint
   - script: ./gradlew jacocoTestReport
     name: "Test Coverage"
-    after_success:
-    - bash <(curl -s https://codecov.io/bash)
 
 
 stages:

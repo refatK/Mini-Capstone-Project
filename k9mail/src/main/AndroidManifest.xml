@@ -61,6 +61,11 @@
         <activity android:name=".activity.AudioChallenge"
             android:label="AudioChallenge"/>
 
+        <activity
+            android:name=".activity.drunk_mode_challenges.PhotoChallenge"
+            android:label="@string/title_activity_photo_challenge"
+            android:icon="@drawable/colorful"/>
+
         <service
             android:name=".SendQuickReplyService"
             android:exported="false" />
