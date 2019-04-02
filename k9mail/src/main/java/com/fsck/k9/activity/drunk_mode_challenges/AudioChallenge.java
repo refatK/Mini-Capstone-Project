@@ -81,9 +81,8 @@ public class AudioChallenge extends K9Activity {
                     mediaPlayer.release();
                 }
             }
-            catch(IllegalStateException e)
-            {
-             continue;
+            catch(IllegalStateException e) {
+                continue;
             }
         }
 
