@@ -33,7 +33,7 @@ public class DrunkModeTimePicker extends DialogFragment implements TimePickerDia
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         String strTime = (hourOfDay == 12 ? "12" : hourOfDay%12) + ":"
-                + ((minute < 10) ? "0" + minute : minute) + (hourOfDay > 12 ? " PM" : " AM");
+                + ((minute < 10) ? "0" + minute : minute) + (hourOfDay >= 12 ? " PM" : " AM");
         this.currentCalendar.clear();
         this.currentCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         this.currentCalendar.set(Calendar.MINUTE, minute);
