@@ -8,10 +8,12 @@ import android.preference.Preference;
 import com.fsck.k9.DaoSession;
 import com.fsck.k9.DrunkMode;
 import com.fsck.k9.K9;
+import com.fsck.k9.service.ActivateDrunkMode;
 import com.fsck.k9.activity.K9PreferenceActivity;
 import com.fsck.k9.activity.SetDrunkModeTime;
 
 import com.fsck.k9.R;
+import com.fsck.k9.activity.drunk_mode_challenges.AudioChallenge;
 import com.fsck.k9.activity.drunk_mode_challenges.MathChallenge;
 import com.fsck.k9.activity.drunk_mode_challenges.PhotoChallenge;
 
@@ -31,6 +33,9 @@ public class DrunkModeSettings extends K9PreferenceActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Intent intent = new Intent(this, ActivateDrunkMode.class);
+        startService(intent);
+
         if(savedInstanceState != null &&
                 savedInstanceState.getBoolean("refresh needed", false)){
             Bundle noUpdate = new Bundle();
@@ -46,6 +51,7 @@ public class DrunkModeSettings extends K9PreferenceActivity {
         // Setup test section for drunk mode
         addPreferencesFromResource(R.xml.drunk_mode_settings_preferences);
         Preference testPhotoChallengeOption = findPreference("drunk_mode_test_photo_challenge");
+        Preference testAudioChallengeOption = findPreference("drunk_mode_test_audio_challenge");
         Preference testMathChallengeOption = findPreference("drunk_mode_test_math_challenge");
         setDrunkTimePreference = findPreference("drunk_mode_settings_time");
 
@@ -91,6 +97,16 @@ public class DrunkModeSettings extends K9PreferenceActivity {
                     }
                 }
         );
+
+        testAudioChallengeOption.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent i = new Intent(getApplicationContext(), AudioChallenge.class);
+                i.putExtra("Practice", true);
+                startActivity(i);
+                return true;
+            }
+        });
 
         testMathChallengeOption.setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {

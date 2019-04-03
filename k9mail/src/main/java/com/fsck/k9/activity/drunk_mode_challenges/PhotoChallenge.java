@@ -15,10 +15,11 @@ import android.widget.TextView;
 import com.fsck.k9.K9;
 import com.fsck.k9.Photo;
 import com.fsck.k9.R;
-import com.fsck.k9.activity.FolderList;
+import com.fsck.k9.activity.Accounts;
 import com.fsck.k9.activity.K9Activity;
 
 import java.util.List;
+
 
 
 public class PhotoChallenge extends K9Activity {
@@ -34,6 +35,7 @@ public class PhotoChallenge extends K9Activity {
     private MediaPlayer timeoutSound;
     private boolean complete;
     private Handler timeLimit;
+    boolean active = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,9 +46,19 @@ public class PhotoChallenge extends K9Activity {
         timeoutSound = MediaPlayer.create(this, R.raw.timeup_sound);
         complete = false;
         prompt = findViewById(R.id.prompt);
-        pickChallengePhoto();
-        setChoices();
-        setListeners(choice1, choice2, choice3, choice4);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                pickChallengePhoto();
+            }
+        }).run();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                setChoices();
+                setListeners(choice1, choice2, choice3, choice4);
+            }
+        }).run();
         timeLimit = new Handler();
         timeLimit.postDelayed(new Runnable() {
             @Override
@@ -61,6 +73,22 @@ public class PhotoChallenge extends K9Activity {
         super.onDestroy();
         timeLimit.removeCallbacksAndMessages(null);
         timeoutSound.stop();
+    }
+    @Override
+    public void onPause(){
+        super.onPause();
+        active = false;
+        if(!complete) {
+            loseChallenge();
+        }
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+        if(!active) {
+            loseChallenge();
+        }
+        active = true;
     }
 
     private void pickChallengePhoto() {
@@ -126,6 +154,16 @@ public class PhotoChallenge extends K9Activity {
         loseWithDelay(500);
     }
 
+    private void loseChallenge() {
+        complete = true;
+        prompt.setBackgroundColor(Color.RED);
+        prompt.setTextColor(Color.WHITE);
+        prompt.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        prompt.setText(R.string.photo_challenge_failed);
+        mysteryPicture.setColorFilter(Color.RED, PorterDuff.Mode.DARKEN);
+        loseWithDelay(0);
+    }
+
     private void winChallenge(Button choice) {
         complete = true;
         winSound.start();
@@ -147,7 +185,15 @@ public class PhotoChallenge extends K9Activity {
         }, 500);
     }
 
+    @Override
+    public void onBackPressed() {
+        loseChallenge();
+    }
+
     private void timeOut(){
+        if(complete) {
+            return;
+        }
         complete = true;
         timeoutSound.start();
         prompt.setBackgroundColor(Color.YELLOW);
@@ -163,7 +209,11 @@ public class PhotoChallenge extends K9Activity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent failedChallenge = new Intent(getApplicationContext(), FolderList.class);
+                Intent failedChallenge = new Intent(getApplicationContext(), Accounts.class);
+                failedChallenge.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                if(!active) {
+                    return;
+                }
                 finish();
                 if(!getIntent().getBooleanExtra("Practice", false)) {
                     startActivity(failedChallenge);
