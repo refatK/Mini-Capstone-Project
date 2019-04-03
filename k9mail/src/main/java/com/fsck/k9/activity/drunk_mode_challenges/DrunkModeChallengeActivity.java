@@ -9,6 +9,10 @@ import com.fsck.k9.R;
 import com.fsck.k9.activity.Accounts;
 import com.fsck.k9.activity.K9Activity;
 
+/**
+ * Abstraction of a drunk mode challenge. A challenge can either result in a win or loss. The user
+ * also loses the challenge if they use the Android back button or home button.
+ */
 public abstract class DrunkModeChallengeActivity extends K9Activity {
 
     protected MediaPlayer winSound;
@@ -56,6 +60,10 @@ public abstract class DrunkModeChallengeActivity extends K9Activity {
         loseChallenge();
     }
 
+    /**
+     * Causes the user to be booted to accounts page (unless practice)
+     * @param millis amount of time before the activity actually ends
+     */
     protected void loseWithDelay(int millis) {
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -73,7 +81,13 @@ public abstract class DrunkModeChallengeActivity extends K9Activity {
         }, millis);
     }
 
+    /**
+     * This should run and handle the case of the user losing a challenge
+     */
     abstract protected void loseChallenge();
 
+    /**
+     * This should run and handle the case of the user winning a challenge
+     */
     abstract protected void winChallenge();
 }

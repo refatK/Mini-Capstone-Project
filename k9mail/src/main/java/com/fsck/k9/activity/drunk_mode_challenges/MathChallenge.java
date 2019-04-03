@@ -14,6 +14,9 @@ import android.widget.TextView;
 
 import com.fsck.k9.R;
 
+/**
+ * Drunk mode challenge where the user must solve a random math equation in a given time frame
+ */
 public class MathChallenge extends DrunkModeChallengeActivity {
 
     enum Operation {
@@ -34,7 +37,7 @@ public class MathChallenge extends DrunkModeChallengeActivity {
     public final String[] MATH_SIGNS = {"+", "-"};
     public final int SECONDS_TO_COMPLETE_CHALLENGE = 20;
     public final int MILLIS_DELAY_WHEN_CHALLENGE_COMPLETE = 1500;
-    public final int COMPLETED_PROGRESS = 100;
+    public final int COMPLETED_PROGRESS_VALUE = 100;
 
     private ProgressBar countdownView;
     private TextView equationView;
@@ -102,6 +105,10 @@ public class MathChallenge extends DrunkModeChallengeActivity {
         setupAndStartCountdown();
     }
 
+    /**
+     * Creates a random equation to solve
+     * @return The equation to be solved in string format
+     */
     private String generateEquation() {
         //get random numbers from -9 to +9
         int firstNumber = (int)(Math.random() * 19) - 9;
@@ -125,6 +132,9 @@ public class MathChallenge extends DrunkModeChallengeActivity {
         return firstNumber + " " + operation + " " + secondNumber;
     }
 
+    /**
+     * Compares users answer to actual equation solution
+     */
     private void checkSolution() {
         int answer = Integer.parseInt(sign + leftNumber + rightNumber);
         if (answer == solution) {
@@ -163,6 +173,9 @@ public class MathChallenge extends DrunkModeChallengeActivity {
         }, MILLIS_DELAY_WHEN_CHALLENGE_COMPLETE);
     }
 
+    /**
+     * What happens when the time to complete the challenge has been reached
+     */
     private void timeout() {
         timeoutSound.start();
         loseChallenge();
@@ -223,7 +236,7 @@ public class MathChallenge extends DrunkModeChallengeActivity {
             @Override
             public void onFinish() {
                 timeIsUp = true;
-                countdownView.setProgress(COMPLETED_PROGRESS);
+                countdownView.setProgress(COMPLETED_PROGRESS_VALUE);
                 timeout();
             }
         };
