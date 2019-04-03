@@ -1325,6 +1325,6 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="title_activity_photo_challenge">Welcome To The Photo Challenge!</string>
 
     <string name="title_activity_math_challenge">Math Challenge</string>
-    <string name="drunk_mode_math_title">Solve The Math Problem!</string>
+    <string name="drunk_mode_math_description">Solve The Math Problem Before Time Runs Out!</string>
     <string name="drunk_mode_math_submit">Submit Answer</string>
 </resources>

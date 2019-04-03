@@ -1,19 +1,17 @@
 package com.fsck.k9.activity.drunk_mode_challenges;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
 import android.widget.NumberPicker;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.fsck.k9.activity.K9Activity;
 import com.fsck.k9.R;
 
 public class MathChallenge extends K9Activity {
-
-    private NumberPicker signInput;
-    private NumberPicker leftNumberInput;
-    private NumberPicker rightNumberInput;
 
     enum Operation {
         ADD("+"), SUBTRACT("−"), MULTIPLY("x");
@@ -24,7 +22,6 @@ public class MathChallenge extends K9Activity {
             this.symbol = symbol;
         }
 
-
         @Override
         public String toString() {
             return this.symbol;
@@ -32,6 +29,16 @@ public class MathChallenge extends K9Activity {
     }
 
     public final String[] MATH_SIGNS = {"+", "-"};
+    public final int SECONDS_TO_COMPLETE_CHALLENGE = 15;
+
+    private ProgressBar countdownView;
+    private TextView equationView;
+    private TextView descriptionView;
+
+    private NumberPicker signInput;
+    private NumberPicker leftNumberInput;
+    private NumberPicker rightNumberInput;
+    private Button submitAnswerButton;
 
     private String sign = "+";
     private int leftNumber;
@@ -40,14 +47,19 @@ public class MathChallenge extends K9Activity {
     private String equation;
     private int solution;
 
+    private CountDownTimer countdown;
+    private int currentProgress = 0;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_math_challenge);
 
+        descriptionView = (TextView) findViewById(R.id.math_challenge_description);
+
         // Set up the math equation
         // Get view
-        TextView equationView = (TextView) findViewById(R.id.math_challenge_equation);
+        equationView = (TextView) findViewById(R.id.math_challenge_equation);
 
         // Generate equation and set text
         equation = generateEquation();
@@ -72,14 +84,17 @@ public class MathChallenge extends K9Activity {
         setupInputChangeListeners();
 
 
-        // Setup submit button TODO actually submit
-        Button submitAnswerButton = (Button) findViewById(R.id.submit_math_answer_button);
+        // Setup submit button
+        submitAnswerButton = (Button) findViewById(R.id.submit_math_answer_button);
         submitAnswerButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 checkSolution();
             }
         });
 
+
+        // Setup progress bar and countdown
+        setupAndStartCountdown();
     }
 
     private void checkSolution() {
@@ -101,11 +116,14 @@ public class MathChallenge extends K9Activity {
         Operation operation = Operation.values()[randOperationChoice];
 
         switch (operation) {
-            case ADD: solution = firstNumber + secondNumber;
-            break;
-            case SUBTRACT: solution = firstNumber - secondNumber;
-            break;
-            case MULTIPLY: solution = firstNumber * secondNumber;
+            case ADD:
+                solution = firstNumber + secondNumber;
+                break;
+            case SUBTRACT:
+                solution = firstNumber - secondNumber;
+                break;
+            case MULTIPLY:
+                solution = firstNumber * secondNumber;
         }
 
         return firstNumber + " " + operation + " " + secondNumber;
@@ -143,6 +161,28 @@ public class MathChallenge extends K9Activity {
                 rightNumber = newVal;
             }
         });
+    }
+
+    private void setupAndStartCountdown() {
+        countdownView = (ProgressBar)findViewById(R.id.countdown);
+
+        long timeToCompleteMillis = SECONDS_TO_COMPLETE_CHALLENGE * 1000;
+        long checkTime = timeToCompleteMillis / 100;
+        countdown = new CountDownTimer(timeToCompleteMillis, checkTime) {
+            @Override
+            public void onTick(long l) {
+                ++currentProgress;
+                countdownView.setProgress(currentProgress);
+            }
+
+            @Override
+            public void onFinish() {
+                currentProgress = 100;
+                countdownView.setProgress(currentProgress);
+            }
+        };
+
+        countdown.start();
     }
 
 }

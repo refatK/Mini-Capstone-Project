@@ -8,31 +8,49 @@
 
 
     <TextView
-        android:id="@+id/math_challenge_title"
+        android:id="@+id/math_challenge_description"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:text="@string/drunk_mode_math_title"
+        android:layout_height="123dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/light_black"
+        android:textColor="@color/light_grey"
         android:gravity="center"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/math_challenge_equation"
+        android:text="@string/drunk_mode_math_description"
+        android:textSize="20sp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toTopOf="@+id/countdown"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!--TODO: replace equation placeholder-->
+    <ProgressBar
+        android:id="@+id/countdown"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="10dp"
+        android:max="100"
+        android:progress="0"
+        android:progressTint="@color/light_blue"
+        app:layout_constraintTop_toBottomOf="@+id/math_challenge_description"
+        app:layout_constraintBottom_toTopOf="@+id/math_challenge_equation" />
+
     <TextView
         android:id="@+id/math_challenge_equation"
         android:layout_width="match_parent"
         android:layout_height="182dp"
         android:gravity="center"
         android:maxLines="1"
-        android:text="-2 ÷ -2"
         android:textSize="110sp"
         app:layout_constraintBottom_toTopOf="@+id/left_number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/math_challenge_title" />
-
+        app:layout_constraintTop_toBottomOf="@+id/countdown" />
 
     <NumberPicker
         android:id="@+id/sign"
