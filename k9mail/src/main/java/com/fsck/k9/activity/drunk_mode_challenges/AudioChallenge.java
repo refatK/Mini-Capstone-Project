@@ -92,14 +92,14 @@ public class AudioChallenge extends K9Activity {
     @Override
     public void onBackPressed() {
         if (!win && !lose) {
-            youLose();
+            youLoseNoSound();
         }
     }
 
     @Override
     protected void onPause() {
         if (!win && !lose) {
-            youLose();
+            youLoseNoSound();
         }
         super.onPause();
     }
@@ -127,6 +127,15 @@ public class AudioChallenge extends K9Activity {
                 loser.release();
             }
         });
+        Intent i = new Intent(getApplicationContext(), Accounts.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        finish();
+        if(!getIntent().getBooleanExtra("Practice", false)) {
+            startActivity(i);
+        }
+    }
+
+    private void youLoseNoSound() {
         Intent i = new Intent(getApplicationContext(), Accounts.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         finish();

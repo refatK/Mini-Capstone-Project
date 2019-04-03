@@ -87,6 +87,7 @@ public class DrunkModeSettings extends K9PreferenceActivity {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
                         Intent i = new Intent(getApplicationContext(), PhotoChallenge.class);
+                        i.putExtra("Practice", true);
                         startActivity(i);
                         return true;
                     }
