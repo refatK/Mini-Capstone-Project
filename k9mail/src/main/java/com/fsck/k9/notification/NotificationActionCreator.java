@@ -19,6 +19,7 @@ import com.fsck.k9.activity.MessageReference;
 import com.fsck.k9.activity.NotificationDeleteConfirmation;
 import com.fsck.k9.activity.compose.MessageActions;
 import com.fsck.k9.search.LocalSearch;
+import com.fsck.k9.service.ActivateDrunkMode;
 
 
 /**
@@ -97,6 +98,7 @@ class NotificationActionCreator {
     }
 
     public PendingIntent createQuickReplyPendingIntent(MessageReference messageReference, int notificationId) {
+
         Intent intent = MessageActions.getActionQuickReplyIntent(context, messageReference);
 
         return PendingIntent.getActivity(context, notificationId, intent,

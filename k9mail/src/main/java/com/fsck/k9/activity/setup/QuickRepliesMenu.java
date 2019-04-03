@@ -19,6 +19,7 @@ import com.fsck.k9.QuickReply;
 import com.fsck.k9.R;
 import com.fsck.k9.activity.K9ListActivity;
 import com.fsck.k9.activity.MessageCompose;
+import com.fsck.k9.service.ActivateDrunkMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,9 @@ public class QuickRepliesMenu extends K9ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = new Intent(getApplicationContext(), ActivateDrunkMode.class);
+        startService(intent);
 
         if(savedInstanceState != null &&
                 savedInstanceState.getBoolean("refresh needed", false)){
@@ -128,6 +132,7 @@ public class QuickRepliesMenu extends K9ListActivity {
 
         // ignore if in a view
         if (i.getBooleanExtra("Sending", false)) {
+
             Toast.makeText(this, "Sending QR: " + quickReplyBodies.get(position), Toast.LENGTH_SHORT).show();
 
             // extract all information from intent passed to this view
