@@ -50,9 +50,10 @@ public class DrunkModeSettings extends K9PreferenceActivity {
 
         // Setup test section for drunk mode
         addPreferencesFromResource(R.xml.drunk_mode_settings_preferences);
-        Preference testPhotoChallengeOption = findPreference("drunk_mode_test_photo_challenge");
-        Preference testAudioChallengeOption = findPreference("drunk_mode_test_audio_challenge");
-        Preference testMathChallengeOption = findPreference("drunk_mode_test_math_challenge");
+        setupDrunkModeChallengePref("drunk_mode_test_photo_challenge", PhotoChallenge.class);
+        setupDrunkModeChallengePref("drunk_mode_test_audio_challenge", AudioChallenge.class);
+        setupDrunkModeChallengePref("drunk_mode_test_math_challenge", MathChallenge.class);
+
         setDrunkTimePreference = findPreference("drunk_mode_settings_time");
 
         isDrunkCheckbox = (CheckBoxPreference)findPreference("drunk_mode_settings_toggle");
@@ -86,39 +87,6 @@ public class DrunkModeSettings extends K9PreferenceActivity {
                 }
         );
 
-        testPhotoChallengeOption.setOnPreferenceClickListener(
-                new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        Intent i = new Intent(getApplicationContext(), PhotoChallenge.class);
-                        i.putExtra("Practice", true);
-                        startActivity(i);
-                        return true;
-                    }
-                }
-        );
-
-        testAudioChallengeOption.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                Intent i = new Intent(getApplicationContext(), AudioChallenge.class);
-                i.putExtra("Practice", true);
-                startActivity(i);
-                return true;
-            }
-        });
-
-        testMathChallengeOption.setOnPreferenceClickListener(
-                new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        Intent i = new Intent(getApplicationContext(), MathChallenge.class);
-                        i.putExtra("Practice", true);
-                        startActivity(i);
-                        return true;
-                    }
-                }
-        );
     }
 
     @Override
@@ -136,6 +104,22 @@ public class DrunkModeSettings extends K9PreferenceActivity {
         int minute = calendar.get(Calendar.MINUTE);
         String strTime = (hourOfDay%12) + ":" + ((minute < 10) ? "0" + minute : minute) + (hourOfDay > 12 ? " PM" : " AM");
         return strTime;
+    }
+
+    private void setupDrunkModeChallengePref(String challengePrefKey, final Class<?> activity) {
+        Preference challengePref = findPreference(challengePrefKey);
+
+        challengePref.setOnPreferenceClickListener(
+                new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        Intent i = new Intent(getApplicationContext(), activity);
+                        i.putExtra("Practice", true);
+                        startActivity(i);
+                        return true;
+                    }
+                }
+        );
     }
 
 }

@@ -111,8 +111,8 @@ public class MathChallenge extends DrunkModeChallengeActivity {
      */
     private String generateEquation() {
         //get random numbers from -9 to +9
-        int firstNumber = (int)(Math.random() * 19) - 9;
-        int secondNumber = (int)(Math.random() * 19) - 9;
+        int firstNumber = generateRandomSingleDigitNumber();
+        int secondNumber = generateRandomSingleDigitNumber();
 
         //get random operation
         int randOperationChoice = (int)(Math.random() * Operation.values().length);
@@ -130,6 +130,17 @@ public class MathChallenge extends DrunkModeChallengeActivity {
         }
 
         return firstNumber + " " + operation + " " + secondNumber;
+    }
+
+    /**
+     * Generate an integer in range [-9, 9]
+     * @return the generated number
+     */
+    private int generateRandomSingleDigitNumber() {
+        int amountOfNumbers = 19;
+        int offset = -9;
+
+        return (int)(Math.random() * amountOfNumbers) + offset;
     }
 
     /**

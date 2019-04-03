@@ -74,6 +74,8 @@ public abstract class DrunkModeChallengeActivity extends K9Activity {
                     return;
                 }
                 finish();
+
+                // in practice mode, don't actually boot user to accounts screen
                 if (!getIntent().getBooleanExtra("Practice", false)) {
                     startActivity(failedChallenge);
                 }
@@ -82,12 +84,12 @@ public abstract class DrunkModeChallengeActivity extends K9Activity {
     }
 
     /**
-     * This should run and handle the case of the user losing a challenge
+     * This should handle the case of the user losing a challenge
      */
     abstract protected void loseChallenge();
 
     /**
-     * This should run and handle the case of the user winning a challenge
+     * This should handle the case of the user winning a challenge
      */
     abstract protected void winChallenge();
 }
