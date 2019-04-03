@@ -1,5 +1,8 @@
 package com.fsck.k9.activity.drunk_mode_challenges;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -29,7 +32,9 @@ public class MathChallenge extends DrunkModeChallengeActivity {
     }
 
     public final String[] MATH_SIGNS = {"+", "-"};
-    public final int SECONDS_TO_COMPLETE_CHALLENGE = 15;
+    public final int SECONDS_TO_COMPLETE_CHALLENGE = 20;
+    public final int MILLIS_DELAY_WHEN_CHALLENGE_COMPLETE = 1500;
+    public final int COMPLETED_PROGRESS = 100;
 
     private ProgressBar countdownView;
     private TextView equationView;
@@ -48,7 +53,7 @@ public class MathChallenge extends DrunkModeChallengeActivity {
     private int solution;
 
     private CountDownTimer countdown;
-    private int currentProgress = 0;
+    private boolean timeIsUp = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,9 +78,9 @@ public class MathChallenge extends DrunkModeChallengeActivity {
         rightNumberInput = (NumberPicker) findViewById(R.id.right_number);
 
         // set the number pickers up
-        setupMathInput(signInput, 0, MATH_SIGNS.length - 1);
-        setupMathInput(leftNumberInput, 0, 9);
-        setupMathInput(rightNumberInput, 0, 9);
+        setupMathInput(signInput, MATH_SIGNS.length - 1);
+        setupMathInput(leftNumberInput, 9);
+        setupMathInput(rightNumberInput, 9);
 
         // makes the input use array as display instead
         signInput.setDisplayedValues(MATH_SIGNS);
@@ -95,34 +100,6 @@ public class MathChallenge extends DrunkModeChallengeActivity {
 
         // Setup progress bar and countdown
         setupAndStartCountdown();
-    }
-
-    @Override
-    protected void loseChallenge() {
-        complete = true;
-        loseSound.start();
-        loseWithDelay(1000);
-    }
-
-    @Override
-    protected void winChallenge() {
-        complete = true;
-        winSound.start();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                finish();
-            }
-        }, 1000);
-    }
-
-    private void checkSolution() {
-        int answer = Integer.parseInt(sign + leftNumber + rightNumber);
-        if (answer == solution) {
-            winChallenge();
-        } else {
-            loseChallenge();
-        }
     }
 
     private String generateEquation() {
@@ -148,9 +125,52 @@ public class MathChallenge extends DrunkModeChallengeActivity {
         return firstNumber + " " + operation + " " + secondNumber;
     }
 
-    private void setupMathInput(NumberPicker picker, int minVal, int maxVal) {
+    private void checkSolution() {
+        int answer = Integer.parseInt(sign + leftNumber + rightNumber);
+        if (answer == solution) {
+            winChallenge();
+        } else {
+            loseChallenge();
+        }
+    }
+
+    @Override
+    protected void loseChallenge() {
+        complete = true;
+
+        // if time ran out, progress bar would be complete
+        if (timeIsUp) {
+            String timeOutMessage = getString(R.string.drunk_mode_challenge_timeout, SECONDS_TO_COMPLETE_CHALLENGE);
+            changeViewOnComplete(Color.YELLOW, Color.BLACK, timeOutMessage);
+        } else {
+            changeViewOnComplete(Color.RED, Color.WHITE, getString(R.string.drunk_mode_challenge_failed));
+        }
+
+        loseSound.start();
+        loseWithDelay(MILLIS_DELAY_WHEN_CHALLENGE_COMPLETE);
+    }
+
+    @Override
+    protected void winChallenge() {
+        complete = true;
+        changeViewOnComplete(Color.GREEN, Color.BLACK, getString(R.string.drunk_mode_challenge_success));
+        winSound.start();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                finish();
+            }
+        }, MILLIS_DELAY_WHEN_CHALLENGE_COMPLETE);
+    }
+
+    private void timeout() {
+        timeoutSound.start();
+        loseChallenge();
+    }
+
+    private void setupMathInput(NumberPicker picker, int maxVal) {
         // sets min number or array start position
-        picker.setMinValue(minVal);
+        picker.setMinValue(0);
 
         // sets max number or array end position
         picker.setMaxValue(maxVal);
@@ -185,23 +205,25 @@ public class MathChallenge extends DrunkModeChallengeActivity {
     private void setupAndStartCountdown() {
         countdownView = (ProgressBar)findViewById(R.id.countdown);
 
-        long timeToCompleteMillis = SECONDS_TO_COMPLETE_CHALLENGE * 1000;
+        final long timeToCompleteMillis = SECONDS_TO_COMPLETE_CHALLENGE * 1000;
         long checkTime = timeToCompleteMillis / 100;
         countdown = new CountDownTimer(timeToCompleteMillis, checkTime) {
             @Override
-            public void onTick(long l) {
+            public void onTick(long millisLeft) {
                 if (complete || !active) {
                     cancel();
                 }
 
-                ++currentProgress;
-                countdownView.setProgress(currentProgress);
+                long millisCompleted = timeToCompleteMillis - millisLeft;
+                int percentComplete = (int) Math.round(((double) millisCompleted / timeToCompleteMillis) * 100);
+
+                countdownView.setProgress(percentComplete);
             }
 
             @Override
             public void onFinish() {
-                currentProgress = 100;
-                countdownView.setProgress(currentProgress);
+                timeIsUp = true;
+                countdownView.setProgress(COMPLETED_PROGRESS);
                 timeout();
             }
         };
@@ -209,9 +231,18 @@ public class MathChallenge extends DrunkModeChallengeActivity {
         countdown.start();
     }
 
-    private void timeout() {
-        timeoutSound.start();
-        loseChallenge();
+    private void changeViewOnComplete(int primaryColor, int secondaryColor, String message) {
+        descriptionView.setBackgroundColor(primaryColor);
+        descriptionView.setTextColor(secondaryColor);
+        descriptionView.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
+        descriptionView.setText(message);
+
+        countdownView.setProgressTintList(ColorStateList.valueOf(primaryColor));
+
+        equationView.setTextColor(primaryColor);
+
+        submitAnswerButton.setBackgroundColor(primaryColor);
+        submitAnswerButton.setTextColor(secondaryColor);
     }
 
 }

@@ -28,27 +28,27 @@ public abstract class DrunkModeChallengeActivity extends K9Activity {
     }
 
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         super.onDestroy();
         timeoutSound.stop();
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
         active = false;
-        if(!complete) {
+        if (!complete) {
             loseChallenge();
         }
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
-        if(!active) {
-            loseChallenge();
-        }
         active = true;
+        if (complete) {
+            loseWithDelay(0);
+        }
     }
 
     @Override
@@ -56,23 +56,24 @@ public abstract class DrunkModeChallengeActivity extends K9Activity {
         loseChallenge();
     }
 
-    protected void loseWithDelay(int millis){
+    protected void loseWithDelay(int millis) {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 Intent failedChallenge = new Intent(getApplicationContext(), Accounts.class);
                 failedChallenge.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                if(!active) {
+                if (!active) {
                     return;
                 }
                 finish();
-                if(!getIntent().getBooleanExtra("Practice", false)) {
+                if (!getIntent().getBooleanExtra("Practice", false)) {
                     startActivity(failedChallenge);
                 }
             }
-        },millis);
+        }, millis);
     }
 
     abstract protected void loseChallenge();
+
     abstract protected void winChallenge();
 }

@@ -149,7 +149,7 @@ public class PhotoChallenge extends K9Activity {
         prompt.setBackgroundColor(Color.RED);
         prompt.setTextColor(Color.WHITE);
         prompt.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        prompt.setText(R.string.photo_challenge_failed);
+        prompt.setText(R.string.drunk_mode_challenge_failed);
         mysteryPicture.setColorFilter(Color.RED, PorterDuff.Mode.DARKEN);
         loseWithDelay(500);
     }
@@ -159,7 +159,7 @@ public class PhotoChallenge extends K9Activity {
         prompt.setBackgroundColor(Color.RED);
         prompt.setTextColor(Color.WHITE);
         prompt.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        prompt.setText(R.string.photo_challenge_failed);
+        prompt.setText(R.string.drunk_mode_challenge_failed);
         mysteryPicture.setColorFilter(Color.RED, PorterDuff.Mode.DARKEN);
         loseWithDelay(0);
     }
@@ -174,7 +174,7 @@ public class PhotoChallenge extends K9Activity {
         prompt.setBackgroundColor(Color.GREEN);
         prompt.setTextColor(Color.BLACK);
         prompt.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
-        prompt.setText(R.string.photo_challenge_success);
+        prompt.setText(R.string.drunk_mode_challenge_success);
         mysteryPicture.setColorFilter(Color.GREEN, PorterDuff.Mode.DARKEN);
 
         new Handler().postDelayed(new Runnable() {
@@ -199,7 +199,7 @@ public class PhotoChallenge extends K9Activity {
         prompt.setBackgroundColor(Color.YELLOW);
         prompt.setTextColor(Color.BLACK);
         prompt.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        prompt.setText(R.string.photo_challenge_timeout);
+        prompt.setText(getString(R.string.drunk_mode_challenge_timeout, 10));
         mysteryPicture.setColorFilter(Color.YELLOW, PorterDuff.Mode.DARKEN);
         loseWithDelay(500);
 

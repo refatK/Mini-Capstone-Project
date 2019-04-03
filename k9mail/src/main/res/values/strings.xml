@@ -1262,12 +1262,12 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="messageview_decrypt_incomplete">Encrypted message must be downloaded for decryption.</string>
     <string name="messageview_crypto_error_title">Error decrypting email</string>
     <string name="photo_challenge_prompt">What\'s displayed in the image below?</string>
-    <string name="photo_challenge_timeout">You took longer than 10 seconds, Time\'s up! ⏰⛔</string>
-    <string name="photo_challenge_failed">Sorry, Challenge Failed! 👎</string>
-    <string name="photo_challenge_success">Congrats, Challenge Completed! 👍</string>
+    <string name="drunk_mode_challenge_timeout">You took longer than %1$d seconds, Time\'s up! ⏰⛔</string>
+    <string name="drunk_mode_challenge_failed">Sorry, Challenge Failed! 👎</string>
+    <string name="drunk_mode_challenge_success">Congrats, Challenge Completed! 👍</string>
     <string name="test_photo_challenge">Test Photo Challenge 📷✅</string>
-    <string name="test_audio_challenge">Test Audio Challenge🎵✅</string>
-    <string name="test_math_challenge">Test Math Challenge 📏π✅</string>
+    <string name="test_audio_challenge">Test Audio Challenge 🎵✅</string>
+    <string name="test_math_challenge">Test Math Challenge 📏✅</string>
     <string name="recipient_error_non_ascii">Special characters are currently not supported!</string>
     <string name="recipient_error_parse_failed">Error parsing address!</string>
     <string name="recipient_error_empty_mailing_list">The mailing list does not contain emails!</string>
