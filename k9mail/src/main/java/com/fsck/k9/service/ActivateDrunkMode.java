@@ -3,10 +3,12 @@ package com.fsck.k9.service;
 import com.fsck.k9.DrunkMode;
 import com.fsck.k9.K9;
 import com.fsck.k9.DaoSession;
+import com.fsck.k9.activity.drunk_mode_challenges.AudioChallenge;
 import com.fsck.k9.activity.drunk_mode_challenges.PhotoChallenge;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -42,7 +44,17 @@ public class ActivateDrunkMode extends IntentService {
         int endTime = drunkModeSettings.getEndTime().getHours()*60+drunkModeSettings.getEndTime().getMinutes();
 
         if(drunkModeSettings.getIsDrunk() && startTime <= currentTime && currentTime < endTime){
-            Intent intent = new Intent(this, PhotoChallenge.class);
+            int random = new Random().nextInt(2);
+            Intent intent;
+            if(random==0){
+                intent = new Intent(this, AudioChallenge.class);
+            }
+            else if(random==1){
+                 intent = new Intent(this, PhotoChallenge.class);
+            }
+            else{
+                intent = new Intent(this, PhotoChallenge.class);
+            }
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
