@@ -50,7 +50,7 @@ public class ActivateDrunkMode extends IntentService {
                 intent = new Intent(this, AudioChallenge.class);
             }
             else if(random==1){
-                 intent = new Intent(this, PhotoChallenge.class);
+                intent = new Intent(this, PhotoChallenge.class);
             }
             else{
                 intent = new Intent(this, PhotoChallenge.class);
