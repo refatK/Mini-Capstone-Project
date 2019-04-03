@@ -8,6 +8,7 @@ import android.preference.Preference;
 import com.fsck.k9.DaoSession;
 import com.fsck.k9.DrunkMode;
 import com.fsck.k9.K9;
+import com.fsck.k9.activity.drunk_mode_challenges.DrunkModeChallengeActivity;
 import com.fsck.k9.service.ActivateDrunkMode;
 import com.fsck.k9.activity.K9PreferenceActivity;
 import com.fsck.k9.activity.SetDrunkModeTime;
@@ -106,7 +107,7 @@ public class DrunkModeSettings extends K9PreferenceActivity {
         return strTime;
     }
 
-    private void setupDrunkModeChallengePref(String challengePrefKey, final Class<?> activity) {
+    private void setupDrunkModeChallengePref(String challengePrefKey, final Class<? extends DrunkModeChallengeActivity> activity) {
         Preference challengePref = findPreference(challengePrefKey);
 
         challengePref.setOnPreferenceClickListener(

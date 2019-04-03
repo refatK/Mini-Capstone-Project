@@ -57,7 +57,9 @@ public abstract class DrunkModeChallengeActivity extends K9Activity {
 
     @Override
     public void onBackPressed() {
-        loseChallenge();
+        if (!complete) {
+            loseChallenge();
+        }
     }
 
     /**

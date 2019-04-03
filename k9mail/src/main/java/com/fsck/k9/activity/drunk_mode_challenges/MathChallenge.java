@@ -52,10 +52,7 @@ public class MathChallenge extends DrunkModeChallengeActivity {
     private int leftNumber;
     private int rightNumber;
 
-    private String equation;
     private int solution;
-
-    private CountDownTimer countdown;
     private boolean timeIsUp = false;
 
     @Override
@@ -70,7 +67,7 @@ public class MathChallenge extends DrunkModeChallengeActivity {
         equationView = (TextView) findViewById(R.id.math_challenge_equation);
 
         // Generate equation and set text
-        equation = generateEquation();
+        String equation = generateEquation();
         equationView.setText(equation);
 
 
@@ -174,7 +171,9 @@ public class MathChallenge extends DrunkModeChallengeActivity {
     @Override
     protected void winChallenge() {
         complete = true;
+
         changeViewOnComplete(Color.GREEN, Color.BLACK, getString(R.string.drunk_mode_challenge_success));
+
         winSound.start();
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -231,7 +230,7 @@ public class MathChallenge extends DrunkModeChallengeActivity {
 
         final long timeToCompleteMillis = SECONDS_TO_COMPLETE_CHALLENGE * 1000;
         long checkTime = timeToCompleteMillis / 100;
-        countdown = new CountDownTimer(timeToCompleteMillis, checkTime) {
+        CountDownTimer countdown = new CountDownTimer(timeToCompleteMillis, checkTime) {
             @Override
             public void onTick(long millisLeft) {
                 if (complete || !active) {
