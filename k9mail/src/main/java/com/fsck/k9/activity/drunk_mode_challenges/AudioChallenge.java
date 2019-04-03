@@ -70,6 +70,12 @@ public class AudioChallenge extends DrunkModeChallengeActivity {
     }
 
     @Override
+    public void onPause() {
+        stopSound();
+        super.onPause();
+    }
+
+    @Override
     protected void winChallenge() {
         complete = true;
         winSound.start();
