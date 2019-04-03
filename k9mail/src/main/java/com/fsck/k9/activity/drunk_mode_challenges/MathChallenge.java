@@ -2,16 +2,16 @@ package com.fsck.k9.activity.drunk_mode_challenges;
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.fsck.k9.activity.K9Activity;
 import com.fsck.k9.R;
 
-public class MathChallenge extends K9Activity {
+public class MathChallenge extends DrunkModeChallengeActivity {
 
     enum Operation {
         ADD("+"), SUBTRACT("−"), MULTIPLY("x");
@@ -97,12 +97,31 @@ public class MathChallenge extends K9Activity {
         setupAndStartCountdown();
     }
 
+    @Override
+    protected void loseChallenge() {
+        complete = true;
+        loseSound.start();
+        loseWithDelay(1000);
+    }
+
+    @Override
+    protected void winChallenge() {
+        complete = true;
+        winSound.start();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                finish();
+            }
+        }, 1000);
+    }
+
     private void checkSolution() {
         int answer = Integer.parseInt(sign + leftNumber + rightNumber);
-        if (answer != solution) {
-            System.err.println("454545: oof");
+        if (answer == solution) {
+            winChallenge();
         } else {
-            System.err.println("454545: OMG, right");
+            loseChallenge();
         }
     }
 
@@ -171,6 +190,10 @@ public class MathChallenge extends K9Activity {
         countdown = new CountDownTimer(timeToCompleteMillis, checkTime) {
             @Override
             public void onTick(long l) {
+                if (complete || !active) {
+                    cancel();
+                }
+
                 ++currentProgress;
                 countdownView.setProgress(currentProgress);
             }
@@ -179,10 +202,16 @@ public class MathChallenge extends K9Activity {
             public void onFinish() {
                 currentProgress = 100;
                 countdownView.setProgress(currentProgress);
+                timeout();
             }
         };
 
         countdown.start();
+    }
+
+    private void timeout() {
+        timeoutSound.start();
+        loseChallenge();
     }
 
 }
