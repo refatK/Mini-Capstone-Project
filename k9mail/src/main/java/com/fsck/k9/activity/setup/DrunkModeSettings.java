@@ -107,7 +107,8 @@ public class DrunkModeSettings extends K9PreferenceActivity {
         return strTime;
     }
 
-    private void setupDrunkModeChallengePref(String challengePrefKey, final Class<? extends DrunkModeChallengeActivity> activity) {
+    //private void setupDrunkModeChallengePref(String challengePrefKey, final Class<? extends DrunkModeChallengeActivity> activity) {
+    private void setupDrunkModeChallengePref(String challengePrefKey, final Class<?> activity) {
         Preference challengePref = findPreference(challengePrefKey);
 
         challengePref.setOnPreferenceClickListener(
