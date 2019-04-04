@@ -16,7 +16,8 @@ import android.content.Intent;
 
 public class ActivateDrunkMode extends IntentService {
 
-    public final Class<?>[] drunkModeChallenge = {
+    public final int MIDNIGHT = 1440;
+    public final Class<?>[] drunkModeChallenges = {
             PhotoChallenge.class,
             AudioChallenge.class,
             MathChallenge.class
@@ -29,7 +30,6 @@ public class ActivateDrunkMode extends IntentService {
         super("Drunk Mode");
     }
 
-
     @Override
     public void onHandleIntent(Intent i) {
         Thread drunkMode = new Thread(new Runnable() {
@@ -39,22 +39,35 @@ public class ActivateDrunkMode extends IntentService {
             }
         });
         drunkMode.run();
-
     }
+
     private void startDrunkMode(){
         daoSession = ((K9)getApplication()).getDaoSession();
         drunkModeSettings = daoSession.getDrunkModeDao().loadByRowId(1);
 
-        Date currentTimeDate = Calendar.getInstance().getTime();
-        int currentTime = currentTimeDate.getHours()*60+currentTimeDate.getMinutes();
-        int startTime = drunkModeSettings.getStartTime().getHours()*60+drunkModeSettings.getStartTime().getMinutes();
-        int endTime = drunkModeSettings.getEndTime().getHours()*60+drunkModeSettings.getEndTime().getMinutes();
-
-        if(drunkModeSettings.getIsDrunk() && startTime <= currentTime && currentTime < endTime){
-            int random = new Random().nextInt(drunkModeChallenge.length);
-            Intent intent= new Intent(this, drunkModeChallenge[random]);
+        if(drunkModeSettings.getIsDrunk() && isItGoTime()) {
+            int random = new Random().nextInt(drunkModeChallenges.length);
+            Intent intent= new Intent(this, drunkModeChallenges[random]);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
+    }
+
+    private boolean isItGoTime(){
+        Date currentTimeDate = Calendar.getInstance().getTime();
+        int currentTime =currentTimeDate.getHours()*60+currentTimeDate.getMinutes();
+        boolean goTime=false;
+        int startTime = drunkModeSettings.getStartTime().getHours()*60+drunkModeSettings.getStartTime().getMinutes();
+        int endTime = drunkModeSettings.getEndTime().getHours()*60+drunkModeSettings.getEndTime().getMinutes();
+
+        if (startTime > endTime) {
+            if ((startTime <= currentTime && currentTime < MIDNIGHT) || (currentTime < endTime)){
+                goTime=true;
+            }
+        }
+        else if (startTime <= currentTime && currentTime < endTime){
+            goTime=true;
+        }
+        return goTime;
     }
 }
