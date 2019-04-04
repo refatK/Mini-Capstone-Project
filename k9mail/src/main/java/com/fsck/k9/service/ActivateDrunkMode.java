@@ -17,6 +17,11 @@ public class ActivateDrunkMode extends IntentService {
 
     private DaoSession daoSession;
     private DrunkMode drunkModeSettings;
+    public final int MIDNIGHT = 1440;
+    public final Class<?>[] drunkModeChallenge = {
+            PhotoChallenge.class,
+            AudioChallenge.class
+    };
 
     public ActivateDrunkMode(){
         super("Drunk Mode");
@@ -38,17 +43,29 @@ public class ActivateDrunkMode extends IntentService {
         daoSession = ((K9)getApplication()).getDaoSession();
         drunkModeSettings = daoSession.getDrunkModeDao().loadByRowId(1);
 
-        Date currentTimeDate = Calendar.getInstance().getTime();
-        int currentTime =currentTimeDate.getHours()*60+currentTimeDate.getMinutes();
-        int startTime = drunkModeSettings.getStartTime().getHours()*60+drunkModeSettings.getStartTime().getMinutes();
-        int endTime = drunkModeSettings.getEndTime().getHours()*60+drunkModeSettings.getEndTime().getMinutes();
-
-        if(drunkModeSettings.getIsDrunk() && startTime <= currentTime && currentTime < endTime){
-            final Class<?>[] activities = {AudioChallenge.class, PhotoChallenge.class};
-            int random = new Random().nextInt(2);
-            Intent intent= new Intent(this, activities[random]);
+        if(drunkModeSettings.getIsDrunk() && isItGoTime()) {
+            int random = new Random().nextInt(drunkModeChallenge.length);
+            Intent intent= new Intent(this, drunkModeChallenge[random]);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
+    }
+
+    private boolean isItGoTime(){
+        Date currentTimeDate = Calendar.getInstance().getTime();
+        int currentTime =currentTimeDate.getHours()*60+currentTimeDate.getMinutes();
+        boolean goTime=false;
+        int startTime = drunkModeSettings.getStartTime().getHours()*60+drunkModeSettings.getStartTime().getMinutes();
+        int endTime = drunkModeSettings.getEndTime().getHours()*60+drunkModeSettings.getEndTime().getMinutes();
+
+        if (startTime > endTime) {
+            if ((startTime <= currentTime && currentTime < MIDNIGHT) || (currentTime < endTime)){
+                goTime=true;
+            }
+        }
+        else if (startTime <= currentTime && currentTime < endTime){
+            goTime=true;
+        }
+        return goTime;
     }
 }
