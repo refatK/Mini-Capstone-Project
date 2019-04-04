@@ -87,6 +87,7 @@ public class DrunkModeSettings extends K9PreferenceActivity {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
                         Intent i = new Intent(getApplicationContext(), PhotoChallenge.class);
+                        i.putExtra("Practice", true);
                         startActivity(i);
                         return true;
                     }
@@ -117,7 +118,7 @@ public class DrunkModeSettings extends K9PreferenceActivity {
         calendar.setTime(time);
         int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
-        String strTime = (hourOfDay%12) + ":" + ((minute < 10) ? "0" + minute : minute) + (hourOfDay > 12 ? " PM" : " AM");
+        String strTime = (hourOfDay == 12 ? "12" : hourOfDay%12) + ":" + ((minute < 10) ? "0" + minute : minute) + (hourOfDay >= 12 ? " PM" : " AM");
         return strTime;
     }
 
