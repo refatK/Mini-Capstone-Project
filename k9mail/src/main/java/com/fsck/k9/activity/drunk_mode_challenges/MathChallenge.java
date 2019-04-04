@@ -146,8 +146,10 @@ public class MathChallenge extends DrunkModeChallengeActivity {
     private void checkSolution() {
         int answer = Integer.parseInt(sign + leftNumber + rightNumber);
         if (answer == solution) {
+            winSound.start();
             winChallenge();
         } else {
+            loseSound.start();
             loseChallenge();
         }
     }
@@ -164,7 +166,6 @@ public class MathChallenge extends DrunkModeChallengeActivity {
             changeViewOnComplete(Color.RED, Color.WHITE, getString(R.string.drunk_mode_challenge_failed));
         }
 
-        loseSound.start();
         loseWithDelay(MILLIS_DELAY_WHEN_CHALLENGE_COMPLETE);
     }
 
@@ -174,7 +175,6 @@ public class MathChallenge extends DrunkModeChallengeActivity {
 
         changeViewOnComplete(Color.GREEN, Color.BLACK, getString(R.string.drunk_mode_challenge_success));
 
-        winSound.start();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
