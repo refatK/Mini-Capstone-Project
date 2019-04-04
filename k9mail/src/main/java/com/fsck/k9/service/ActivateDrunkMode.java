@@ -4,6 +4,7 @@ import com.fsck.k9.DrunkMode;
 import com.fsck.k9.K9;
 import com.fsck.k9.DaoSession;
 import com.fsck.k9.activity.drunk_mode_challenges.AudioChallenge;
+import com.fsck.k9.activity.drunk_mode_challenges.MathChallenge;
 import com.fsck.k9.activity.drunk_mode_challenges.PhotoChallenge;
 
 import java.util.Calendar;
@@ -15,18 +16,19 @@ import android.content.Intent;
 
 public class ActivateDrunkMode extends IntentService {
 
+    public final int MIDNIGHT = 1440;
+    public final Class<?>[] drunkModeChallenges = {
+            PhotoChallenge.class,
+            AudioChallenge.class,
+            MathChallenge.class
+    };
+
     private DaoSession daoSession;
     private DrunkMode drunkModeSettings;
-    public final int MIDNIGHT = 1440;
-    public final Class<?>[] drunkModeChallenge = {
-            PhotoChallenge.class,
-            AudioChallenge.class
-    };
 
     public ActivateDrunkMode(){
         super("Drunk Mode");
     }
-
 
     @Override
     public void onHandleIntent(Intent i) {
@@ -37,15 +39,15 @@ public class ActivateDrunkMode extends IntentService {
             }
         });
         drunkMode.run();
-
     }
+
     private void startDrunkMode(){
         daoSession = ((K9)getApplication()).getDaoSession();
         drunkModeSettings = daoSession.getDrunkModeDao().loadByRowId(1);
 
         if(drunkModeSettings.getIsDrunk() && isItGoTime()) {
-            int random = new Random().nextInt(drunkModeChallenge.length);
-            Intent intent= new Intent(this, drunkModeChallenge[random]);
+            int random = new Random().nextInt(drunkModeChallenges.length);
+            Intent intent= new Intent(this, drunkModeChallenges[random]);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
