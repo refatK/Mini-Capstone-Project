@@ -1,5 +1,6 @@
 package com.fsck.k9.activity.drunk_mode_challenges;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
@@ -7,10 +8,12 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.fsck.k9.R;
+import com.fsck.k9.activity.Accounts;
+import com.fsck.k9.activity.K9Activity;
 
 import org.jetbrains.annotations.Nullable;
 
-public class AudioChallenge extends DrunkModeChallengeActivity {
+public class AudioChallenge extends K9Activity {
 
     private String answer = "";
     private char[] chars = { 'a', 'b', 'c', 'd', 'e', 'f', '1', '2', '3', '4', '5', 'g', 'h', 'i',
@@ -23,6 +26,8 @@ public class AudioChallenge extends DrunkModeChallengeActivity {
     private Button button_sound_ok;
     private final MediaPlayer[] mediaPlayers = new MediaPlayer[7];
     private boolean playing = false;
+    private boolean win = false;
+    private boolean lose = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,10 +47,12 @@ public class AudioChallenge extends DrunkModeChallengeActivity {
                 answerInput = findViewById(R.id.audio_challenge_input);
 
                 if (answer.equalsIgnoreCase(answerInput.getText().toString())) {
-                    winChallenge();
+                    win = true;
+                    youWin();
                 }
                 else {
-                    loseChallengeWithSound();
+                    lose = true;
+                    youLose();
                 }
 
             }
@@ -64,49 +71,77 @@ public class AudioChallenge extends DrunkModeChallengeActivity {
 
 
     @Override
-    public void onDestroy() {
-        stopSound();
+    protected void onDestroy() {
+
+        for (MediaPlayer mediaPlayer:mediaPlayers)
+        {
+            try {
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                }
+            }
+            catch(IllegalStateException e) {
+                continue;
+            }
+        }
+
         super.onDestroy();
     }
 
     @Override
-    public void onPause() {
-        stopSound();
+    public void onBackPressed() {
+        if (!win && !lose) {
+            youLoseNoSound();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        if (!win && !lose) {
+            youLoseNoSound();
+        }
         super.onPause();
     }
 
-    @Override
-    protected void winChallenge() {
-        complete = true;
-        winSound.start();
-        winSound.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+    private void youWin() {
+        final MediaPlayer winner = MediaPlayer.create(getApplicationContext(), R.raw.win_sound);
+        winner.start();
+        winner.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
-                winSound.stop();
-                winSound.release();
+                winner.stop();
+                winner.release();
             }
         });
-
         finish();
     }
 
-    @Override
-    protected void loseChallenge() {
-        complete = true;
-        loseWithDelay(0);
-    }
-
-    private void loseChallengeWithSound() {
-        loseSound.start();
-        loseSound.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+    private void youLose() {
+        final MediaPlayer loser = MediaPlayer.create(getApplicationContext(), R.raw.lose_sound);
+        loser.start();
+        loser.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
-                loseSound.stop();
-                loseSound.release();
+                loser.stop();
+                loser.release();
             }
         });
+        Intent i = new Intent(getApplicationContext(), Accounts.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        finish();
+        if(!getIntent().getBooleanExtra("Practice", false)) {
+            startActivity(i);
+        }
+    }
 
-        loseChallenge();
+    private void youLoseNoSound() {
+        Intent i = new Intent(getApplicationContext(), Accounts.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        finish();
+        if(!getIntent().getBooleanExtra("Practice", false)) {
+            startActivity(i);
+        }
     }
 
     private void playSound() {
@@ -186,21 +221,6 @@ public class AudioChallenge extends DrunkModeChallengeActivity {
                     playing = false;
                 }
             });
-        }
-    }
-
-    private void stopSound() {
-        for (MediaPlayer mediaPlayer : mediaPlayers)
-        {
-            try {
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.stop();
-                    mediaPlayer.release();
-                }
-            }
-            catch(IllegalStateException e) {
-                continue;
-            }
         }
     }
 
