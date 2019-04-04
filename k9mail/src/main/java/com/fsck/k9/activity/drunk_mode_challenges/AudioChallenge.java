@@ -3,6 +3,7 @@ package com.fsck.k9.activity.drunk_mode_challenges;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.support.annotation.VisibleForTesting;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -267,5 +268,25 @@ public class AudioChallenge extends K9Activity {
         }
 
         return null;
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    public String getAnswer() {
+        return this.answer;
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    public boolean isPlaying() {
+        return this.playing;
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    public boolean getWin() {
+        return this.win;
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    public boolean getLose() {
+        return this.lose;
     }
 }
