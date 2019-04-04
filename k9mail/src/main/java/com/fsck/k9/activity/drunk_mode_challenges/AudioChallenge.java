@@ -45,7 +45,7 @@ public class AudioChallenge extends DrunkModeChallengeActivity {
                     winChallenge();
                 }
                 else {
-                    loseChallenge();
+                    loseChallengeWithSound();
                 }
 
             }
@@ -93,6 +93,10 @@ public class AudioChallenge extends DrunkModeChallengeActivity {
     @Override
     protected void loseChallenge() {
         complete = true;
+        loseWithDelay(0);
+    }
+
+    private void loseChallengeWithSound() {
         loseSound.start();
         loseSound.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -102,7 +106,7 @@ public class AudioChallenge extends DrunkModeChallengeActivity {
             }
         });
 
-        loseWithDelay(0);
+        loseChallenge();
     }
 
     private void playSound() {
