@@ -49,7 +49,12 @@ public class PhotoChallenge extends K9Activity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                pickChallengePhoto();
+                if(getIntent().getBooleanExtra("test", false)) {
+                    pickTestChallengePhoto();
+                }
+                else {
+                    pickChallengePhoto();
+                }
             }
         }).run();
         new Thread(new Runnable() {
@@ -102,6 +107,17 @@ public class PhotoChallenge extends K9Activity {
                 .getIdentifier(challengePhoto.getFileName(), null, this.getPackageName());
 
         mysteryPicture.setImageResource(challengePhotoID);
+    }
+    protected void pickTestChallengePhoto() {
+        challengePhoto = new Photo(null, "drawable/dog",
+                "Dog", "Wolf", "Fox", "Dog", "Coyote");
+        mysteryPicture = findViewById(R.id.imageView);
+
+        int challengePhotoID = getResources()
+                .getIdentifier(challengePhoto.getFileName(), null, this.getPackageName());
+
+        mysteryPicture.setImageResource(challengePhotoID);
+
     }
 
     private void setChoices() {
