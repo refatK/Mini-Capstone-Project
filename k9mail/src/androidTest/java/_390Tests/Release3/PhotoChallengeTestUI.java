@@ -37,6 +37,16 @@ public class PhotoChallengeTestUI {
         testPack.putBoolean("Practice", true);
         pc.putExtras(testPack);
         photoC.launchActivity(pc);
+        setFields(photoC.getActivity());
+    }
+
+    private void setFields(PhotoChallenge activity) {
+        prompt = activity.findViewById(R.id.prompt);
+        choice1 = activity.findViewById(R.id.choice1);
+        choice2 = activity.findViewById(R.id.choice2);
+        choice3 = activity.findViewById(R.id.choice3);
+        choice4 = activity.findViewById(R.id.choice4);
+        challengePhoto = activity.findViewById(R.id.prompt);
     }
 
     @Test
