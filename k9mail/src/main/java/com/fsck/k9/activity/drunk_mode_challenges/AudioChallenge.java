@@ -14,7 +14,7 @@ import com.fsck.k9.activity.K9Activity;
 
 import org.jetbrains.annotations.Nullable;
 
-public class AudioChallenge extends K9Activity {
+public class AudioChallenge extends DrunkModeChallengeActivity {
 
     private String answer = "";
     private char[] chars = { 'a', 'b', 'c', 'd', 'e', 'f', '1', '2', '3', '4', '5', 'g', 'h', 'i',
@@ -49,11 +49,11 @@ public class AudioChallenge extends K9Activity {
 
                 if (answer.equalsIgnoreCase(answerInput.getText().toString())) {
                     win = true;
-                    youWin();
+                    winChallenge();
                 }
                 else {
                     lose = true;
-                    youLose();
+                    loseChallenge();
                 }
 
             }
@@ -72,7 +72,7 @@ public class AudioChallenge extends K9Activity {
 
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
 
         for (MediaPlayer mediaPlayer:mediaPlayers)
         {
@@ -92,20 +92,17 @@ public class AudioChallenge extends K9Activity {
 
     @Override
     public void onBackPressed() {
-        if (!win && !lose) {
-            youLoseNoSound();
-        }
+        loseChallenge();
     }
 
     @Override
-    protected void onPause() {
-        if (!win && !lose) {
-            youLoseNoSound();
-        }
+    public void onPause() {
+        loseChallenge();
         super.onPause();
     }
 
-    private void youWin() {
+    @Override
+    protected void winChallenge() {
         final MediaPlayer winner = MediaPlayer.create(getApplicationContext(), R.raw.win_sound);
         winner.start();
         winner.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -116,6 +113,16 @@ public class AudioChallenge extends K9Activity {
             }
         });
         finish();
+    }
+
+    @Override
+    protected void loseChallenge()
+    {
+        if (!win && !lose)
+            youLoseNoSound();
+
+        else
+            youLose();
     }
 
     private void youLose() {
