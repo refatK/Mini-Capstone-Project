@@ -65,6 +65,9 @@
         <item name="android:src">@drawable/bullet_point_negative</item>
         <item name="android:tint">?attr/tintColorBulletPointNegative</item>
     </style>
+    <style name="MathNumberPickerTextSize">
+        <item name="android:textSize">35sp</item>
+    </style>
 
 </resources>
 

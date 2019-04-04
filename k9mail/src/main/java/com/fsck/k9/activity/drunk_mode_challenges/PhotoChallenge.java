@@ -1,10 +1,8 @@
 package com.fsck.k9.activity.drunk_mode_challenges;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -15,14 +13,11 @@ import android.widget.TextView;
 import com.fsck.k9.K9;
 import com.fsck.k9.Photo;
 import com.fsck.k9.R;
-import com.fsck.k9.activity.Accounts;
-import com.fsck.k9.activity.K9Activity;
 
 import java.util.List;
 
 
-
-public class PhotoChallenge extends K9Activity {
+public class PhotoChallenge extends DrunkModeChallengeActivity {
     private Button choice1;
     private Button choice2;
     private Button choice3;
@@ -30,21 +25,13 @@ public class PhotoChallenge extends K9Activity {
     private ImageView mysteryPicture;
     private Photo challengePhoto;
     private TextView prompt;
-    private MediaPlayer winSound;
-    private MediaPlayer loseSound;
-    private MediaPlayer timeoutSound;
-    private boolean complete;
     private Handler timeLimit;
-    boolean active = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_challenge);
-        winSound = MediaPlayer.create(this, R.raw.win_sound);
-        loseSound = MediaPlayer.create(this, R.raw.lose_sound);
-        timeoutSound = MediaPlayer.create(this, R.raw.timeup_sound);
-        complete = false;
+
         prompt = findViewById(R.id.prompt);
         new Thread(new Runnable() {
             @Override
@@ -72,23 +59,6 @@ public class PhotoChallenge extends K9Activity {
     public void onDestroy(){
         super.onDestroy();
         timeLimit.removeCallbacksAndMessages(null);
-        timeoutSound.stop();
-    }
-    @Override
-    public void onPause(){
-        super.onPause();
-        active = false;
-        if(!complete) {
-            loseChallenge();
-        }
-    }
-    @Override
-    public void onResume(){
-        super.onResume();
-        if(!active) {
-            loseChallenge();
-        }
-        active = true;
     }
 
     private void pickChallengePhoto() {
@@ -149,32 +119,30 @@ public class PhotoChallenge extends K9Activity {
         prompt.setBackgroundColor(Color.RED);
         prompt.setTextColor(Color.WHITE);
         prompt.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        prompt.setText(R.string.photo_challenge_failed);
+        prompt.setText(R.string.drunk_mode_challenge_failed);
         mysteryPicture.setColorFilter(Color.RED, PorterDuff.Mode.DARKEN);
         loseWithDelay(500);
     }
 
-    private void loseChallenge() {
+    @Override
+    protected void loseChallenge() {
         complete = true;
         prompt.setBackgroundColor(Color.RED);
         prompt.setTextColor(Color.WHITE);
         prompt.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        prompt.setText(R.string.photo_challenge_failed);
+        prompt.setText(R.string.drunk_mode_challenge_failed);
         mysteryPicture.setColorFilter(Color.RED, PorterDuff.Mode.DARKEN);
         loseWithDelay(0);
     }
 
-    private void winChallenge(Button choice) {
+    @Override
+    protected void winChallenge() {
         complete = true;
         winSound.start();
-        choice.setBackgroundColor(Color.GREEN);
-        choice.setTextColor(Color.BLACK);
-        //This value is set by the DB, it's not possible to use the strings.xml
-        choice.setText(choice.getText()+" ✔");
         prompt.setBackgroundColor(Color.GREEN);
         prompt.setTextColor(Color.BLACK);
         prompt.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
-        prompt.setText(R.string.photo_challenge_success);
+        prompt.setText(R.string.drunk_mode_challenge_success);
         mysteryPicture.setColorFilter(Color.GREEN, PorterDuff.Mode.DARKEN);
 
         new Handler().postDelayed(new Runnable() {
@@ -183,11 +151,16 @@ public class PhotoChallenge extends K9Activity {
                 finish();
             }
         }, 500);
+
     }
 
-    @Override
-    public void onBackPressed() {
-        loseChallenge();
+    private void winChallenge(Button choice) {
+        choice.setBackgroundColor(Color.GREEN);
+        choice.setTextColor(Color.BLACK);
+        //This value is set by the DB, it's not possible to use the strings.xml
+        choice.setText(choice.getText()+" ✔");
+
+        winChallenge();
     }
 
     private void timeOut(){
@@ -199,26 +172,9 @@ public class PhotoChallenge extends K9Activity {
         prompt.setBackgroundColor(Color.YELLOW);
         prompt.setTextColor(Color.BLACK);
         prompt.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        prompt.setText(R.string.photo_challenge_timeout);
+        prompt.setText(getString(R.string.drunk_mode_challenge_timeout, 10));
         mysteryPicture.setColorFilter(Color.YELLOW, PorterDuff.Mode.DARKEN);
         loseWithDelay(500);
-
     }
 
-    private void loseWithDelay(int millis){
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent failedChallenge = new Intent(getApplicationContext(), Accounts.class);
-                failedChallenge.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                if(!active) {
-                    return;
-                }
-                finish();
-                if(!getIntent().getBooleanExtra("Practice", false)) {
-                    startActivity(failedChallenge);
-                }
-            }
-        },millis);
-    }
 }
