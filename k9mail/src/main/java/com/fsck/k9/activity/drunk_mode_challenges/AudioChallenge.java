@@ -35,6 +35,14 @@ public class AudioChallenge extends DrunkModeChallengeActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_audio_challenge);
 
+        super.winSound.release();
+        super.loseSound.release();
+        super.timeoutSound.release();
+
+        super.winSound = null;
+        super.loseSound = null;
+        super.timeoutSound = null;
+
         for (int i = 0; i < 7; i++) {
             int random = (int)(Math.random()*chars.length);
 
@@ -92,12 +100,14 @@ public class AudioChallenge extends DrunkModeChallengeActivity {
 
     @Override
     public void onBackPressed() {
-        loseChallenge();
+        if (!isComplete())
+            loseChallenge();
     }
 
     @Override
     public void onPause() {
-        loseChallenge();
+        if (!isComplete())
+            loseChallenge();
         super.onPause();
     }
 
@@ -118,10 +128,10 @@ public class AudioChallenge extends DrunkModeChallengeActivity {
     @Override
     protected void loseChallenge()
     {
-        if (!win && !lose)
+        if (!isComplete())
             youLoseNoSound();
 
-        else
+        else if (isComplete() && (lose && !win))
             youLose();
     }
 
@@ -275,6 +285,12 @@ public class AudioChallenge extends DrunkModeChallengeActivity {
         }
 
         return null;
+    }
+
+
+    private boolean isComplete() {
+        super.complete = (win || lose);
+        return super.complete;
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
