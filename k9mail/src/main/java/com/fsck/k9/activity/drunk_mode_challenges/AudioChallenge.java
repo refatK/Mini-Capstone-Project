@@ -35,12 +35,8 @@ public class AudioChallenge extends DrunkModeChallengeActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_audio_challenge);
 
-        super.winSound.release();
-        super.loseSound.release();
         super.timeoutSound.release();
 
-        super.winSound = null;
-        super.loseSound = null;
         super.timeoutSound = null;
 
         for (int i = 0; i < 7; i++) {
@@ -113,7 +109,7 @@ public class AudioChallenge extends DrunkModeChallengeActivity {
 
     @Override
     protected void winChallenge() {
-        final MediaPlayer winner = MediaPlayer.create(getApplicationContext(), R.raw.win_sound);
+        final MediaPlayer winner = super.winSound;
         winner.start();
         winner.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -136,7 +132,7 @@ public class AudioChallenge extends DrunkModeChallengeActivity {
     }
 
     private void youLose() {
-        final MediaPlayer loser = MediaPlayer.create(getApplicationContext(), R.raw.lose_sound);
+        final MediaPlayer loser = super.loseSound;
         loser.start();
         loser.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
