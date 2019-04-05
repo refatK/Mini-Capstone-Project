@@ -10,7 +10,6 @@ import android.widget.EditText;
 
 import com.fsck.k9.R;
 import com.fsck.k9.activity.Accounts;
-import com.fsck.k9.activity.K9Activity;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -168,8 +167,12 @@ public class AudioChallenge extends DrunkModeChallengeActivity {
 
         if (!playing) {
             playing = true;
+
             button_play_sound_again.setClickable(false);
             button_play_sound_again.setEnabled(false);
+            button_sound_ok.setClickable(false);
+            button_sound_ok.setEnabled(false);
+
             mediaPlayers[0].start();
             mediaPlayers[0].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
@@ -232,6 +235,8 @@ public class AudioChallenge extends DrunkModeChallengeActivity {
                     mediaPlayers[6].release();
                     button_play_sound_again.setClickable(true);
                     button_play_sound_again.setEnabled(true);
+                    button_sound_ok.setClickable(true);
+                    button_sound_ok.setEnabled(true);
                     playing = false;
                 }
             });
