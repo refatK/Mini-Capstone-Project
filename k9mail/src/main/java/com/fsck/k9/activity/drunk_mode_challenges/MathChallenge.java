@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.fsck.k9.R;
 
+import org.jetbrains.annotations.TestOnly;
+
 /**
  * Drunk mode challenge where the user must solve a random math equation in a given time frame
  */
@@ -153,17 +155,24 @@ public class MathChallenge extends DrunkModeChallengeActivity {
     }
 
     /**
-     * Compares users answer to actual equation solution
+     * Handles what happens depending on if users answer was correct or not
      */
     private void checkSolution() {
-        int answer = Integer.parseInt(sign + leftNumber + rightNumber);
-        if (answer == solution) {
+        if (answerIsCorrect()) {
             winSound.start();
             winChallenge();
         } else {
             loseSound.start();
             loseChallenge();
         }
+    }
+
+    /**
+     * Compares users answer to actual equation solution
+     */
+    public boolean answerIsCorrect() {
+        int answer = Integer.parseInt(sign + leftNumber + rightNumber);
+        return answer == solution;
     }
 
     @Override
@@ -249,10 +258,7 @@ public class MathChallenge extends DrunkModeChallengeActivity {
                     cancel();
                 }
 
-                long millisCompleted = timeToCompleteMillis - millisLeft;
-                int percentComplete = (int) Math.round(((double) millisCompleted / timeToCompleteMillis) * 100);
-
-                countdownView.setProgress(percentComplete);
+                countdownView.setProgress(percentCompleted(timeToCompleteMillis, millisLeft));
             }
 
             @Override
@@ -266,6 +272,22 @@ public class MathChallenge extends DrunkModeChallengeActivity {
         countdown.start();
     }
 
+    /**
+     * Calculates percentage of completion in range [0, 100]
+     * @param total the number to reach to be considered complete
+     * @param remaining the amount left to complete
+     */
+    public int percentCompleted(long total, long remaining) {
+        long completed = total - remaining;
+        return (int) Math.round(((double) completed / total) * 100);
+    }
+
+    /**
+     * Change UI visuals to denote something happened
+     * @param primaryColor color that stands out, want user to notice
+     * @param secondaryColor color for text on top of primaryColor
+     * @param message message to use in the description area of the view
+     */
     private void changeViewOnComplete(int primaryColor, int secondaryColor, String message) {
         descriptionView.setBackgroundColor(primaryColor);
         descriptionView.setTextColor(secondaryColor);
@@ -282,6 +304,17 @@ public class MathChallenge extends DrunkModeChallengeActivity {
 
     public int getSolution() {
         return solution;
+    }
+
+    /**
+     * Since inputs are only for user through ui, this method allows setting inputs programmatically
+     * for testing
+     */
+    @TestOnly
+    public void setInputValues(String sign, int leftNumber, int rightNumber) {
+        this.sign = sign;
+        this.leftNumber = leftNumber;
+        this.rightNumber = rightNumber;
     }
 
 }
