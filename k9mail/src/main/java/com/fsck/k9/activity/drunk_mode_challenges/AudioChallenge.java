@@ -1,12 +1,14 @@
 package com.fsck.k9.activity.drunk_mode_challenges;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.VisibleForTesting;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.fsck.k9.R;
 import com.fsck.k9.activity.Accounts;
@@ -28,14 +30,15 @@ public class AudioChallenge extends DrunkModeChallengeActivity {
     private boolean playing = false;
     private boolean win = false;
     private boolean lose = false;
+    private TextView audioChallengeText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_audio_challenge);
+        audioChallengeText = findViewById(R.id.audio_challenge_text);
 
         super.timeoutSound.release();
-
         super.timeoutSound = null;
 
         for (int i = 0; i < 7; i++) {
@@ -52,10 +55,14 @@ public class AudioChallenge extends DrunkModeChallengeActivity {
 
                 if (answer.equalsIgnoreCase(answerInput.getText().toString())) {
                     win = true;
+                    audioChallengeText.setBackgroundColor(Color.parseColor("#228B22"));
+                    audioChallengeText.setTextColor(Color.WHITE);
                     winChallenge();
                 }
                 else {
                     lose = true;
+                    audioChallengeText.setBackgroundColor(Color.RED);
+                    audioChallengeText.setTextColor(Color.WHITE);
                     loseChallenge();
                 }
 
