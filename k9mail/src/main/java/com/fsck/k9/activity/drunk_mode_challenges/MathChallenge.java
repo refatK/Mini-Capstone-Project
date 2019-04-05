@@ -19,7 +19,7 @@ import com.fsck.k9.R;
  */
 public class MathChallenge extends DrunkModeChallengeActivity {
 
-    enum Operation {
+    public enum Operation {
         ADD("+"), SUBTRACT("−"), MULTIPLY("x");
 
         private String symbol;
@@ -67,7 +67,7 @@ public class MathChallenge extends DrunkModeChallengeActivity {
         equationView = (TextView) findViewById(R.id.math_challenge_equation);
 
         // Generate equation and set text
-        String equation = generateEquation();
+        String equation = generateRandomEquation();
         equationView.setText(equation);
 
 
@@ -85,7 +85,7 @@ public class MathChallenge extends DrunkModeChallengeActivity {
         // makes the input use array as display instead
         signInput.setDisplayedValues(MATH_SIGNS);
 
-        // setup change listeners
+        // setup user input
         setupInputChangeListeners();
 
 
@@ -104,9 +104,8 @@ public class MathChallenge extends DrunkModeChallengeActivity {
 
     /**
      * Creates a random equation to solve
-     * @return The equation to be solved in string format
      */
-    private String generateEquation() {
+    private String generateRandomEquation() {
         //get random numbers from -9 to +9
         int firstNumber = generateRandomSingleDigitNumber();
         int secondNumber = generateRandomSingleDigitNumber();
@@ -115,6 +114,18 @@ public class MathChallenge extends DrunkModeChallengeActivity {
         int randOperationChoice = (int)(Math.random() * Operation.values().length);
         Operation operation = Operation.values()[randOperationChoice];
 
+        return generateEquation(operation, firstNumber, secondNumber);
+    }
+
+    /**
+     * Generate a simple equation
+     * @param operation the math operation
+     * @param firstNumber number left of operator
+     * @param secondNumber number right of operator
+     * @return the equation in string form for view
+     */
+    public String generateEquation(Operation operation, int firstNumber, int secondNumber) {
+        // get solution which depends on the operation
         switch (operation) {
             case ADD:
                 solution = firstNumber + secondNumber;
@@ -126,6 +137,7 @@ public class MathChallenge extends DrunkModeChallengeActivity {
                 solution = firstNumber * secondNumber;
         }
 
+        // return equation in string form for view
         return firstNumber + " " + operation + " " + secondNumber;
     }
 
@@ -266,6 +278,10 @@ public class MathChallenge extends DrunkModeChallengeActivity {
 
         submitAnswerButton.setBackgroundColor(primaryColor);
         submitAnswerButton.setTextColor(secondaryColor);
+    }
+
+    public int getSolution() {
+        return solution;
     }
 
 }
