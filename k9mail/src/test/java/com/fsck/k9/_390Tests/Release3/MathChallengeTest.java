@@ -18,7 +18,7 @@ public class MathChallengeTest {
     }
 
     @Test
-    public void generatingEquation_WorksCorrectly() {
+    public void generatingEquation_WorksForAllOperations() {
 
         // check addition case
         String addResult = mathChallengeActivity.generateEquation(MathChallenge.Operation.ADD, 4, 5);
@@ -34,5 +34,19 @@ public class MathChallengeTest {
         String multiplyResult = mathChallengeActivity.generateEquation(MathChallenge.Operation.MULTIPLY, 4, 5);
         assertEquals("4 x 5", multiplyResult);
         assertEquals(20, mathChallengeActivity.getSolution());
+    }
+
+    @Test
+    public void generatingEquation_DisplaysNegativeNumbers() {
+        String result = mathChallengeActivity.generateEquation(MathChallenge.Operation.MULTIPLY, -2, 6);
+        assertEquals("-2 x 6", result);
+        assertEquals(-12, mathChallengeActivity.getSolution());
+    }
+
+    @Test
+    public void generatingEquation_DoesNotDisplayZeroWithNegative() {
+        String result = mathChallengeActivity.generateEquation(MathChallenge.Operation.MULTIPLY, -0, 0);
+        assertEquals("0 x 0", result);
+        assertEquals(0, mathChallengeActivity.getSolution());
     }
 }
