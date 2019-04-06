@@ -5,5 +5,5 @@ import com.fsck.k9.K9RobolectricTestRunner;
 import org.junit.runner.RunWith;
 
 @RunWith(K9RobolectricTestRunner.class)
-public class DrunkModeOptionsTest {
+public class DrunkModeSettingsTest {
 }
