@@ -19,6 +19,7 @@ public class DrunkModeSettingsTest {
     @Rule
     public ActivityTestRule<DrunkModeSettings> mActivityTestRule = new ActivityTestRule<>(DrunkModeSettings.class);
 
+    //Check if option is displayed
     @Test
     public void testSetDrunkTime(){
         onData(withKey("drunk_mode_settings_time")).check(matches(isDisplayed()));
@@ -30,12 +31,13 @@ public class DrunkModeSettingsTest {
         onData(withKey("drunk_mode_settings_toggle")).check(matches(isDisplayed()));
     }
 
+    //Check if toggle works for one click
     @Test
     public void testToggleDrunkOnce(){
         onData(withKey("drunk_mode_settings_toggle")).perform(click());
     }
 
-    //Check if check mark if toggle works
+    //Check if toggle works for two clicks
     @Test
     public void testToggleDrunkTwice(){
         onData(withKey("drunk_mode_settings_toggle")).perform(click());
