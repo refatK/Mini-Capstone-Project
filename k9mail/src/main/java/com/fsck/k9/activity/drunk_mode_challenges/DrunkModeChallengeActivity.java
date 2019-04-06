@@ -36,7 +36,8 @@ public abstract class DrunkModeChallengeActivity extends K9Activity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        timeoutSound.stop();
+        if (timeoutSound != null)
+            timeoutSound.stop();
     }
 
     @Override
