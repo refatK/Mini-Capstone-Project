@@ -12,6 +12,9 @@ import com.fsck.k9.activity.K9Activity;
 /**
  * Abstraction of a drunk mode challenge. A challenge can either result in a win or loss. The user
  * also loses the challenge if they use the Android back button or home button.
+ *
+ * When the user loses, they can move on to the blocked activity, or else they get kicked out to a
+ * specified activity
  */
 public abstract class DrunkModeChallengeActivity extends K9Activity {
 

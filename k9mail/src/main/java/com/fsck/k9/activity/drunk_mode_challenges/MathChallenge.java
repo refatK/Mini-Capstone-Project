@@ -18,6 +18,7 @@ import org.jetbrains.annotations.TestOnly;
 
 /**
  * Drunk mode challenge where the user must solve a random math equation in a given time frame
+ * to win
  */
 public class MathChallenge extends DrunkModeChallengeActivity {
 
