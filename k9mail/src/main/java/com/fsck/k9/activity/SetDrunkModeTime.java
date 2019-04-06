@@ -105,22 +105,6 @@ public class SetDrunkModeTime extends K9Activity {
 
     }
 
-    public void supersedeChosenStartTimeTextView(TextView startTimeText){
-        this.startTimeText = startTimeText;
-    }
-
-    public void supersedeChosenTimeEndTextView(TextView endTimeText){
-        this.endTimeText = endTimeText;
-    }
-
-    public void supersedeChosenStartTime(Calendar chosenStartTime){
-        this.chosenStartTime = chosenStartTime;
-    }
-
-    public void supersedeChosenEndTime(Calendar chosenEndTime){
-        this.chosenEndTime = chosenEndTime;
-    }
-
     private String dateToCalendarFormat(Date time){
         Calendar calendar = Calendar.getInstance();
         calendar.clear();
