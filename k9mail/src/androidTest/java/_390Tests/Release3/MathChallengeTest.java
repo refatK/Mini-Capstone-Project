@@ -38,7 +38,6 @@ import static org.junit.Assert.assertEquals;
 public class MathChallengeTest {
 
     private MathChallenge mathChallenge;
-    private Context context;
 
     private ViewInteraction descriptionTextView;
 
@@ -52,8 +51,6 @@ public class MathChallengeTest {
 
     @Before
     public void setUp() {
-        context = InstrumentationRegistry.getContext();
-
         mathChallenge = mActivityTestRule.getActivity();
 
         descriptionTextView = onView(withId(R.id.math_challenge_description));
@@ -101,14 +98,19 @@ public class MathChallengeTest {
     }
 
     private void inputAsAnswer(int number) {
-        //put negative sign for negative number
+        //put negative sign for negative number, else positive sign
         if (number < 0) {
-            signNumberPicker.perform(setNumber(1));
+            signNumberPicker.perform(setNumber(MathChallenge.Sign.NEGATIVE.ordinal()));
+        } else {
+            signNumberPicker.perform(setNumber(MathChallenge.Sign.POSITIVE.ordinal()));
         }
 
+        // sign already taken to account, so ignore for left and right number
         number = Math.abs(number);
 
+        // set as value in ones place
         rightNumberPicker.perform(setNumber(number % 10));
+        // set as value in tens place
         leftNumberPicker.perform((setNumber((number / 10) % 10)));
     }
 

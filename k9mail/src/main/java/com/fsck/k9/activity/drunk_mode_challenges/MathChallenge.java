@@ -36,7 +36,25 @@ public class MathChallenge extends DrunkModeChallengeActivity {
         }
     }
 
-    public final String[] MATH_SIGNS = {"+", "-"};
+    public enum Sign {
+        POSITIVE("+"), NEGATIVE("-");
+
+        private String symbol;
+
+        Sign(String symbol) {
+            this.symbol = symbol;
+        }
+
+        @Override
+        public String toString() {
+            return this.symbol;
+        }
+
+        public static String[] toStringArray() {
+            return new String[]{POSITIVE.toString(), NEGATIVE.toString()};
+        }
+    }
+
     public final int SECONDS_TO_COMPLETE_CHALLENGE = 20;
     public final int MILLIS_DELAY_WHEN_CHALLENGE_COMPLETE = 1500;
     public final int COMPLETED_PROGRESS_VALUE = 100;
@@ -50,7 +68,7 @@ public class MathChallenge extends DrunkModeChallengeActivity {
     private NumberPicker rightNumberInput;
     private Button submitAnswerButton;
 
-    private String sign = "+";
+    private Sign sign = Sign.POSITIVE;
     private int leftNumber;
     private int rightNumber;
 
@@ -80,15 +98,12 @@ public class MathChallenge extends DrunkModeChallengeActivity {
         rightNumberInput = (NumberPicker) findViewById(R.id.right_number);
 
         // set the number pickers up
-        setupMathInput(signInput, MATH_SIGNS.length - 1);
+        setupMathInput(signInput, Sign.values().length - 1);
         setupMathInput(leftNumberInput, 9);
         setupMathInput(rightNumberInput, 9);
 
         // makes the input use array as display instead
-        signInput.setDisplayedValues(MATH_SIGNS);
-
-        // setup user input
-        setupInputChangeListeners();
+        signInput.setDisplayedValues(Sign.toStringArray());
 
 
         // Setup submit button
@@ -158,6 +173,8 @@ public class MathChallenge extends DrunkModeChallengeActivity {
      * Handles what happens depending on if users answer was correct or not
      */
     private void checkSolution() {
+        setAnswerValuesFromInput();
+
         if (answerIsCorrect()) {
             winSound.start();
             winChallenge();
@@ -168,14 +185,19 @@ public class MathChallenge extends DrunkModeChallengeActivity {
     }
 
     /**
+     * Instead of using listeners, set value when needed
+     */
+    public void setAnswerValuesFromInput() {
+        sign = Sign.values()[signInput.getValue()];
+        leftNumber = leftNumberInput.getValue();
+        rightNumber = rightNumberInput.getValue();
+    }
+
+    /**
      * Compares users answer to actual equation solution
      */
     public boolean answerIsCorrect() {
-        sign = signInput.getValue() == 0 ? "+" : "-";
-        leftNumber = leftNumberInput.getValue();
-        rightNumber = rightNumberInput.getValue();
-
-        int answer = Integer.parseInt(sign + leftNumber + rightNumber);
+        int answer = Integer.parseInt(sign.toString() + leftNumber + rightNumber);
         return answer == solution;
     }
 
@@ -225,29 +247,9 @@ public class MathChallenge extends DrunkModeChallengeActivity {
 
         // makes the scroll wheel input wrap if min/max val reached
         picker.setWrapSelectorWheel(true);
-    }
 
-    private void setupInputChangeListeners() {
-        signInput.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal){
-                sign = MATH_SIGNS[newVal];
-            }
-        });
-
-        leftNumberInput.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal){
-                leftNumber = newVal;
-            }
-        });
-
-        rightNumberInput.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal){
-                rightNumber = newVal;
-            }
-        });
+        // initially set value to start position
+        picker.setValue(0);
     }
 
     private void setupAndStartCountdown() {
@@ -315,7 +317,7 @@ public class MathChallenge extends DrunkModeChallengeActivity {
      * for testing
      */
     @TestOnly
-    public void setInputValues(String sign, int leftNumber, int rightNumber) {
+    public void setInputValues(Sign sign, int leftNumber, int rightNumber) {
         this.sign = sign;
         this.leftNumber = leftNumber;
         this.rightNumber = rightNumber;
