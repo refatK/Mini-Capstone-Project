@@ -24,6 +24,12 @@
         <Preference
             android:key="drunk_mode_test_photo_challenge"
             android:title="@string/test_photo_challenge"/>
+        <Preference
+            android:key="drunk_mode_test_audio_challenge"
+            android:title="@string/test_audio_challenge"/>
+        <Preference
+            android:key="drunk_mode_test_math_challenge"
+            android:title="@string/test_math_challenge"/>
     </PreferenceCategory>
 
 </PreferenceScreen>
