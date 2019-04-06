@@ -15,6 +15,8 @@ import com.fsck.k9.activity.K9Activity;
  */
 public abstract class DrunkModeChallengeActivity extends K9Activity {
 
+    public static final Class<?> ACTIVITY_TO_KICK_TO = Accounts.class;
+
     protected MediaPlayer winSound;
     protected MediaPlayer loseSound;
     protected MediaPlayer timeoutSound;
@@ -70,7 +72,7 @@ public abstract class DrunkModeChallengeActivity extends K9Activity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent failedChallenge = new Intent(getApplicationContext(), Accounts.class);
+                Intent failedChallenge = new Intent(getApplicationContext(), ACTIVITY_TO_KICK_TO);
                 failedChallenge.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 if (!active) {
                     return;
@@ -94,4 +96,17 @@ public abstract class DrunkModeChallengeActivity extends K9Activity {
      * This should handle the case of the user winning a challenge
      */
     abstract protected void winChallenge();
+
+
+    public MediaPlayer getWinSound() {
+        return winSound;
+    }
+
+    public MediaPlayer getLoseSound() {
+        return loseSound;
+    }
+
+    public MediaPlayer getTimeoutSound() {
+        return timeoutSound;
+    }
 }

@@ -16,7 +16,6 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.fsck.k9.R;
-import com.fsck.k9.activity.Accounts;
 import com.fsck.k9.activity.drunk_mode_challenges.MathChallenge;
 
 import org.hamcrest.Matcher;
@@ -32,6 +31,8 @@ import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
 public class MathChallengeTest {
@@ -72,6 +73,7 @@ public class MathChallengeTest {
         // after submit, make sure UI changes as expected confirming answer was right
         assertEquals(getRString(R.string.drunk_mode_challenge_success), descriptionTextView.getText());
         assertEquals(Color.GREEN, ((ColorDrawable) descriptionTextView.getBackground()).getColor());
+        assertTrue(mathChallenge.getWinSound().isPlaying());
     }
 
     @Test
@@ -88,10 +90,11 @@ public class MathChallengeTest {
         // after submit, make sure UI changes as expected
         assertEquals(getRString(R.string.drunk_mode_challenge_failed), descriptionTextView.getText());
         assertEquals(Color.RED, ((ColorDrawable) descriptionTextView.getBackground()).getColor());
+        assertTrue(mathChallenge.getLoseSound().isPlaying());
 
         // wait for activity to finish and verify that user was booted to specified activity
         SystemClock.sleep(MathChallenge.MILLIS_DELAY_WHEN_CHALLENGE_COMPLETE);
-        intended(hasComponent(Accounts.class.getName()));
+        intended(hasComponent(MathChallenge.ACTIVITY_TO_KICK_TO.getName()));
     }
 
     @Test
@@ -103,10 +106,12 @@ public class MathChallengeTest {
         String timeOutText = getRString(R.string.drunk_mode_challenge_timeout, MathChallenge.SECONDS_TO_COMPLETE_CHALLENGE);
         assertEquals(timeOutText, descriptionTextView.getText());
         assertEquals(Color.YELLOW, ((ColorDrawable) descriptionTextView.getBackground()).getColor());
+        assertTrue(mathChallenge.getTimeoutSound().isPlaying());
+        assertFalse(mathChallenge.getLoseSound().isPlaying());
 
         // wait for activity to finish and verify that user was booted to specified activity
         SystemClock.sleep(MathChallenge.MILLIS_DELAY_WHEN_CHALLENGE_COMPLETE);
-        intended(hasComponent(Accounts.class.getName()));
+        intended(hasComponent(MathChallenge.ACTIVITY_TO_KICK_TO.getName()));
     }
 
     @Test
@@ -117,12 +122,20 @@ public class MathChallengeTest {
         TextView description = mathChallenge.findViewById(R.id.math_challenge_description);
         assertEquals(getRString(R.string.drunk_mode_challenge_failed), descriptionTextView.getText());
         assertEquals(Color.RED, ((ColorDrawable) description.getBackground()).getColor());
+        assertFalse(mathChallenge.getLoseSound().isPlaying());
 
         // wait for activity to finish and verify that user was booted to specified activity
         SystemClock.sleep(MathChallenge.MILLIS_DELAY_WHEN_CHALLENGE_COMPLETE);
-        intended(hasComponent(Accounts.class.getName()));
+        intended(hasComponent(MathChallenge.ACTIVITY_TO_KICK_TO.getName()));
     }
 
+
+    // --- Helper functions below ---
+
+    /**
+     * Set the value of the number picker inputs to the chosen answer
+     * @param number the value user chooses as the answer
+     */
     private void inputAsAnswer(int number) {
         //put negative sign for negative number, else positive sign
         if (number < 0) {
@@ -140,12 +153,19 @@ public class MathChallengeTest {
         leftNumberPicker.perform((setNumber((number / 10) % 10)));
     }
 
+    /**
+     * Used to get android string from Strings.xml
+     */
     private String getRString(int id, Object... args) {
         Context targetContext = InstrumentationRegistry.getTargetContext();
         return args == null ? targetContext.getResources().getString(id) :
                 targetContext.getResources().getString(id, args);
     }
 
+    /**
+     * Allows us to set the number picker value of a number picker ViewInteraction
+     * @param n the number to set
+     */
     private static ViewAction setNumber(final int n) {
         return new ViewAction() {
             @Override
