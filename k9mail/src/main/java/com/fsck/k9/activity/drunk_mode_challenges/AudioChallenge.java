@@ -1,19 +1,21 @@
 package com.fsck.k9.activity.drunk_mode_challenges;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.support.annotation.VisibleForTesting;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.fsck.k9.R;
 import com.fsck.k9.activity.Accounts;
-import com.fsck.k9.activity.K9Activity;
 
 import org.jetbrains.annotations.Nullable;
 
-public class AudioChallenge extends K9Activity {
+public class AudioChallenge extends DrunkModeChallengeActivity {
 
     private String answer = "";
     private char[] chars = { 'a', 'b', 'c', 'd', 'e', 'f', '1', '2', '3', '4', '5', 'g', 'h', 'i',
@@ -28,11 +30,16 @@ public class AudioChallenge extends K9Activity {
     private boolean playing = false;
     private boolean win = false;
     private boolean lose = false;
+    private TextView audioChallengeText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_audio_challenge);
+        audioChallengeText = findViewById(R.id.audio_challenge_text);
+
+        super.timeoutSound.release();
+        super.timeoutSound = null;
 
         for (int i = 0; i < 7; i++) {
             int random = (int)(Math.random()*chars.length);
@@ -48,11 +55,15 @@ public class AudioChallenge extends K9Activity {
 
                 if (answer.equalsIgnoreCase(answerInput.getText().toString())) {
                     win = true;
-                    youWin();
+                    audioChallengeText.setBackgroundColor(Color.parseColor("#228B22"));
+                    audioChallengeText.setTextColor(Color.WHITE);
+                    winChallenge();
                 }
                 else {
                     lose = true;
-                    youLose();
+                    audioChallengeText.setBackgroundColor(Color.RED);
+                    audioChallengeText.setTextColor(Color.WHITE);
+                    loseChallenge();
                 }
 
             }
@@ -71,7 +82,7 @@ public class AudioChallenge extends K9Activity {
 
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
 
         for (MediaPlayer mediaPlayer:mediaPlayers)
         {
@@ -91,21 +102,20 @@ public class AudioChallenge extends K9Activity {
 
     @Override
     public void onBackPressed() {
-        if (!win && !lose) {
-            youLoseNoSound();
-        }
+        if (!isComplete())
+            loseChallenge();
     }
 
     @Override
-    protected void onPause() {
-        if (!win && !lose) {
-            youLoseNoSound();
-        }
+    public void onPause() {
+        if (!isComplete())
+            loseChallenge();
         super.onPause();
     }
 
-    private void youWin() {
-        final MediaPlayer winner = MediaPlayer.create(getApplicationContext(), R.raw.win_sound);
+    @Override
+    protected void winChallenge() {
+        final MediaPlayer winner = super.winSound;
         winner.start();
         winner.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -117,8 +127,18 @@ public class AudioChallenge extends K9Activity {
         finish();
     }
 
+    @Override
+    protected void loseChallenge()
+    {
+        if (!isComplete())
+            youLoseNoSound();
+
+        else if (isComplete() && (lose && !win))
+            youLose();
+    }
+
     private void youLose() {
-        final MediaPlayer loser = MediaPlayer.create(getApplicationContext(), R.raw.lose_sound);
+        final MediaPlayer loser = super.loseSound;
         loser.start();
         loser.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -154,8 +174,12 @@ public class AudioChallenge extends K9Activity {
 
         if (!playing) {
             playing = true;
+
             button_play_sound_again.setClickable(false);
             button_play_sound_again.setEnabled(false);
+            button_sound_ok.setClickable(false);
+            button_sound_ok.setEnabled(false);
+
             mediaPlayers[0].start();
             mediaPlayers[0].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
@@ -218,6 +242,8 @@ public class AudioChallenge extends K9Activity {
                     mediaPlayers[6].release();
                     button_play_sound_again.setClickable(true);
                     button_play_sound_again.setEnabled(true);
+                    button_sound_ok.setClickable(true);
+                    button_sound_ok.setEnabled(true);
                     playing = false;
                 }
             });
@@ -267,5 +293,31 @@ public class AudioChallenge extends K9Activity {
         }
 
         return null;
+    }
+
+
+    private boolean isComplete() {
+        super.complete = (win || lose);
+        return super.complete;
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    public String getAnswer() {
+        return this.answer;
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    public boolean isPlaying() {
+        return this.playing;
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    public boolean getWin() {
+        return this.win;
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    public boolean getLose() {
+        return this.lose;
     }
 }
