@@ -14,12 +14,14 @@ import android.widget.TextView;
 
 import com.fsck.k9.R;
 
+import org.jetbrains.annotations.TestOnly;
+
 /**
  * Drunk mode challenge where the user must solve a random math equation in a given time frame
  */
 public class MathChallenge extends DrunkModeChallengeActivity {
 
-    enum Operation {
+    public enum Operation {
         ADD("+"), SUBTRACT("−"), MULTIPLY("x");
 
         private String symbol;
@@ -67,7 +69,7 @@ public class MathChallenge extends DrunkModeChallengeActivity {
         equationView = (TextView) findViewById(R.id.math_challenge_equation);
 
         // Generate equation and set text
-        String equation = generateEquation();
+        String equation = generateRandomEquation();
         equationView.setText(equation);
 
 
@@ -85,7 +87,7 @@ public class MathChallenge extends DrunkModeChallengeActivity {
         // makes the input use array as display instead
         signInput.setDisplayedValues(MATH_SIGNS);
 
-        // setup change listeners
+        // setup user input
         setupInputChangeListeners();
 
 
@@ -104,9 +106,8 @@ public class MathChallenge extends DrunkModeChallengeActivity {
 
     /**
      * Creates a random equation to solve
-     * @return The equation to be solved in string format
      */
-    private String generateEquation() {
+    private String generateRandomEquation() {
         //get random numbers from -9 to +9
         int firstNumber = generateRandomSingleDigitNumber();
         int secondNumber = generateRandomSingleDigitNumber();
@@ -115,6 +116,18 @@ public class MathChallenge extends DrunkModeChallengeActivity {
         int randOperationChoice = (int)(Math.random() * Operation.values().length);
         Operation operation = Operation.values()[randOperationChoice];
 
+        return generateEquation(operation, firstNumber, secondNumber);
+    }
+
+    /**
+     * Generate a simple equation
+     * @param operation the math operation
+     * @param firstNumber number left of operator
+     * @param secondNumber number right of operator
+     * @return the equation in string form for view
+     */
+    public String generateEquation(Operation operation, int firstNumber, int secondNumber) {
+        // get solution which depends on the operation
         switch (operation) {
             case ADD:
                 solution = firstNumber + secondNumber;
@@ -126,6 +139,7 @@ public class MathChallenge extends DrunkModeChallengeActivity {
                 solution = firstNumber * secondNumber;
         }
 
+        // return equation in string form for view
         return firstNumber + " " + operation + " " + secondNumber;
     }
 
@@ -141,17 +155,24 @@ public class MathChallenge extends DrunkModeChallengeActivity {
     }
 
     /**
-     * Compares users answer to actual equation solution
+     * Handles what happens depending on if users answer was correct or not
      */
     private void checkSolution() {
-        int answer = Integer.parseInt(sign + leftNumber + rightNumber);
-        if (answer == solution) {
+        if (answerIsCorrect()) {
             winSound.start();
             winChallenge();
         } else {
             loseSound.start();
             loseChallenge();
         }
+    }
+
+    /**
+     * Compares users answer to actual equation solution
+     */
+    public boolean answerIsCorrect() {
+        int answer = Integer.parseInt(sign + leftNumber + rightNumber);
+        return answer == solution;
     }
 
     @Override
@@ -237,10 +258,7 @@ public class MathChallenge extends DrunkModeChallengeActivity {
                     cancel();
                 }
 
-                long millisCompleted = timeToCompleteMillis - millisLeft;
-                int percentComplete = (int) Math.round(((double) millisCompleted / timeToCompleteMillis) * 100);
-
-                countdownView.setProgress(percentComplete);
+                countdownView.setProgress(percentCompleted(timeToCompleteMillis, millisLeft));
             }
 
             @Override
@@ -254,6 +272,22 @@ public class MathChallenge extends DrunkModeChallengeActivity {
         countdown.start();
     }
 
+    /**
+     * Calculates percentage of completion in range [0, 100]
+     * @param total the number to reach to be considered complete
+     * @param remaining the amount left to complete
+     */
+    public int percentCompleted(long total, long remaining) {
+        long completed = total - remaining;
+        return (int) Math.round(((double) completed / total) * 100);
+    }
+
+    /**
+     * Change UI visuals to denote something happened
+     * @param primaryColor color that stands out, want user to notice
+     * @param secondaryColor color for text on top of primaryColor
+     * @param message message to use in the description area of the view
+     */
     private void changeViewOnComplete(int primaryColor, int secondaryColor, String message) {
         descriptionView.setBackgroundColor(primaryColor);
         descriptionView.setTextColor(secondaryColor);
@@ -266,6 +300,21 @@ public class MathChallenge extends DrunkModeChallengeActivity {
 
         submitAnswerButton.setBackgroundColor(primaryColor);
         submitAnswerButton.setTextColor(secondaryColor);
+    }
+
+    public int getSolution() {
+        return solution;
+    }
+
+    /**
+     * Since inputs are only for user through ui, this method allows setting inputs programmatically
+     * for testing
+     */
+    @TestOnly
+    public void setInputValues(String sign, int leftNumber, int rightNumber) {
+        this.sign = sign;
+        this.leftNumber = leftNumber;
+        this.rightNumber = rightNumber;
     }
 
 }
