@@ -103,7 +103,7 @@ public class DrunkModeSettings extends K9PreferenceActivity {
         calendar.setTime(time);
         int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
-        String strTime = (hourOfDay == 12 ? "12" : hourOfDay%12) + ":" + ((minute < 10) ? "0" + minute : minute) + (hourOfDay >= 12 ? " PM" : " AM");
+        String strTime = (hourOfDay%12 == 0 ? "12" : hourOfDay%12) + ":" + ((minute < 10) ? "0" + minute : minute) + (hourOfDay >= 12 ? " PM" : " AM");
         return strTime;
     }
 
