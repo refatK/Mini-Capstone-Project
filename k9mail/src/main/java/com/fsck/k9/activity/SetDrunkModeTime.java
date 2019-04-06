@@ -105,7 +105,7 @@ public class SetDrunkModeTime extends K9Activity {
 
     }
 
-    private String dateToCalendarFormat(Date time){
+    public String dateToCalendarFormat(Date time){
         Calendar calendar = Calendar.getInstance();
         calendar.clear();
         calendar.setTime(time);

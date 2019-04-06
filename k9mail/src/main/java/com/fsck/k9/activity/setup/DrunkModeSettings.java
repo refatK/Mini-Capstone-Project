@@ -97,7 +97,7 @@ public class DrunkModeSettings extends K9PreferenceActivity {
         daoSession.clear();
     }
 
-    private String dateToCalendarFormat(Date time){
+    public String dateToCalendarFormat(Date time){
         Calendar calendar = Calendar.getInstance();
         calendar.clear();
         calendar.setTime(time);
