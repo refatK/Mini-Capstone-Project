@@ -55,9 +55,9 @@ public class MathChallenge extends DrunkModeChallengeActivity {
         }
     }
 
-    public final int SECONDS_TO_COMPLETE_CHALLENGE = 20;
-    public final int MILLIS_DELAY_WHEN_CHALLENGE_COMPLETE = 1500;
-    public final int COMPLETED_PROGRESS_VALUE = 100;
+    public static final int SECONDS_TO_COMPLETE_CHALLENGE = 20;
+    public static final int MILLIS_DELAY_WHEN_CHALLENGE_COMPLETE = 1500;
+    public static final int COMPLETED_PROGRESS_VALUE = 100;
 
     private ProgressBar countdownView;
     private TextView equationView;

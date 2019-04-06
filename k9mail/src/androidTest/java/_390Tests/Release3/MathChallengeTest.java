@@ -27,11 +27,9 @@ import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
@@ -39,7 +37,7 @@ public class MathChallengeTest {
 
     private MathChallenge mathChallenge;
 
-    private ViewInteraction descriptionTextView;
+    private TextView descriptionTextView;
 
     private ViewInteraction signNumberPicker;
     private ViewInteraction leftNumberPicker;
@@ -53,12 +51,28 @@ public class MathChallengeTest {
     public void setUp() {
         mathChallenge = mActivityTestRule.getActivity();
 
-        descriptionTextView = onView(withId(R.id.math_challenge_description));
+        descriptionTextView = mathChallenge.findViewById(R.id.math_challenge_description);
 
         signNumberPicker = onView(withId(R.id.sign));
         leftNumberPicker = onView(withId(R.id.left_number));
         rightNumberPicker = onView(withId(R.id.right_number));
         submitButton = onView(withId(R.id.submit_math_answer_button));
+    }
+
+
+    @Test
+    public void testRightAnswerMakesPlayerPass() {
+        int solution = mathChallenge.getSolution();
+
+        // answer correctly
+        inputAsAnswer(solution);
+
+        submitButton.perform(click());
+
+        // after submit, make sure UI changes as expected confirming answer was right
+        TextView description = mathChallenge.findViewById(R.id.math_challenge_description);
+        assertEquals(getRString(R.string.drunk_mode_challenge_success), descriptionTextView.getText());
+        assertEquals(Color.GREEN, ((ColorDrawable) description.getBackground()).getColor());
     }
 
     @Test
@@ -74,27 +88,27 @@ public class MathChallengeTest {
 
         // after submit, make sure UI changes as expected
         TextView description = mathChallenge.findViewById(R.id.math_challenge_description);
-        descriptionTextView.check(matches(withText(R.string.drunk_mode_challenge_failed)));
+        assertEquals(getRString(R.string.drunk_mode_challenge_failed), descriptionTextView.getText());
         assertEquals(Color.RED, ((ColorDrawable) description.getBackground()).getColor());
 
-        // wait for activity to finish and verify that was booted to specified activity
-        SystemClock.sleep(mathChallenge.MILLIS_DELAY_WHEN_CHALLENGE_COMPLETE);
+        // wait for activity to finish and verify that user was booted to specified activity
+        SystemClock.sleep(MathChallenge.MILLIS_DELAY_WHEN_CHALLENGE_COMPLETE);
         intended(hasComponent(Accounts.class.getName()));
     }
 
     @Test
-    public void testRightAnswerMakesPlayerPass() {
-        int solution = mathChallenge.getSolution();
+    public void testWaitingTooLongMakesPlayerFail() {
+        // Wait for time to complete (added tiny delay to ensure view changed)
+        SystemClock.sleep((MathChallenge.SECONDS_TO_COMPLETE_CHALLENGE * 1000));
 
-        // answer correctly
-        inputAsAnswer(solution);
+        // verify UI changed accordingly
+        String timeOutText = getRString(R.string.drunk_mode_challenge_timeout, MathChallenge.SECONDS_TO_COMPLETE_CHALLENGE);
+        assertEquals(timeOutText, descriptionTextView.getText());
+        assertEquals(Color.YELLOW, ((ColorDrawable) descriptionTextView.getBackground()).getColor());
 
-        submitButton.perform(click());
-
-        // after submit, make sure UI changes as expected confirming answer was right
-        TextView description = mathChallenge.findViewById(R.id.math_challenge_description);
-        descriptionTextView.check(matches(withText(R.string.drunk_mode_challenge_success)));
-        assertEquals(Color.GREEN, ((ColorDrawable) description.getBackground()).getColor());
+        // wait for activity to finish and verify that user was booted to specified activity
+        SystemClock.sleep(MathChallenge.MILLIS_DELAY_WHEN_CHALLENGE_COMPLETE);
+        intended(hasComponent(Accounts.class.getName()));
     }
 
     private void inputAsAnswer(int number) {
@@ -112,6 +126,12 @@ public class MathChallengeTest {
         rightNumberPicker.perform(setNumber(number % 10));
         // set as value in tens place
         leftNumberPicker.perform((setNumber((number / 10) % 10)));
+    }
+
+    private String getRString(int id, Object... args) {
+        Context targetContext = InstrumentationRegistry.getTargetContext();
+        return args == null ? targetContext.getResources().getString(id) :
+                targetContext.getResources().getString(id, args);
     }
 
     private static ViewAction setNumber(final int n) {
