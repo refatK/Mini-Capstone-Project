@@ -1,5 +1,6 @@
 package _390Tests.Release3;
 
+import android.content.Intent;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.rule.ActivityTestRule;
 import android.widget.TimePicker;
@@ -8,6 +9,7 @@ import com.fsck.k9.R;
 import com.fsck.k9.activity.SetDrunkModeTime;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -25,13 +27,22 @@ import static org.hamcrest.CoreMatchers.not;
 public class SetDrunkModeTimeTest {
 
     @Rule
-    public ActivityTestRule<SetDrunkModeTime> mActivityTestRule = new ActivityTestRule<>(SetDrunkModeTime.class);
+    public ActivityTestRule<SetDrunkModeTime> activityTestRule = new ActivityTestRule<>(SetDrunkModeTime.class);
+
+    private Intent intent;
+
+    @Before
+    public void setUp(){
+        intent = new Intent();
+        intent.putExtra("testingSetTime", true);
+        activityTestRule.launchActivity(intent);
+    }
 
     @Test
     public void testChooseNothing(){
         onView(withId(R.id.drunk_mode_set_time_button)).perform(click());
         onView(withText("Time Set!"))
-                .inRoot(withDecorView(not(mActivityTestRule.getActivity().getWindow().getDecorView())))
+                .inRoot(withDecorView(not(activityTestRule.getActivity().getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
     }
 
@@ -55,7 +66,7 @@ public class SetDrunkModeTimeTest {
         onView(withId(R.id.drunk_mode_set_time_button)).perform(click());
 
         onView(withText("Start time and end time can't be the same!"))
-                .inRoot(withDecorView(not(mActivityTestRule.getActivity().getWindow().getDecorView())))
+                .inRoot(withDecorView(not(activityTestRule.getActivity().getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
     }
 
@@ -81,7 +92,7 @@ public class SetDrunkModeTimeTest {
         onView(withId(R.id.drunk_mode_set_time_button)).perform(click());
 
         onView(withText("Time Set!"))
-                .inRoot(withDecorView(not(mActivityTestRule.getActivity().getWindow().getDecorView())))
+                .inRoot(withDecorView(not(activityTestRule.getActivity().getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
     }
 }
