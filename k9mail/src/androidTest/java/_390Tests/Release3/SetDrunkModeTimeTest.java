@@ -48,10 +48,9 @@ public class SetDrunkModeTimeTest {
 
     @Test
     public void testChooseSameTime(){
-
-        int hour = 23;
+        int hour = 0;
         int minute = 11;
-        String str = 11 + ":" + 11 + " PM";
+        String str = 12 + ":" + 11 + " AM";
         onView(withId(R.id.drunk_mode_set_start_time_button)).perform(click());
         onView(withClassName(Matchers.equalTo(TimePicker.class.getName()))).perform(PickerActions.setTime(hour, minute));
         onView(withId(android.R.id.button1)).perform(click());
@@ -75,9 +74,9 @@ public class SetDrunkModeTimeTest {
         int hourOne = 23;
         int minuteOne = 11;
         String strOne = 11 + ":" + 11 + " PM";
-        int hourTwo = 21;
+        int hourTwo = 0;
         int minuteTwo = 30;
-        String strTwo = 9 + ":" + 30 + " PM";
+        String strTwo = 12 + ":" + 30 + " AM";
         onView(withId(R.id.drunk_mode_set_start_time_button)).perform(click());
         onView(withClassName(Matchers.equalTo(TimePicker.class.getName()))).perform(PickerActions.setTime(hourOne, minuteOne));
         onView(withId(android.R.id.button1)).perform(click());
