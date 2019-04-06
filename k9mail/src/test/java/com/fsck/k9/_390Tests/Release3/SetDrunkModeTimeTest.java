@@ -39,16 +39,18 @@ public class SetDrunkModeTimeTest {
 
     @Before
     public void setUp(){
+        //For OnTimeSet
         drunkModeTimePicker = new DrunkModeTimePicker();
         setDrunkModeTime = new SetDrunkModeTime();
+
         calendar = Calendar.getInstance();
         calendar.clear();
-
         textView = mock(TextView.class);
 
         drunkModeTimePicker.setCurrentCalendar(calendar);
         drunkModeTimePicker.setCurrentTextView(textView);
 
+        //For formatter
         Calendar testingTime = Calendar.getInstance();
         testingTime.clear();
         hourOfDay = 23;
@@ -68,8 +70,8 @@ public class SetDrunkModeTimeTest {
     @Test
     public void testOnTimeSet(){
         drunkModeTimePicker.onTimeSet(null, hourOfDay, minute);
-        assertThat(drunkModeTimePicker.getCurrentCalendar(), is(calendar));
-        assertThat(drunkModeTimePicker.getCurrentTextView(), is(textView));
+        assertThat(calendar.get(Calendar.HOUR_OF_DAY), is(hourOfDay));
+        assertThat(calendar.get(Calendar.MINUTE), is(minute));
         verify(textView).setText(strTime);
     }
 
