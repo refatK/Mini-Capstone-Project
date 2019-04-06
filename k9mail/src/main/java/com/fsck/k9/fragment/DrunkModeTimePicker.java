@@ -52,4 +52,12 @@ public class DrunkModeTimePicker extends DialogFragment implements TimePickerDia
         this.currentCalendar = currentCalendar;
     }
 
+    public TextView getCurrentTextView() {
+        return currentTextView;
+    }
+
+    public Calendar getCurrentCalendar() {
+        return currentCalendar;
+    }
+
 }

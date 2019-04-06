@@ -1,5 +1,8 @@
 package com.fsck.k9._390Tests.Release3;
 
+import android.content.Context;
+import android.widget.TextView;
+
 import com.fsck.k9.K9RobolectricTestRunner;
 import com.fsck.k9.activity.SetDrunkModeTime;
 import com.fsck.k9.activity.setup.DrunkModeSettings;
@@ -14,7 +17,9 @@ import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(K9RobolectricTestRunner.class)
@@ -28,39 +33,44 @@ public class SetDrunkModeTimeTest {
     private Integer hourOfDay;
     private Integer minute;
 
+    private Calendar calendar;
+    private TextView textView;
+    private String strTime;
+
     @Before
     public void setUp(){
-        drunkModeTimePicker = mock(DrunkModeTimePicker.class);
-        setDrunkModeTime = mock(SetDrunkModeTime.class);
-
-        Calendar calendar = Calendar.getInstance();
+        drunkModeTimePicker = new DrunkModeTimePicker();
+        setDrunkModeTime = new SetDrunkModeTime();
+        calendar = Calendar.getInstance();
         calendar.clear();
+
+        textView = mock(TextView.class);
+
+        drunkModeTimePicker.setCurrentCalendar(calendar);
+        drunkModeTimePicker.setCurrentTextView(textView);
+
+        Calendar testingTime = Calendar.getInstance();
+        testingTime.clear();
         hourOfDay = 23;
         minute = 58;
-        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        calendar.set(Calendar.MINUTE, minute);
-        testedTime = calendar.getTime();
+        testingTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        testingTime.set(Calendar.MINUTE, minute);
+        testedTime = testingTime.getTime();
 
-        when(setDrunkModeTime.dateToCalendarFormat(testedTime))
-                .thenReturn((hourOfDay%12 == 0 ? "12" : hourOfDay%12) + ":"
-                        + ((minute < 10) ? "0" + minute : minute)
-                        + (hourOfDay >= 12 ? " PM" : " AM"));
+        strTime = (hourOfDay%12 == 0 ? "12" : hourOfDay%12) + ":" + ((minute < 10) ? "0" + minute : minute) + (hourOfDay >= 12 ? " PM" : " AM");
     }
 
     @Test
     public void testDateToCalendarFormat(){
-        String strTime = (hourOfDay%12 == 0 ? "12" : hourOfDay%12) + ":" + ((minute < 10) ? "0" + minute : minute) + (hourOfDay >= 12 ? " PM" : " AM");
         assertThat(setDrunkModeTime.dateToCalendarFormat(testedTime), is(strTime));
     }
 
     @Test
-    public void testConfirmSetTime(){
-
-    }
-
-    @Test
     public void testOnTimeSet(){
-
+        drunkModeTimePicker.onTimeSet(null, hourOfDay, minute);
+        assertThat(drunkModeTimePicker.getCurrentCalendar(), is(calendar));
+        assertThat(drunkModeTimePicker.getCurrentTextView(), is(textView));
+        verify(textView).setText(strTime);
     }
 
 }

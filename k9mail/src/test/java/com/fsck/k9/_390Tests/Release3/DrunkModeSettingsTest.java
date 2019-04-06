@@ -27,7 +27,7 @@ public class DrunkModeSettingsTest {
 
     @Before
     public void setUp(){
-        drunkModeSettings = mock(DrunkModeSettings.class);
+        drunkModeSettings = new DrunkModeSettings();
         Calendar calendar = Calendar.getInstance();
         calendar.clear();
         hourOfDay = 23;
@@ -35,11 +35,6 @@ public class DrunkModeSettingsTest {
         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         calendar.set(Calendar.MINUTE, minute);
         testedTime = calendar.getTime();
-
-        when(drunkModeSettings.dateToCalendarFormat(testedTime))
-                .thenReturn((hourOfDay%12 == 0 ? "12" : hourOfDay%12) + ":"
-                        + ((minute < 10) ? "0" + minute : minute)
-                        + (hourOfDay >= 12 ? " PM" : " AM"));
     }
 
     @Test
