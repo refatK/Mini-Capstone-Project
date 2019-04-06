@@ -1,6 +1,7 @@
 package _390Tests.Release3;
 
 import android.content.Intent;
+import android.os.SystemClock;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.rule.ActivityTestRule;
 import android.widget.TimePicker;
@@ -27,9 +28,10 @@ import static org.hamcrest.CoreMatchers.not;
 public class SetDrunkModeTimeTest {
 
     @Rule
-    public ActivityTestRule<SetDrunkModeTime> activityTestRule = new ActivityTestRule<>(SetDrunkModeTime.class);
+    public ActivityTestRule<SetDrunkModeTime> activityTestRule = new ActivityTestRule<>(SetDrunkModeTime.class, true, false);
 
     private Intent intent;
+    private final int MILLIS_DELAY = 1500;
 
     @Before
     public void setUp(){
@@ -40,6 +42,11 @@ public class SetDrunkModeTimeTest {
 
     @Test
     public void testChooseNothing(){
+        String startTime = activityTestRule.getActivity().getInitialStartDateStr();
+        String endTime = activityTestRule.getActivity().getInitialEndDateStr();
+        SystemClock.sleep(MILLIS_DELAY);
+        onView(withId(R.id.drunk_mode_start_time)).check(matches(withText(startTime)));
+        onView(withId(R.id.drunk_mode_end_time)).check(matches(withText(endTime)));
         onView(withId(R.id.drunk_mode_set_time_button)).perform(click());
         onView(withText("Time Set!"))
                 .inRoot(withDecorView(not(activityTestRule.getActivity().getWindow().getDecorView())))

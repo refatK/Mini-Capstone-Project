@@ -115,6 +115,14 @@ public class SetDrunkModeTime extends K9Activity {
         return strTime;
     }
 
+    public String getInitialStartDateStr(){
+        return dateToCalendarFormat(drunkModeSettings.getStartTime());
+    }
+
+    public String getInitialEndDateStr(){
+        return dateToCalendarFormat(drunkModeSettings.getEndTime());
+    }
+
     public void saveAndFinish() {
         Date startTime = chosenStartTime.getTime();
         Date endTime = chosenEndTime.getTime();

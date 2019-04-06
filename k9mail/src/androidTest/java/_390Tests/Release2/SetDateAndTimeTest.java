@@ -110,7 +110,7 @@ public class SetDateAndTimeTest {
     @Test
     public void testChooseAfter(){
         strDate = (month + 1) + "/" + day + "/" + (year+1);
-        strTime = (hour%12) + ":" + ((minute < 10) ? "0" + minute : minute) + (hour > 12 ? "PM" : "AM");
+        strTime = (hour%12 == 0 ? "12" : hour%12) + ":" + ((minute < 10) ? "0" + minute : minute) + (hour >= 12 ? "PM" : "AM");
 
         onView(withId(R.id.send_later_set_date_button)).perform(click());
         onView(withClassName((Matchers.equalTo(DatePicker.class.getName())))).perform(PickerActions.setDate(year+1, month + 1, day));

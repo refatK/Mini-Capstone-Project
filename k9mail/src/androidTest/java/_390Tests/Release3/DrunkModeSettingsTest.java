@@ -18,13 +18,12 @@ import static android.support.test.espresso.matcher.PreferenceMatchers.withKey;
 import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
-import static android.support.test.espresso.matcher.ViewMatchers.isNotChecked;
 import static org.hamcrest.CoreMatchers.not;
 
 public class DrunkModeSettingsTest {
 
     @Rule
-    public ActivityTestRule<DrunkModeSettings> activityTestRule = new ActivityTestRule<>(DrunkModeSettings.class);
+    public ActivityTestRule<DrunkModeSettings> activityTestRule = new ActivityTestRule<>(DrunkModeSettings.class, true, false);
 
     private Intent intent;
     private final int MILLIS_DELAY = 1500;
@@ -50,12 +49,12 @@ public class DrunkModeSettingsTest {
     public void testToggleWhenUnchecked(){
         boolean checked = activityTestRule.getActivity().isDrunkChecked();
         SystemClock.sleep(MILLIS_DELAY);
-        if(checked){
+        if(!checked){
             onData(withKey("drunk_mode_settings_time")).check(matches(not(isEnabled())));
             onData(withKey("drunk_mode_settings_toggle")).perform(click());
         }
         onData(withKey("drunk_mode_settings_toggle")).check(matches(not(isChecked())));
-        onData(withKey("drunk_mode_settings_time")).check(matches(not(isEnabled())));
+        onData(withKey("drunk_mode_settings_time")).check(matches(isEnabled()));
     }
 
     //Makes sure that state corresponds to the toggle's state
