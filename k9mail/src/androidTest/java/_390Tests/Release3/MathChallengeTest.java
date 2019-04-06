@@ -80,11 +80,37 @@ public class MathChallengeTest {
         descriptionTextView.check(matches(withText(R.string.drunk_mode_challenge_failed)));
         assertEquals(Color.RED, ((ColorDrawable) description.getBackground()).getColor());
 
-        // wait for activity to finish and verify that was booted to
+        // wait for activity to finish and verify that was booted to specified activity
         SystemClock.sleep(mathChallenge.MILLIS_DELAY_WHEN_CHALLENGE_COMPLETE);
         intended(hasComponent(Accounts.class.getName()));
     }
 
+    @Test
+    public void testRightAnswerMakesPlayerPass() {
+        int solution = mathChallenge.getSolution();
+
+        // answer correctly
+        inputAsAnswer(solution);
+
+        submitButton.perform(click());
+
+        // after submit, make sure UI changes as expected confirming answer was right
+        TextView description = mathChallenge.findViewById(R.id.math_challenge_description);
+        descriptionTextView.check(matches(withText(R.string.drunk_mode_challenge_success)));
+        assertEquals(Color.GREEN, ((ColorDrawable) description.getBackground()).getColor());
+    }
+
+    private void inputAsAnswer(int number) {
+        //put negative sign for negative number
+        if (number < 0) {
+            signNumberPicker.perform(setNumber(1));
+        }
+
+        number = Math.abs(number);
+
+        rightNumberPicker.perform(setNumber(number % 10));
+        leftNumberPicker.perform((setNumber((number / 10) % 10)));
+    }
 
     private static ViewAction setNumber(final int n) {
         return new ViewAction() {

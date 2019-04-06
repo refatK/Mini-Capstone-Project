@@ -171,6 +171,10 @@ public class MathChallenge extends DrunkModeChallengeActivity {
      * Compares users answer to actual equation solution
      */
     public boolean answerIsCorrect() {
+        sign = signInput.getValue() == 0 ? "+" : "-";
+        leftNumber = leftNumberInput.getValue();
+        rightNumber = rightNumberInput.getValue();
+
         int answer = Integer.parseInt(sign + leftNumber + rightNumber);
         return answer == solution;
     }
