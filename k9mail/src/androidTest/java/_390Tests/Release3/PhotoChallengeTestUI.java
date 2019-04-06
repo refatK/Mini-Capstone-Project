@@ -1,9 +1,10 @@
 package _390Tests.Release3;
 
-import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.support.test.espresso.Espresso;
 
 import android.support.test.rule.ActivityTestRule;
@@ -16,9 +17,12 @@ import com.fsck.k9.R;
 import com.fsck.k9.activity.drunk_mode_challenges.PhotoChallenge;
 
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -28,14 +32,13 @@ import static android.support.test.espresso.matcher.ViewMatchers.isClickable;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static java.lang.Thread.sleep;
 
 public class PhotoChallengeTestUI {
     /* Tests that the challenge behaves correctly based on what's being displayed*/
     @Rule
     public ActivityTestRule<PhotoChallenge> photoC =
             new ActivityTestRule<PhotoChallenge>
-                    (PhotoChallenge.class, false, false);
+                    (PhotoChallenge.class, true, false);
     private Button choice1;
     private Button choice2;
     private Button choice3;
@@ -49,10 +52,15 @@ public class PhotoChallengeTestUI {
         Intent pc = new Intent();
         Bundle testPack = new Bundle();
         testPack.putBoolean("test", true);
+        testPack.putBoolean("Practice", true);
         pc.putExtras(testPack);
         photoC.launchActivity(pc);
         setFields(photoC.getActivity());
+    }
 
+    @After
+    public void teardown() {
+        photoC.finishActivity();
     }
 
     private void setFields(PhotoChallenge activity) {
@@ -70,6 +78,7 @@ public class PhotoChallengeTestUI {
     @Test
     public void testChooseFirstWrongAnswer() {
         Espresso.onView(withId(challengePhoto.getId())).check(matches(isDisplayed()));
+        Espresso.onView(withId(prompt.getId())).check(matches(withText(R.string.photo_challenge_prompt)));
         Espresso.onView(withId(choice1.getId())).check(matches(isClickable()));
         Espresso.onView(withId(choice2.getId())).check(matches(isClickable()));
         Espresso.onView(withId(choice3.getId())).check(matches(isClickable()));
@@ -80,6 +89,11 @@ public class PhotoChallengeTestUI {
         Espresso.onView(withId(choice3.getId())).check(matches(withText("Dog")));
         Espresso.onView(withId(choice4.getId())).check(matches(withText("Coyote")));
         Espresso.onView(withId(prompt.getId())).check(matches(withText(R.string.drunk_mode_challenge_failed)));
+
+        assertTrue(photoC.getActivity().checkViewColor(prompt, Color.RED));
+        assertTrue(photoC.getActivity().checkViewColor(choice1, Color.RED));
+        assertTrue(photoC.getActivity().loseSoundPlaying());
+
         Espresso.onView(withId(prompt.getId())).check(matches(hasTextColor(android.R.color.white)));
         Espresso.onView(withId(choice1.getId())).check(selectedDescendantsMatch(hasTextColor(android.R.color.white), withId(choice1.getId())));
         Espresso.onView(withId(choice2.getId())).check(selectedDescendantsMatch(hasTextColor(android.R.color.black), withId(choice2.getId())));
@@ -90,6 +104,7 @@ public class PhotoChallengeTestUI {
     @Test
     public void testChooseSecondWrongAnswer(){
         Espresso.onView(withId(challengePhoto.getId())).check(matches(isDisplayed()));
+        Espresso.onView(withId(prompt.getId())).check(matches(withText(R.string.photo_challenge_prompt)));
         Espresso.onView(withId(choice1.getId())).check(matches(isClickable()));
         Espresso.onView(withId(choice2.getId())).check(matches(isClickable()));
         Espresso.onView(withId(choice3.getId())).check(matches(isClickable()));
@@ -100,6 +115,11 @@ public class PhotoChallengeTestUI {
         Espresso.onView(withId(choice3.getId())).check(matches(withText("Dog")));
         Espresso.onView(withId(choice4.getId())).check(matches(withText("Coyote")));
         Espresso.onView(withId(prompt.getId())).check(matches(withText(R.string.drunk_mode_challenge_failed)));
+
+        assertTrue(photoC.getActivity().checkViewColor(prompt, Color.RED));
+        assertTrue(photoC.getActivity().checkViewColor(choice2, Color.RED));
+        assertTrue(photoC.getActivity().loseSoundPlaying());
+
         Espresso.onView(withId(prompt.getId())).check(matches(hasTextColor(android.R.color.white)));
         Espresso.onView(withId(choice1.getId())).check(selectedDescendantsMatch(hasTextColor(android.R.color.black), withId(choice1.getId())));
         Espresso.onView(withId(choice2.getId())).check(selectedDescendantsMatch(hasTextColor(android.R.color.white), withId(choice2.getId())));
@@ -111,6 +131,7 @@ public class PhotoChallengeTestUI {
     @Test
     public void testChooseThirdWrongAnswer(){
         Espresso.onView(withId(challengePhoto.getId())).check(matches(isDisplayed()));
+        Espresso.onView(withId(prompt.getId())).check(matches(withText(R.string.photo_challenge_prompt)));
         Espresso.onView(withId(choice1.getId())).check(matches(isClickable()));
         Espresso.onView(withId(choice2.getId())).check(matches(isClickable()));
         Espresso.onView(withId(choice3.getId())).check(matches(isClickable()));
@@ -121,6 +142,11 @@ public class PhotoChallengeTestUI {
         Espresso.onView(withId(choice3.getId())).check(matches(withText("Dog")));
         Espresso.onView(withId(choice4.getId())).check(matches(withText("Coyote ❌")));
         Espresso.onView(withId(prompt.getId())).check(matches(withText(R.string.drunk_mode_challenge_failed)));
+
+        assertTrue(photoC.getActivity().checkViewColor(prompt, Color.RED));
+        assertTrue(photoC.getActivity().checkViewColor(choice4, Color.RED));
+        assertTrue(photoC.getActivity().loseSoundPlaying());
+
         Espresso.onView(withId(prompt.getId())).check(matches(hasTextColor(android.R.color.white)));
         Espresso.onView(withId(choice1.getId())).check(selectedDescendantsMatch(hasTextColor(android.R.color.black), withId(choice1.getId())));
         Espresso.onView(withId(choice2.getId())).check(selectedDescendantsMatch(hasTextColor(android.R.color.black), withId(choice2.getId())));
@@ -132,6 +158,7 @@ public class PhotoChallengeTestUI {
     @Test
     public void testChooseCorrectAnswer(){
         Espresso.onView(withId(challengePhoto.getId())).check(matches(isDisplayed()));
+        Espresso.onView(withId(prompt.getId())).check(matches(withText(R.string.photo_challenge_prompt)));
         Espresso.onView(withId(choice1.getId())).check(matches(isClickable()));
         Espresso.onView(withId(choice2.getId())).check(matches(isClickable()));
         Espresso.onView(withId(choice3.getId())).check(matches(isClickable()));
@@ -142,6 +169,11 @@ public class PhotoChallengeTestUI {
         Espresso.onView(withId(choice3.getId())).check(matches(withText("Dog ✔")));
         Espresso.onView(withId(choice4.getId())).check(matches(withText("Coyote")));
         Espresso.onView(withId(prompt.getId())).check(matches(withText(R.string.drunk_mode_challenge_success)));
+
+        assertTrue(photoC.getActivity().checkViewColor(prompt, Color.GREEN));
+        assertTrue(photoC.getActivity().checkViewColor(choice3, Color.GREEN));
+        assertTrue(photoC.getActivity().winSoundPlaying());
+
         Espresso.onView(withId(prompt.getId())).check(matches(hasTextColor(android.R.color.black)));
         Espresso.onView(withId(choice1.getId())).check(selectedDescendantsMatch(hasTextColor(android.R.color.black), withId(choice1.getId())));
         Espresso.onView(withId(choice2.getId())).check(selectedDescendantsMatch(hasTextColor(android.R.color.black), withId(choice2.getId())));
@@ -151,19 +183,21 @@ public class PhotoChallengeTestUI {
     }
     @Test
     public void testTimeout() {
-        Looper.prepare();
         Espresso.onView(withId(challengePhoto.getId())).check(matches(isDisplayed()));
+        Espresso.onView(withId(prompt.getId())).check(matches(withText(R.string.photo_challenge_prompt)));
         Espresso.onView(withId(choice1.getId())).check(matches(isClickable()));
         Espresso.onView(withId(choice2.getId())).check(matches(isClickable()));
         Espresso.onView(withId(choice3.getId())).check(matches(isClickable()));
         Espresso.onView(withId(choice4.getId())).check(matches(isClickable()));
-        try {
-            sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
+        SystemClock.sleep(10000);
+
         Espresso.onView(withId(prompt.getId())).check(matches(withText(timeoutString)));
         Espresso.onView(withId(prompt.getId())).check(matches(hasTextColor(android.R.color.black)));
+
+        assertTrue(photoC.getActivity().checkViewColor(prompt, Color.YELLOW));
+        assertTrue(photoC.getActivity().timeoutSoundPlaying());
+
         Espresso.onView(withId(choice1.getId())).check(selectedDescendantsMatch(hasTextColor(android.R.color.black), withId(choice1.getId())));
         Espresso.onView(withId(choice2.getId())).check(selectedDescendantsMatch(hasTextColor(android.R.color.black), withId(choice2.getId())));
         Espresso.onView(withId(choice3.getId())).check(selectedDescendantsMatch(hasTextColor(android.R.color.black), withId(choice3.getId())));

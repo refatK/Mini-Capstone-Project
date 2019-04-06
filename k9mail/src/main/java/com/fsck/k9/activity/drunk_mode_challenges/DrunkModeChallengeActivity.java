@@ -1,9 +1,11 @@
 package com.fsck.k9.activity.drunk_mode_challenges;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 
 import com.fsck.k9.R;
 import com.fsck.k9.activity.Accounts;
@@ -83,6 +85,23 @@ public abstract class DrunkModeChallengeActivity extends K9Activity {
                 }
             }
         }, millis);
+    }
+
+    public boolean winSoundPlaying() {
+        return winSound.isPlaying();
+    }
+
+    public boolean loseSoundPlaying() {
+        return loseSound.isPlaying();
+    }
+
+    public boolean timeoutSoundPlaying() {
+        return timeoutSound.isPlaying();
+    }
+
+    public boolean checkViewColor(View v, int color) {
+        ColorDrawable background =(ColorDrawable) v.getBackground();
+        return background.getColor() == color;
     }
 
     /**
