@@ -50,9 +50,17 @@ public class ActivateDrunkModeTest {
         assertTrue(activateDrunkModeTest.isItGoTime());
     }
 
+    /*
     @Test
     public void testCorrectActivation() {
-
-    }
+        // check DR triggering is correct
+        activateDrunkModeTest.setStartTime(1080);
+        activateDrunkModeTest.setEndTime(1350);
+        activateDrunkModeTest.setCurrentTime(1200);
+        activateDrunkModeTest.enableTest();
+        activateDrunkModeTest.setDrunkMode(true);
+        
+        //TO DO
+    } */
 
 }
