@@ -72,21 +72,21 @@ public class MathChallengeTest {
         assertEquals(-24, mathChallengeActivity.getSolution());
 
         // check wrong answer
-        mathChallengeActivity.setInputValues("+", 1, 2);
+        mathChallengeActivity.setInputValues(MathChallenge.Sign.POSITIVE, 1, 2);
         assertFalse(mathChallengeActivity.answerIsCorrect());
 
         // check opposite sign answer is still wrong
-        mathChallengeActivity.setInputValues("+", 2, 4);
+        mathChallengeActivity.setInputValues(MathChallenge.Sign.POSITIVE, 2, 4);
         assertFalse(mathChallengeActivity.answerIsCorrect());
 
         // check right answer is correct
-        mathChallengeActivity.setInputValues("-", 2, 4);
+        mathChallengeActivity.setInputValues(MathChallenge.Sign.NEGATIVE, 2, 4);
         assertTrue(mathChallengeActivity.answerIsCorrect());
 
         // check single digit solution case
         mathChallengeActivity.generateEquation(MathChallenge.Operation.ADD, 2, 2);
         assertEquals(4, mathChallengeActivity.getSolution());
-        mathChallengeActivity.setInputValues("+", 0, 4);
+        mathChallengeActivity.setInputValues(MathChallenge.Sign.POSITIVE, 0, 4);
         assertTrue(mathChallengeActivity.answerIsCorrect());
     }
 
@@ -96,10 +96,10 @@ public class MathChallengeTest {
         assertEquals(0, mathChallengeActivity.getSolution());
 
         // sign shouldn't effect answer of zero
-        mathChallengeActivity.setInputValues("+", 0, 0);
+        mathChallengeActivity.setInputValues(MathChallenge.Sign.POSITIVE, 0, 0);
         assertTrue(mathChallengeActivity.answerIsCorrect());
 
-        mathChallengeActivity.setInputValues("-", 0, 0);
+        mathChallengeActivity.setInputValues(MathChallenge.Sign.NEGATIVE, 0, 0);
         assertTrue(mathChallengeActivity.answerIsCorrect());
     }
 }
