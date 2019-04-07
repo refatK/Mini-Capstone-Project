@@ -191,7 +191,7 @@ public class PhotoChallenge extends DrunkModeChallengeActivity {
         prompt.setText(getString(R.string.drunk_mode_challenge_timeout, 10));
         mysteryPicture.setColorFilter(Color.YELLOW, PorterDuff.Mode.DARKEN);
         if(!getIntent().getBooleanExtra("test", true))
-        loseWithDelay(500);
+            loseWithDelay(500);
     }
 
 }

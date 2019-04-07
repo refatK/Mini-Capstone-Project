@@ -99,11 +99,6 @@ public abstract class DrunkModeChallengeActivity extends K9Activity {
         return timeoutSound.isPlaying();
     }
 
-    public boolean checkViewColor(View v, int color) {
-        ColorDrawable background =(ColorDrawable) v.getBackground();
-        return background.getColor() == color;
-    }
-
     /**
      * This should handle the case of the user losing a challenge
      */
