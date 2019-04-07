@@ -34,8 +34,10 @@ public class DrunkModeSettings extends K9PreferenceActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = new Intent(this, ActivateDrunkMode.class);
-        startService(intent);
+        if(!getIntent().getBooleanExtra("testingSettings", false)) {
+            Intent intent = new Intent(this, ActivateDrunkMode.class);
+            startService(intent);
+        }
 
         if(savedInstanceState != null &&
                 savedInstanceState.getBoolean("refresh needed", false)){
@@ -97,14 +99,22 @@ public class DrunkModeSettings extends K9PreferenceActivity {
         daoSession.clear();
     }
 
-    private String dateToCalendarFormat(Date time){
+    public String dateToCalendarFormat(Date time){
         Calendar calendar = Calendar.getInstance();
         calendar.clear();
         calendar.setTime(time);
         int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
-        String strTime = (hourOfDay == 12 ? "12" : hourOfDay%12) + ":" + ((minute < 10) ? "0" + minute : minute) + (hourOfDay >= 12 ? " PM" : " AM");
+        String strTime = (hourOfDay%12 == 0 ? "12" : hourOfDay%12) + ":" + ((minute < 10) ? "0" + minute : minute) + (hourOfDay >= 12 ? " PM" : " AM");
         return strTime;
+    }
+
+    public boolean isDrunkChecked(){
+        return isDrunkCheckbox.isChecked();
+    }
+
+    public boolean isTimeEnabled(){
+        return setDrunkTimePreference.isEnabled();
     }
 
     //private void setupDrunkModeChallengePref(String challengePrefKey, final Class<? extends DrunkModeChallengeActivity> activity) {

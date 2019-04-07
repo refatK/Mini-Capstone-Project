@@ -103,10 +103,11 @@ public class SetDateAndTime extends K9Activity implements DatePickerDialog.OnDat
                             + (chosenDateAndTime.get(Calendar.MONTH) + 1) + "/"
                             + chosenDateAndTime.get(Calendar.DAY_OF_MONTH) + "/"
                             + chosenDateAndTime.get(Calendar.YEAR) + " @ "
-                            + (chosenDateAndTime.get(Calendar.HOUR_OF_DAY) == 12 ? "12" : chosenDateAndTime.get(Calendar.HOUR_OF_DAY)%12) + ":"
+                            + (chosenDateAndTime.get(Calendar.HOUR_OF_DAY)%12 == 0 ?
+                                "12" : chosenDateAndTime.get(Calendar.HOUR_OF_DAY)%12) + ":"
                             + ((chosenDateAndTime.get(Calendar.MINUTE) < 10) ? "0" : "")
                             + (chosenDateAndTime.get(Calendar.MINUTE))
-                            + (chosenDateAndTime.get(Calendar.HOUR_OF_DAY) >= 12 ? " PM" : " AM"),
+                            + (chosenDateAndTime.get(Calendar.HOUR_OF_DAY) >= 12 ? "PM" : "AM"),
                     Toast.LENGTH_SHORT).show();
             if (!getIntent().getBooleanExtra("testingSetDateAndTime", false)) {
                 this.saveAndFinish();
@@ -128,7 +129,7 @@ public class SetDateAndTime extends K9Activity implements DatePickerDialog.OnDat
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        String strTime = (hourOfDay == 12 ? "12" : hourOfDay%12) + ":" + ((minute < 10) ? "0" + minute : minute) + (hourOfDay >= 12 ? "PM" : "AM");
+        String strTime = (hourOfDay%12 == 0 ? "12" : hourOfDay%12) + ":" + ((minute < 10) ? "0" + minute : minute) + (hourOfDay >= 12 ? "PM" : "AM");
         this.chosenDateAndTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
         this.chosenDateAndTime.set(Calendar.MINUTE, minute);
         chosenTimeTextView.setText(strTime);

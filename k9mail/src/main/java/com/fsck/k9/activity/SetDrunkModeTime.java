@@ -105,30 +105,22 @@ public class SetDrunkModeTime extends K9Activity {
 
     }
 
-    public void supersedeChosenStartTimeTextView(TextView startTimeText){
-        this.startTimeText = startTimeText;
-    }
-
-    public void supersedeChosenTimeEndTextView(TextView endTimeText){
-        this.endTimeText = endTimeText;
-    }
-
-    public void supersedeChosenStartTime(Calendar chosenStartTime){
-        this.chosenStartTime = chosenStartTime;
-    }
-
-    public void supersedeChosenEndTime(Calendar chosenEndTime){
-        this.chosenEndTime = chosenEndTime;
-    }
-
-    private String dateToCalendarFormat(Date time){
+    public String dateToCalendarFormat(Date time){
         Calendar calendar = Calendar.getInstance();
         calendar.clear();
         calendar.setTime(time);
         int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
-        String strTime = (hourOfDay == 12 ? "12" : hourOfDay%12) + ":" + ((minute < 10) ? "0" + minute : minute) + (hourOfDay >= 12 ? " PM" : " AM");
+        String strTime = (hourOfDay%12 == 0 ? "12" : hourOfDay%12) + ":" + ((minute < 10) ? "0" + minute : minute) + (hourOfDay >= 12 ? " PM" : " AM");
         return strTime;
+    }
+
+    public String getInitialStartDateStr(){
+        return dateToCalendarFormat(drunkModeSettings.getStartTime());
+    }
+
+    public String getInitialEndDateStr(){
+        return dateToCalendarFormat(drunkModeSettings.getEndTime());
     }
 
     public void saveAndFinish() {
