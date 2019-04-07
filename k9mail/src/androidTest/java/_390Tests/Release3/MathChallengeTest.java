@@ -73,7 +73,7 @@ public class MathChallengeTest {
         // after submit, make sure UI changes as expected confirming answer was right
         assertEquals(getRString(R.string.drunk_mode_challenge_success), descriptionTextView.getText());
         assertEquals(Color.GREEN, ((ColorDrawable) descriptionTextView.getBackground()).getColor());
-        assertTrue(mathChallenge.getWinSound().isPlaying());
+        assertTrue(mathChallenge.winSoundPlaying());
     }
 
     @Test
@@ -90,7 +90,7 @@ public class MathChallengeTest {
         // after submit, make sure UI changes as expected
         assertEquals(getRString(R.string.drunk_mode_challenge_failed), descriptionTextView.getText());
         assertEquals(Color.RED, ((ColorDrawable) descriptionTextView.getBackground()).getColor());
-        assertTrue(mathChallenge.getLoseSound().isPlaying());
+        assertTrue(mathChallenge.loseSoundPlaying());
 
         // wait for activity to finish and verify that user was booted to specified activity
         SystemClock.sleep(MathChallenge.MILLIS_DELAY_WHEN_CHALLENGE_COMPLETE);
@@ -106,8 +106,8 @@ public class MathChallengeTest {
         String timeOutText = getRString(R.string.drunk_mode_challenge_timeout, MathChallenge.SECONDS_TO_COMPLETE_CHALLENGE);
         assertEquals(timeOutText, descriptionTextView.getText());
         assertEquals(Color.YELLOW, ((ColorDrawable) descriptionTextView.getBackground()).getColor());
-        assertTrue(mathChallenge.getTimeoutSound().isPlaying());
-        assertFalse(mathChallenge.getLoseSound().isPlaying());
+        assertTrue(mathChallenge.timeoutSoundPlaying());
+        assertFalse(mathChallenge.loseSoundPlaying());
 
         // wait for activity to finish and verify that user was booted to specified activity
         SystemClock.sleep(MathChallenge.MILLIS_DELAY_WHEN_CHALLENGE_COMPLETE);
@@ -122,7 +122,7 @@ public class MathChallengeTest {
         TextView description = mathChallenge.findViewById(R.id.math_challenge_description);
         assertEquals(getRString(R.string.drunk_mode_challenge_failed), descriptionTextView.getText());
         assertEquals(Color.RED, ((ColorDrawable) description.getBackground()).getColor());
-        assertFalse(mathChallenge.getLoseSound().isPlaying());
+        assertFalse(mathChallenge.loseSoundPlaying());
 
         // wait for activity to finish and verify that user was booted to specified activity
         SystemClock.sleep(MathChallenge.MILLIS_DELAY_WHEN_CHALLENGE_COMPLETE);

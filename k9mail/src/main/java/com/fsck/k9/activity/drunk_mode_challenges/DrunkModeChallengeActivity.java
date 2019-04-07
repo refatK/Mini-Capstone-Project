@@ -115,16 +115,4 @@ public abstract class DrunkModeChallengeActivity extends K9Activity {
      */
     abstract protected void winChallenge();
 
-
-    public MediaPlayer getWinSound() {
-        return winSound;
-    }
-
-    public MediaPlayer getLoseSound() {
-        return loseSound;
-    }
-
-    public MediaPlayer getTimeoutSound() {
-        return timeoutSound;
-    }
 }
