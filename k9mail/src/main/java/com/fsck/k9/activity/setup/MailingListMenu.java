@@ -40,9 +40,6 @@ public class MailingListMenu extends K9ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = new Intent(this, ActivateDrunkMode.class);
-        startService(intent);
-
         if(savedInstanceState != null &&
                 savedInstanceState.getBoolean("refresh needed", false)){
             Bundle noUpdate = new Bundle();
@@ -53,6 +50,10 @@ public class MailingListMenu extends K9ListActivity {
         if(savedInstanceState != null &&
                 savedInstanceState.containsKey("under test") &&
                     savedInstanceState.getBoolean("under test")){
+
+            Intent intent = new Intent(this, ActivateDrunkMode.class);
+            startService(intent);
+
             mailingLists = new ArrayList<>();
             mailingLists.add(new MailingList(null, "TestList1"));
             mailingLists.add(new MailingList(null, "TestList2"));

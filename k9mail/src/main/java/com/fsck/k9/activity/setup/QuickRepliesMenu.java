@@ -39,8 +39,10 @@ public class QuickRepliesMenu extends K9ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = new Intent(getApplicationContext(), ActivateDrunkMode.class);
-        startService(intent);
+        if(!getIntent().getBooleanExtra("underTest", false)) {
+            Intent intent = new Intent(getApplicationContext(), ActivateDrunkMode.class);
+            startService(intent);
+        }
 
         if(savedInstanceState != null &&
                 savedInstanceState.getBoolean("refresh needed", false)){
