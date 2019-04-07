@@ -34,8 +34,10 @@ public class DrunkModeSettings extends K9PreferenceActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = new Intent(this, ActivateDrunkMode.class);
-        startService(intent);
+        if(!getIntent().getBooleanExtra("testingSettings", false)) {
+            Intent intent = new Intent(this, ActivateDrunkMode.class);
+            startService(intent);
+        }
 
         if(savedInstanceState != null &&
                 savedInstanceState.getBoolean("refresh needed", false)){
