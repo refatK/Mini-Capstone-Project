@@ -36,7 +36,12 @@ public class PhotoChallenge extends DrunkModeChallengeActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                pickChallengePhoto();
+                if(getIntent().getBooleanExtra("test", false)) {
+                    pickTestChallengePhoto();
+                }
+                else {
+                    pickChallengePhoto();
+                }
             }
         }).run();
         new Thread(new Runnable() {
@@ -72,6 +77,17 @@ public class PhotoChallenge extends DrunkModeChallengeActivity {
                 .getIdentifier(challengePhoto.getFileName(), null, this.getPackageName());
 
         mysteryPicture.setImageResource(challengePhotoID);
+    }
+    protected void pickTestChallengePhoto() {
+        challengePhoto = new Photo(null, "drawable/dog",
+                "Dog", "Wolf", "Fox", "Dog", "Coyote");
+        mysteryPicture = findViewById(R.id.imageView);
+
+        int challengePhotoID = getResources()
+                .getIdentifier(challengePhoto.getFileName(), null, this.getPackageName());
+
+        mysteryPicture.setImageResource(challengePhotoID);
+
     }
 
     private void setChoices() {
@@ -174,7 +190,8 @@ public class PhotoChallenge extends DrunkModeChallengeActivity {
         prompt.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         prompt.setText(getString(R.string.drunk_mode_challenge_timeout, 10));
         mysteryPicture.setColorFilter(Color.YELLOW, PorterDuff.Mode.DARKEN);
-        loseWithDelay(500);
+        if(!getIntent().getBooleanExtra("test", true))
+            loseWithDelay(500);
     }
 
 }
