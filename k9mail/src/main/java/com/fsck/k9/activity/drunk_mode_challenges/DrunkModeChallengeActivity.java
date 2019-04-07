@@ -1,11 +1,9 @@
 package com.fsck.k9.activity.drunk_mode_challenges;
 
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
 
 import com.fsck.k9.R;
 import com.fsck.k9.activity.Accounts;
@@ -14,7 +12,7 @@ import com.fsck.k9.activity.K9Activity;
 /**
  * Abstraction of a drunk mode challenge. A challenge can either result in a win or loss. The user
  * also loses the challenge if they use the Android back button or home button.
- *
+ * <p>
  * When the user loses, they can move on to the blocked activity, or else they get kicked out to a
  * specified activity
  */
@@ -72,6 +70,7 @@ public abstract class DrunkModeChallengeActivity extends K9Activity {
 
     /**
      * Causes the user to be booted to accounts page (unless practice)
+     *
      * @param millis amount of time before the activity actually ends
      */
     protected void loseWithDelay(int millis) {

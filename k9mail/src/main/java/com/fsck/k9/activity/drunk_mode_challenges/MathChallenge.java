@@ -129,7 +129,7 @@ public class MathChallenge extends DrunkModeChallengeActivity {
         int secondNumber = generateRandomSingleDigitNumber();
 
         //get random operation
-        int randOperationChoice = (int)(Math.random() * Operation.values().length);
+        int randOperationChoice = (int) (Math.random() * Operation.values().length);
         Operation operation = Operation.values()[randOperationChoice];
 
         return generateEquation(operation, firstNumber, secondNumber);
@@ -137,8 +137,9 @@ public class MathChallenge extends DrunkModeChallengeActivity {
 
     /**
      * Generate a simple equation
-     * @param operation the math operation
-     * @param firstNumber number left of operator
+     *
+     * @param operation    the math operation
+     * @param firstNumber  number left of operator
      * @param secondNumber number right of operator
      * @return the equation in string form for view
      */
@@ -161,13 +162,14 @@ public class MathChallenge extends DrunkModeChallengeActivity {
 
     /**
      * Generate an integer in range [-9, 9]
+     *
      * @return the generated number
      */
     private int generateRandomSingleDigitNumber() {
         int amountOfNumbers = 19;
         int offset = -9;
 
-        return (int)(Math.random() * amountOfNumbers) + offset;
+        return (int) (Math.random() * amountOfNumbers) + offset;
     }
 
     /**
@@ -254,7 +256,7 @@ public class MathChallenge extends DrunkModeChallengeActivity {
     }
 
     private void setupAndStartCountdown() {
-        countdownView = (ProgressBar)findViewById(R.id.countdown);
+        countdownView = (ProgressBar) findViewById(R.id.countdown);
 
         final long timeToCompleteMillis = SECONDS_TO_COMPLETE_CHALLENGE * 1000;
         long checkTime = timeToCompleteMillis / 100;
@@ -281,7 +283,8 @@ public class MathChallenge extends DrunkModeChallengeActivity {
 
     /**
      * Calculates percentage of completion in range [0, 100]
-     * @param total the number to reach to be considered complete
+     *
+     * @param total     the number to reach to be considered complete
      * @param remaining the amount left to complete
      */
     public int percentCompleted(long total, long remaining) {
@@ -291,9 +294,10 @@ public class MathChallenge extends DrunkModeChallengeActivity {
 
     /**
      * Change UI visuals to denote something happened
-     * @param primaryColor color that stands out, want user to notice
+     *
+     * @param primaryColor   color that stands out, want user to notice
      * @param secondaryColor color for text on top of primaryColor
-     * @param message message to use in the description area of the view
+     * @param message        message to use in the description area of the view
      */
     private void changeViewOnComplete(int primaryColor, int secondaryColor, String message) {
         descriptionView.setBackgroundColor(primaryColor);

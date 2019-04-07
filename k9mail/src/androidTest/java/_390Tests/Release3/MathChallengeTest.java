@@ -134,6 +134,7 @@ public class MathChallengeTest {
 
     /**
      * Set the value of the number picker inputs to the chosen answer
+     *
      * @param number the value user chooses as the answer
      */
     private void inputAsAnswer(int number) {
@@ -164,6 +165,7 @@ public class MathChallengeTest {
 
     /**
      * Allows us to set the number picker value of a number picker ViewInteraction
+     *
      * @param n the number to set
      */
     private static ViewAction setNumber(final int n) {
