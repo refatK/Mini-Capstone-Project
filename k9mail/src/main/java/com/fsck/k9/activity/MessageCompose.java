@@ -244,12 +244,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(savedInstanceState != null &&
-                savedInstanceState.containsKey("underTest") &&
-                savedInstanceState.getBoolean("underTest")) {
-            Intent intent2 = new Intent(this, ActivateDrunkMode.class);
-            startService(intent2);
-        }
+        Intent intent2 = new Intent(this, ActivateDrunkMode.class);
+        startService(intent2);
 
         if (UpgradeDatabases.actionUpgradeDatabases(this, getIntent())) {
             finish();
