@@ -16,15 +16,19 @@ import android.content.Intent;
 
 public class ActivateDrunkMode extends IntentService {
 
+    private DaoSession daoSession;
+    private DrunkMode drunkModeSettings;
+
     public final int MIDNIGHT = 1440;
+    public int currentTime = 8000;
+    public int startTime = 8000;
+    public int endTime = 8000;
+    //The amount of minutes in a day does not exceed 2880; 8000 is a fallback value
     public final Class<?>[] drunkModeChallenges = {
             PhotoChallenge.class,
             AudioChallenge.class,
             MathChallenge.class
     };
-
-    private DaoSession daoSession;
-    private DrunkMode drunkModeSettings;
 
     public ActivateDrunkMode(){
         super("Drunk Mode");
@@ -39,8 +43,8 @@ public class ActivateDrunkMode extends IntentService {
             }
         });
         drunkMode.run();
-    }
 
+    }
     private void startDrunkMode(){
         daoSession = ((K9)getApplication()).getDaoSession();
         drunkModeSettings = daoSession.getDrunkModeDao().loadByRowId(1);
@@ -53,12 +57,23 @@ public class ActivateDrunkMode extends IntentService {
         }
     }
 
-    private boolean isItGoTime(){
-        Date currentTimeDate = Calendar.getInstance().getTime();
-        int currentTime =currentTimeDate.getHours()*60+currentTimeDate.getMinutes();
+    public boolean isItGoTime(){
         boolean goTime=false;
-        int startTime = drunkModeSettings.getStartTime().getHours()*60+drunkModeSettings.getStartTime().getMinutes();
-        int endTime = drunkModeSettings.getEndTime().getHours()*60+drunkModeSettings.getEndTime().getMinutes();
+        Date currentTimeDate = Calendar.getInstance().getTime();
+        int currentTime = getCurrentTime();
+        int startTime = getStartTime();
+        int endTime = getEndTime();
+
+        //If a test is running, it will set custom times, otherwise this gets the real times if fallback is present
+        // statement checks if any of the values are a fallback
+        if(currentTime==8000 || startTime==8000 || endTime==8000) {
+            setCurrentTime(currentTimeDate.getHours()*60+currentTimeDate.getMinutes());
+            currentTime = getCurrentTime();
+            setStartTime(drunkModeSettings.getStartTime().getHours()*60+drunkModeSettings.getStartTime().getMinutes());
+            startTime = getStartTime();
+            setEndTime(drunkModeSettings.getEndTime().getHours()*60+drunkModeSettings.getEndTime().getMinutes());
+            endTime = getEndTime();
+        }
 
         if (startTime > endTime) {
             if ((startTime <= currentTime && currentTime < MIDNIGHT) || (currentTime < endTime)){
@@ -70,4 +85,29 @@ public class ActivateDrunkMode extends IntentService {
         }
         return goTime;
     }
+
+    public int getCurrentTime() {
+        return currentTime;
+    }
+
+    public void setCurrentTime(int t){
+        this.currentTime = t;
+    }
+
+    public int getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(int t){
+        this.startTime = t;
+    }
+
+    public int getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(int t){
+        this.endTime = t;
+    }
+
 }
