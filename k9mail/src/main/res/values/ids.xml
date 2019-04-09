@@ -14,5 +14,7 @@
     <item type="id" name="reminder_set_time_button"/>
     <item type="id" name="reminder_set_date_button"/>
     <item type="id" name="reminder_set_date_and_time_button"/>
+    <item type="id" name="reminder_date"/>
+    <item type="id" name="reminder_time"/>
 
 </resources>

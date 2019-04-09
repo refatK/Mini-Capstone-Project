@@ -37,6 +37,10 @@ public class SetFollowUpReminderDateAndTime extends K9Activity {
         setDateButton = (Button) findViewById(R.id.reminder_set_date_button);
         setDateAndTimeButton = (Button) findViewById(R.id.reminder_set_date_and_time_button);
 
+        Date dateIncomingIntent = (Date)getIntent().getSerializableExtra("currentDate");
+        chosenDateTextView = (TextView) findViewById(R.id.reminder_date);
+        chosenTimeTextView = (TextView) findViewById(R.id.reminder_time);
+
     }
 
 }
