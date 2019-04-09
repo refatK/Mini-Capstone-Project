@@ -1,14 +1,19 @@
 package com.fsck.k9.activity;
 
+import android.app.DatePickerDialog;
 import android.app.DialogFragment;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.fsck.k9.DaoSession;
 import com.fsck.k9.R;
-import com.fsck.k9.fragment.SendLaterDatePicker;
+import com.fsck.k9.fragment.FollowUpReminderSelectDate;
+import com.fsck.k9.fragment.FollowUpReminderSelectTime;
 import com.fsck.k9.fragment.SendLaterTimePicker;
 
 import java.text.SimpleDateFormat;
@@ -16,7 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 
-public class SetFollowUpReminderDateAndTime extends K9Activity {
+public class SetFollowUpReminderDateAndTime extends K9Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     private Button setTimeButton;
     private Button setDateButton;
@@ -40,7 +45,60 @@ public class SetFollowUpReminderDateAndTime extends K9Activity {
         Date dateIncomingIntent = (Date)getIntent().getSerializableExtra("currentDate");
         chosenDateTextView = (TextView) findViewById(R.id.reminder_date);
         chosenTimeTextView = (TextView) findViewById(R.id.reminder_time);
+        String strDate;
+        String strTime;
+        chosenDateAndTime = Calendar.getInstance();
+
+        if(dateIncomingIntent == null) {
+
+            strDate = "MM/DD/YYYY";
+            chosenDateTextView.setText(strDate);
+
+            strTime = "hh:mm";
+            chosenTimeTextView.setText(strTime);
+
+        }
+        else{
+
+            SimpleDateFormat inputDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+            strDate = inputDateFormat.format(dateIncomingIntent);
+            chosenDateTextView.setText(strDate);
+
+            SimpleDateFormat inputTimeFormat = new SimpleDateFormat ("h:mm a");
+            strTime = inputTimeFormat.format(dateIncomingIntent);
+            chosenTimeTextView.setText(strTime);
+
+            this.chosenDateAndTime.setTime(dateIncomingIntent);
+
+        }
+        setDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment newFragment = new FollowUpReminderSelectDate();
+                newFragment.show(getFragmentManager(), "selectDate");
+            }
+        });
+        setTimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment newFragment = new FollowUpReminderSelectTime();
+                newFragment.show(getFragmentManager(), "selectTime");
+            }
+        });
+        setDateAndTimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+    }
+
+    @Override
+    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
 
     }
 
+    @Override
+    public void onTimeSet(TimePicker timePicker, int i, int i1) {
+
+    }
 }
