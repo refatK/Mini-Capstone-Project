@@ -57,23 +57,31 @@
         android:label="@string/app_name"
         android:resizeableActivity="true"
         android:theme="@style/Theme.K9.Startup">
+        <activity
+            android:name=".activity.setup.SetFollowUpReminderDateAndTime"
+            android:label="@string/title_activity_set_follow_up_reminder_date_and_time"
+            android:parentActivityName=".activity.K9Activity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.fsck.k9.activity.K9Activity" />
+        </activity>
+        <activity
+            android:name=".activity.drunk_mode_challenges.AudioChallenge"
+            android:label="Audio Challenge" />
 
-        <activity android:name=".activity.drunk_mode_challenges.AudioChallenge"
-            android:label="Audio Challenge"/>
-
-		
-        <service 
-			android:name=".service.ActivateDrunkMode"
-			android:exported="true" />
+        <service
+            android:name=".service.ActivateDrunkMode"
+            android:exported="true" />
 
         <activity
             android:name=".activity.drunk_mode_challenges.PhotoChallenge"
-            android:label="@string/title_activity_photo_challenge"
-            android:icon="@drawable/colorful"/>
+            android:icon="@drawable/colorful"
+            android:label="@string/title_activity_photo_challenge" />
         <activity
             android:name=".activity.drunk_mode_challenges.MathChallenge"
             android:configChanges="locale"
-            android:label="@string/title_activity_math_challenge"/>
+            android:label="@string/title_activity_math_challenge" />
+
         <service
             android:name=".SendQuickReplyService"
             android:exported="false" />
@@ -109,11 +117,9 @@
         <activity
             android:name=".activity.setup.RenameMailingList"
             android:theme="@style/Theme.AppCompat.Light.Dialog.Alert" />
-
         <activity android:name=".activity.SetDateAndTime" />
-
-
         <activity android:name=".activity.SetDrunkModeTime" />
+
         <meta-data
             android:name="android.app.default_searchable"
             android:value="com.fsck.k9.activity.Search" />
