@@ -93,8 +93,12 @@ public class SetFollowUpReminderDateAndTime extends K9Activity implements DatePi
     }
 
     @Override
-    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        String strDate = (month + 1) + "/" + dayOfMonth + "/" + year;
+        this.chosenDateAndTime.set(Calendar.YEAR, year);
+        this.chosenDateAndTime.set(Calendar.MONTH, month);
+        this.chosenDateAndTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        chosenDateTextView.setText(strDate);
     }
 
     @Override
