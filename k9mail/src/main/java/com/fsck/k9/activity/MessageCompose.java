@@ -760,6 +760,11 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         performSendAfterChecks();
     }
 
+    private void followUpReminder() {
+        Intent intent = new Intent(this, SetFollowUpReminderDateAndTime.class);
+            intent.putExtra("currentDate",followUpReminderDate);
+    }
+
     private void sendMessageLater(){
         // a scheduled save should be set up with someone to send to
         if (recipientPresenter.checkRecipientsOkForSending()) {
@@ -1185,6 +1190,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 break;
             case R.id.send_later:
                 sendMessageLater();
+                break;
+            case R.id.follow_up_reminder:
+                followUpReminder();
                 break;
             case R.id.save:
                 checkToSaveDraftAndSave();

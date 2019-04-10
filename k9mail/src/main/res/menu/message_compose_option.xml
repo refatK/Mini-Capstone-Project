@@ -87,4 +87,10 @@
         android:title="@string/disable_inline_pgp"
         android:showAsAction="never"
         />
+    <item
+        android:id="@+id/follow_up_reminder"
+        android:alphabeticShortcut="l"
+        android:title="@string/follow_up_reminder_action"
+        android:showAsAction="always"
+        />
 </menu>

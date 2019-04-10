@@ -1330,4 +1330,5 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="title_activity_set_follow_up_reminder_date_and_time">
         SetFollowUpReminderDateAndTime
     </string>
+    <string name="follow_up_reminder_action">Follow-up Reminder</string>
 </resources>
