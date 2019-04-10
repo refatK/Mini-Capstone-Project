@@ -940,6 +940,11 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             MessagingController.getInstance(getApplication()).deleteScheduled(account, scheduledId);
             scheduledId = INVALID_SCHEDULED_ID;
         }
+
+        if (followUpReminderId != INVALID_FOLLOW_UP_REMINDER_ID) {
+            MessagingController.getInstance(getApplication()).deleteFollowUpReminder(account, followUpReminderId);
+            followUpReminderId = INVALID_FOLLOW_UP_REMINDER_ID;
+        }
         internalMessageHandler.sendEmptyMessage(MSG_DISCARDED_DRAFT);
         changesMadeSinceLastSave = false;
         goBack();
