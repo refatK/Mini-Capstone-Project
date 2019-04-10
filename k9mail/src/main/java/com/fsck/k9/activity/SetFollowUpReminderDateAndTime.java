@@ -3,6 +3,7 @@ package com.fsck.k9.activity;
 import android.app.DatePickerDialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -107,5 +108,12 @@ public class SetFollowUpReminderDateAndTime extends K9Activity implements DatePi
         this.chosenDateAndTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
         this.chosenDateAndTime.set(Calendar.MINUTE, minute);
         chosenTimeTextView.setText(strTime);
+    }
+
+    public void saveAndFinish() {
+        Intent data = new Intent();
+        data.putExtra("FollowUpReminderDate", chosenDateAndTime.getTimeInMillis());
+        setResult(RESULT_OK, data);
+        super.finish();
     }
 }
