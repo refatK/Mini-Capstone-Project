@@ -763,6 +763,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     private void followUpReminder() {
         Intent intent = new Intent(this, SetFollowUpReminderDateAndTime.class);
             intent.putExtra("currentDate",followUpReminderDate);
+            startActivityForResult(intent, RESULT_OK);
     }
 
     private void sendMessageLater(){
