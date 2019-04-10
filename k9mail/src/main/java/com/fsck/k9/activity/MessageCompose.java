@@ -146,6 +146,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             "com.fsck.k9.activity.MessageCompose.stateKeySourceMessageProced";
     private static final String STATE_KEY_DRAFT_ID = "com.fsck.k9.activity.MessageCompose.draftId";
     private static final String STATE_KEY_SCHEDULED_ID = "com.fsck.k9.activity.MessageCompose.scheduledId";
+    private static final String STATE_KEY_FOLLOW_UP_REMINDER_ID = "com.fsck.k9.activity.MessageCompose.followUpReminderId";
     private static final String STATE_IDENTITY_CHANGED =
             "com.fsck.k9.activity.MessageCompose.identityChanged";
     private static final String STATE_IDENTITY =
@@ -637,7 +638,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         outState.putBoolean(STATE_KEY_SOURCE_MESSAGE_PROCED, relatedMessageProcessed);
         outState.putLong(STATE_KEY_DRAFT_ID, draftId);
         outState.putLong(STATE_KEY_SCHEDULED_ID, scheduledId);
-        outState.putLong(STATE_KEY_SCHEDULED_ID, followUpReminderId);
+        outState.putLong(STATE_KEY_FOLLOW_UP_REMINDER_ID, followUpReminderId);
         outState.putSerializable(STATE_IDENTITY, identity);
         outState.putBoolean(STATE_IDENTITY_CHANGED, identityChanged);
         outState.putString(STATE_IN_REPLY_TO, repliedToMessageId);
@@ -732,7 +733,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 .setMessageReference(relatedMessageReference)
                 .setDraft(isDraft)
                 .setIsPgpInlineEnabled(cryptoStatus.isPgpInlineModeEnabled())
-                .setScheduledSendDate(scheduledSendDate);
+                .setScheduledSendDate(scheduledSendDate)
+                .setFollowUpReminderDate(followUpReminderDate);
 
         quotedMessagePresenter.builderSetProperties(builder);
 

@@ -47,6 +47,7 @@ public abstract class MessageBuilder {
     private String subject;
     private Date sentDate;
     private Date scheduledSendDate;
+    private Date followUpReminderDate;
     private boolean hideTimeZone;
     private Address[] to;
     private Address[] cc;
@@ -358,6 +359,11 @@ public abstract class MessageBuilder {
 
     public MessageBuilder setScheduledSendDate(Date scheduledSendDate) {
         this.scheduledSendDate = scheduledSendDate;
+        return this;
+    }
+
+    public MessageBuilder setFollowUpReminderDate(Date followUpReminderDate) {
+        this.followUpReminderDate = followUpReminderDate;
         return this;
     }
 
