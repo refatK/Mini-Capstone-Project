@@ -674,6 +674,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
         draftId = savedInstanceState.getLong(STATE_KEY_DRAFT_ID);
         scheduledId = savedInstanceState.getLong(STATE_KEY_SCHEDULED_ID);
+        followUpReminderId = savedInstanceState.getLong(STATE_KEY_FOLLOW_UP_REMINDER_ID);
         identity = (Identity) savedInstanceState.getSerializable(STATE_IDENTITY);
         identityChanged = savedInstanceState.getBoolean(STATE_IDENTITY_CHANGED);
         repliedToMessageId = savedInstanceState.getString(STATE_IN_REPLY_TO);
