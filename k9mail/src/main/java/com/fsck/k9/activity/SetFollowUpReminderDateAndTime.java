@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.fsck.k9.DaoSession;
 import com.fsck.k9.R;
@@ -89,8 +90,36 @@ public class SetFollowUpReminderDateAndTime extends K9Activity implements DatePi
         setDateAndTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setDateAndTime();
             }
         });
+    }
+
+    public void setDateAndTime() {
+        Calendar currentDateAndTime = Calendar.getInstance();
+        long currentDateAndTimeInMilis = currentDateAndTime.getTimeInMillis();
+        long chosenDateAndTimeInMilis = chosenDateAndTime.getTimeInMillis();
+
+        if(chosenDateAndTimeInMilis <= currentDateAndTimeInMilis){
+            Toast.makeText(getApplicationContext(), "Please choose another date.",
+                Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Setting time to: "
+                    + (chosenDateAndTime.get(Calendar.MONTH) + 1) + "/"
+                    + chosenDateAndTime.get(Calendar.DAY_OF_MONTH) + "/"
+                    + chosenDateAndTime.get(Calendar.YEAR) + " @ "
+                    + (chosenDateAndTime.get(Calendar.HOUR_OF_DAY)%12 == 0 ?
+                    "12" : chosenDateAndTime.get(Calendar.HOUR_OF_DAY)%12) + ":"
+                    + ((chosenDateAndTime.get(Calendar.MINUTE) < 10) ? "0" : "")
+                    + (chosenDateAndTime.get(Calendar.MINUTE))
+                    + (chosenDateAndTime.get(Calendar.HOUR_OF_DAY) >= 12 ? "PM" : "AM"),
+                Toast.LENGTH_SHORT).show();
+            if (!getIntent().getBooleanExtra("testingSetFollowUpReminderDateAndTime", false)) {
+                this.saveAndFinish();
+            }
+
+        }
     }
 
     @Override
