@@ -16,7 +16,6 @@ import com.fsck.k9.DaoSession;
 import com.fsck.k9.R;
 import com.fsck.k9.fragment.FollowUpReminderSelectDate;
 import com.fsck.k9.fragment.FollowUpReminderSelectTime;
-import com.fsck.k9.fragment.SendLaterTimePicker;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

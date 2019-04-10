@@ -47,6 +47,7 @@ import android.widget.Toast;
 import com.fsck.k9.Account;
 import com.fsck.k9.Account.MessageFormat;
 import com.fsck.k9.DaoSession;
+import com.fsck.k9.FollowUpReminderEmail;
 import com.fsck.k9.ScheduledEmailDao;
 import com.fsck.k9.ScheduledEmailsToSendNowService;
 import com.fsck.k9.Identity;
@@ -125,6 +126,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
     private static final long INVALID_DRAFT_ID = MessagingController.INVALID_MESSAGE_ID;
     private static final long INVALID_SCHEDULED_ID = MessagingController.INVALID_MESSAGE_ID;
+    private static final long INVALID_FOLLOW_UP_REMINDER_ID = MessagingController.INVALID_MESSAGE_ID;
 
     public static final String ACTION_COMPOSE = "com.fsck.k9.intent.action.COMPOSE";
     public static final String ACTION_REPLY = "com.fsck.k9.intent.action.REPLY";
@@ -211,6 +213,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
      */
     private long draftId = INVALID_DRAFT_ID;
     private long scheduledId = INVALID_SCHEDULED_ID;
+    private long followUpReminderId = INVALID_FOLLOW_UP_REMINDER_ID;
 
     private Action action;
 
@@ -224,6 +227,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
     private DaoSession daoSession;
     private List<MailingList> mailingLists;
+
+    private Date followUpReminderDate;
 
     private Date scheduledSendDate;
     private boolean isScheduledSaved = false;
@@ -632,6 +637,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         outState.putBoolean(STATE_KEY_SOURCE_MESSAGE_PROCED, relatedMessageProcessed);
         outState.putLong(STATE_KEY_DRAFT_ID, draftId);
         outState.putLong(STATE_KEY_SCHEDULED_ID, scheduledId);
+        outState.putLong(STATE_KEY_SCHEDULED_ID, followUpReminderId);
         outState.putSerializable(STATE_IDENTITY, identity);
         outState.putBoolean(STATE_IDENTITY_CHANGED, identityChanged);
         outState.putString(STATE_IN_REPLY_TO, repliedToMessageId);
@@ -798,7 +804,37 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                     scheduledSendDate.getTimeInMillis());
 
         daoSession.getScheduledEmailDao().insertOrReplace(scheduledEmail);
+        
+        //FOLLOW-UP REMINDER
+        Calendar followUpReminderDate = Calendar.getInstance();
+        followUpReminderDate.setTimeInMillis(this.followUpReminderDate.getTime());
 
+        Toast.makeText(getApplicationContext(), "Follow-up Reminder will alert you at: "
+                + (followUpReminderDate.get(Calendar.MONTH) + 1) + "/"
+                + followUpReminderDate.get(Calendar.DAY_OF_MONTH) + "/"
+                + followUpReminderDate.get(Calendar.YEAR) + " @ "
+                + followUpReminderDate.get(Calendar.HOUR_OF_DAY) + ":"
+                + ((followUpReminderDate.get(Calendar.MINUTE) < 10) ? "0" : "")
+                + (followUpReminderDate.get(Calendar.MINUTE)),
+            Toast.LENGTH_LONG).show();
+
+        daoSession = ((K9)getApplication()).getDaoSession();
+        FollowUpReminderEmail followUpReminderEmail = null;
+        List<FollowUpReminderEmail> allFollowUpEmails = daoSession.getFollowUpReminderEmailDao().loadAll();
+
+        for(FollowUpReminderEmail follow: allFollowUpEmails){
+            if(follow.getEmailID() == followUpReminderId) {
+                followUpReminderEmail = follow;
+                follow.setReminderDateTime(followUpReminderDate.getTimeInMillis());
+            }
+        }
+
+        if(followUpReminderEmail == null)
+            followUpReminderEmail = new FollowUpReminderEmail(null, account.getUuid(), followUpReminderId,
+                followUpReminderDate.getTimeInMillis());
+
+        daoSession.getFollowUpReminderEmailDao().insertOrReplace(followUpReminderEmail);
+        //
 
 
         Intent i = new Intent(getApplicationContext(), ScheduledEmailsToSendNowService.class);
