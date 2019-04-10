@@ -1008,6 +1008,18 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             this.scheduledSendDate = new Date(dateInMillis);
             checkToSaveAndConfirmScheduledSave();
         }
+
+        if (resultCode == RESULT_OK) {
+            long dateInMillis = data.getLongExtra("FollowUpReminderDate", 0L);
+
+            if (dateInMillis == 0L) {
+                Toast.makeText(getApplicationContext(), "The follow-up reminder date seems to be invalid",
+                    Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            this.followUpReminderDate = new Date(dateInMillis);
+        }
     }
 
     private void onAccountChosen(Account account, Identity identity) {
