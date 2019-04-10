@@ -102,7 +102,10 @@ public class SetFollowUpReminderDateAndTime extends K9Activity implements DatePi
     }
 
     @Override
-    public void onTimeSet(TimePicker timePicker, int i, int i1) {
-
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        String strTime = (hourOfDay%12 == 0 ? "12" : hourOfDay%12) + ":" + ((minute < 10) ? "0" + minute : minute) + (hourOfDay >= 12 ? "PM" : "AM");
+        this.chosenDateAndTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        this.chosenDateAndTime.set(Calendar.MINUTE, minute);
+        chosenTimeTextView.setText(strTime);
     }
 }
