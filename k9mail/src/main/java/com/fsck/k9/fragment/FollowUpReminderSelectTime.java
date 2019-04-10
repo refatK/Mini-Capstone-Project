@@ -19,7 +19,7 @@ public class FollowUpReminderSelectTime extends DialogFragment {
         int minute = calendar.get(Calendar.MINUTE);
 
         TimePickerDialog tpd = new TimePickerDialog(getActivity(), (SetFollowUpReminderDateAndTime) getActivity(), hour, minute, DateFormat.is24HourFormat(getActivity()));
-        tpd.setTitle("Set Time for Follow-up Reminder");
+        tpd.setTitle("Set Time for Follow-Up Reminder");
         return tpd;
     }
 

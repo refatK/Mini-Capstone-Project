@@ -20,7 +20,7 @@ public class FollowUpReminderSelectDate extends DialogFragment {
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
         DatePickerDialog dpd = new DatePickerDialog(getActivity(), (SetFollowUpReminderDateAndTime)getActivity(), year, month, day);
-        dpd.setTitle("Set Date for Follow-up Reminder");
+        dpd.setTitle("Set Date for Follow-Up Reminder");
         return dpd;
     }
 

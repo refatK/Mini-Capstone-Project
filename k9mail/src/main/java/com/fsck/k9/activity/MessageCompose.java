@@ -818,7 +818,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         Calendar followUpReminderDate = Calendar.getInstance();
         followUpReminderDate.setTimeInMillis(this.followUpReminderDate.getTime());
 
-        Toast.makeText(getApplicationContext(), "Follow-up Reminder will alert you at: "
+        Toast.makeText(getApplicationContext(), "Follow-Up Reminder will alert you at: "
                 + (followUpReminderDate.get(Calendar.MONTH) + 1) + "/"
                 + followUpReminderDate.get(Calendar.DAY_OF_MONTH) + "/"
                 + followUpReminderDate.get(Calendar.YEAR) + " @ "

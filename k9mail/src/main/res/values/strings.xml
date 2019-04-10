@@ -1328,7 +1328,7 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="drunk_mode_math_description">Solve The Math Problem Before Time Runs Out!</string>
     <string name="drunk_mode_math_submit">Submit Answer</string>
     <string name="title_activity_set_follow_up_reminder_date_and_time">
-        SetFollowUpReminderDateAndTime
+         Follow-Up Reminder
     </string>
-    <string name="follow_up_reminder_action">Follow-up Reminder</string>
+    <string name="follow_up_reminder_action">Follow-Up Reminder</string>
 </resources>
