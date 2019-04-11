@@ -2238,14 +2238,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                             getString(R.string.message_saved_scheduled_toast), Toast.LENGTH_LONG).show();
                     sendLaterConfirmationToast();
                     break;
-                case FOLLOW_UP_REMINDER:
-                    followUpReminderId = (Long)  msg.obj;
-
-                    Toast.makeText(
-                        MessageCompose.this,
-                        getString(R.string.follow_up_reminder_toast), Toast.LENGTH_LONG).show();
-                    followUpReminderConfirmationToast();
-                    break;
                 case MSG_DISCARDED_DRAFT:
                     Toast.makeText(
                             MessageCompose.this,
