@@ -3128,6 +3128,25 @@ public class MessagingController {
         }
     }
 
+    public void deleteFollowUpReminder(final Account account, long id) {
+        LocalFolder localFolder = null;
+        try {
+            LocalStore localStore = account.getLocalStore();
+            localFolder = localStore.getFolder(account.getInboxFolderName());
+            localFolder.open(Folder.OPEN_MODE_RW);
+            String uid = localFolder.getMessageUidById(id);
+            if (uid != null) {
+                MessageReference messageReference = new MessageReference(
+                    account.getUuid(), account.getInboxFolderName(), uid, null);
+                deleteMessage(messageReference, null);
+            }
+        } catch (MessagingException me) {
+            Timber.e(me, "Error deleting follow-up reminder");
+        } finally {
+            closeFolder(localFolder);
+        }
+    }
+
     public void deleteThreads(final List<MessageReference> messages) {
         actOnMessagesGroupedByAccountAndFolder(messages, new MessageActor() {
             @Override

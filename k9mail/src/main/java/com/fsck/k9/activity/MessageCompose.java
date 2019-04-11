@@ -47,6 +47,7 @@ import android.widget.Toast;
 import com.fsck.k9.Account;
 import com.fsck.k9.Account.MessageFormat;
 import com.fsck.k9.DaoSession;
+import com.fsck.k9.FollowUpReminderEmail;
 import com.fsck.k9.ScheduledEmailDao;
 import com.fsck.k9.ScheduledEmailsToSendNowService;
 import com.fsck.k9.Identity;
@@ -125,6 +126,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
     private static final long INVALID_DRAFT_ID = MessagingController.INVALID_MESSAGE_ID;
     private static final long INVALID_SCHEDULED_ID = MessagingController.INVALID_MESSAGE_ID;
+    private static final long INVALID_FOLLOW_UP_REMINDER_ID = MessagingController.INVALID_MESSAGE_ID;
 
     public static final String ACTION_COMPOSE = "com.fsck.k9.intent.action.COMPOSE";
     public static final String ACTION_REPLY = "com.fsck.k9.intent.action.REPLY";
@@ -144,6 +146,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             "com.fsck.k9.activity.MessageCompose.stateKeySourceMessageProced";
     private static final String STATE_KEY_DRAFT_ID = "com.fsck.k9.activity.MessageCompose.draftId";
     private static final String STATE_KEY_SCHEDULED_ID = "com.fsck.k9.activity.MessageCompose.scheduledId";
+    private static final String STATE_KEY_FOLLOW_UP_REMINDER_ID = "com.fsck.k9.activity.MessageCompose.followUpReminderId";
     private static final String STATE_IDENTITY_CHANGED =
             "com.fsck.k9.activity.MessageCompose.identityChanged";
     private static final String STATE_IDENTITY =
@@ -161,6 +164,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     public static final int MSG_SAVED_DRAFT = 4;
     private static final int MSG_DISCARDED_DRAFT = 5;
     public static final int MSG_SAVED_SCHEDULED = 6;
+    public static final int FOLLOW_UP_REMINDER = 7;
 
     private static final int REQUEST_MASK_RECIPIENT_PRESENTER = (1 << 8);
     private static final int REQUEST_MASK_LOADER_HELPER = (1 << 9);
@@ -211,6 +215,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
      */
     private long draftId = INVALID_DRAFT_ID;
     private long scheduledId = INVALID_SCHEDULED_ID;
+    private long followUpReminderId = INVALID_FOLLOW_UP_REMINDER_ID;
 
     private Action action;
 
@@ -224,6 +229,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
     private DaoSession daoSession;
     private List<MailingList> mailingLists;
+
+    private Date followUpReminderDate;
 
     private Date scheduledSendDate;
     private boolean isScheduledSaved = false;
@@ -632,6 +639,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         outState.putBoolean(STATE_KEY_SOURCE_MESSAGE_PROCED, relatedMessageProcessed);
         outState.putLong(STATE_KEY_DRAFT_ID, draftId);
         outState.putLong(STATE_KEY_SCHEDULED_ID, scheduledId);
+        outState.putLong(STATE_KEY_FOLLOW_UP_REMINDER_ID, followUpReminderId);
         outState.putSerializable(STATE_IDENTITY, identity);
         outState.putBoolean(STATE_IDENTITY_CHANGED, identityChanged);
         outState.putString(STATE_IN_REPLY_TO, repliedToMessageId);
@@ -667,6 +675,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
         draftId = savedInstanceState.getLong(STATE_KEY_DRAFT_ID);
         scheduledId = savedInstanceState.getLong(STATE_KEY_SCHEDULED_ID);
+        followUpReminderId = savedInstanceState.getLong(STATE_KEY_FOLLOW_UP_REMINDER_ID);
         identity = (Identity) savedInstanceState.getSerializable(STATE_IDENTITY);
         identityChanged = savedInstanceState.getBoolean(STATE_IDENTITY_CHANGED);
         repliedToMessageId = savedInstanceState.getString(STATE_IN_REPLY_TO);
@@ -726,7 +735,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 .setMessageReference(relatedMessageReference)
                 .setDraft(isDraft)
                 .setIsPgpInlineEnabled(cryptoStatus.isPgpInlineModeEnabled())
-                .setScheduledSendDate(scheduledSendDate);
+                .setScheduledSendDate(scheduledSendDate)
+                .setFollowUpReminderDate(followUpReminderDate);
 
         quotedMessagePresenter.builderSetProperties(builder);
 
@@ -751,6 +761,13 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         performSendAfterChecks();
     }
 
+    private void followUpReminder() {
+        Intent intent = new Intent(this, SetFollowUpReminderDateAndTime.class);
+        intent.putExtra("currentDate",followUpReminderDate);
+        isInSubActivity = true;
+        startActivityForResult(intent, FOLLOW_UP_REMINDER);
+    }
+
     private void sendMessageLater(){
         // a scheduled save should be set up with someone to send to
         if (recipientPresenter.checkRecipientsOkForSending()) {
@@ -763,6 +780,46 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         }
         isInSubActivity = true;
         startActivityForResult(intent, MSG_SAVED_SCHEDULED);
+    }
+
+    private void setFollowUpReminderDateAndTime() {
+        if (this.followUpReminderDate == null) {
+            return;
+        }
+        if (this.scheduledSendDate != null && this.followUpReminderDate.before(this.scheduledSendDate)) {
+            Toast.makeText(getApplicationContext(), "Please try again: Follow-up reminder"
+                + " date must be later than scheduled send date", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Calendar followUpReminderDate = Calendar.getInstance();
+        followUpReminderDate.setTimeInMillis(this.followUpReminderDate.getTime());
+
+        Toast.makeText(getApplicationContext(), "Follow-Up Reminder will alert you at: "
+                + (followUpReminderDate.get(Calendar.MONTH) + 1) + "/"
+                + followUpReminderDate.get(Calendar.DAY_OF_MONTH) + "/"
+                + followUpReminderDate.get(Calendar.YEAR) + " @ "
+                + followUpReminderDate.get(Calendar.HOUR_OF_DAY) + ":"
+                + ((followUpReminderDate.get(Calendar.MINUTE) < 10) ? "0" : "")
+                + (followUpReminderDate.get(Calendar.MINUTE)),
+            Toast.LENGTH_LONG).show();
+
+        daoSession = ((K9)getApplication()).getDaoSession();
+        FollowUpReminderEmail followUpReminderEmail = null;
+        List<FollowUpReminderEmail> allFollowUpEmails = daoSession.getFollowUpReminderEmailDao().loadAll();
+
+        for(FollowUpReminderEmail follow: allFollowUpEmails){
+            if(follow.getEmailID() == followUpReminderId) {
+                followUpReminderEmail = follow;
+                follow.setReminderDateTime(followUpReminderDate.getTimeInMillis());
+            }
+        }
+
+        if(followUpReminderEmail == null)
+            followUpReminderEmail = new FollowUpReminderEmail(null, account.getUuid(), followUpReminderId,
+                followUpReminderDate.getTimeInMillis());
+
+        daoSession.getFollowUpReminderEmailDao().insertOrReplace(followUpReminderEmail);
     }
 
     private void sendLaterConfirmationToast() {
@@ -798,7 +855,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                     scheduledSendDate.getTimeInMillis());
 
         daoSession.getScheduledEmailDao().insertOrReplace(scheduledEmail);
-
 
 
         Intent i = new Intent(getApplicationContext(), ScheduledEmailsToSendNowService.class);
@@ -889,6 +945,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             changesMadeSinceLastSave = false;
             setProgressBarIndeterminateVisibility(true);
             currentMessageBuilder.buildAsync(this);
+            setFollowUpReminderDateAndTime();
         }
     }
 
@@ -900,6 +957,11 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         if (scheduledId != INVALID_SCHEDULED_ID) {
             MessagingController.getInstance(getApplication()).deleteScheduled(account, scheduledId);
             scheduledId = INVALID_SCHEDULED_ID;
+        }
+
+        if (followUpReminderId != INVALID_FOLLOW_UP_REMINDER_ID) {
+            MessagingController.getInstance(getApplication()).deleteFollowUpReminder(account, followUpReminderId);
+            followUpReminderId = INVALID_FOLLOW_UP_REMINDER_ID;
         }
         internalMessageHandler.sendEmptyMessage(MSG_DISCARDED_DRAFT);
         changesMadeSinceLastSave = false;
@@ -969,6 +1031,18 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
             this.scheduledSendDate = new Date(dateInMillis);
             checkToSaveAndConfirmScheduledSave();
+        }
+
+        if (resultCode == RESULT_OK && requestCode == FOLLOW_UP_REMINDER) {
+            long dateInMillis = data.getLongExtra("FollowUpReminderDate", 0L);
+
+            if (dateInMillis == 0L) {
+                Toast.makeText(getApplicationContext(), "The follow-up reminder date seems to be invalid",
+                    Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            this.followUpReminderDate = new Date(dateInMillis);
         }
     }
 
@@ -1129,6 +1203,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 break;
             case R.id.send_later:
                 sendMessageLater();
+                break;
+            case R.id.follow_up_reminder:
+                followUpReminder();
                 break;
             case R.id.save:
                 checkToSaveDraftAndSave();
@@ -2167,9 +2244,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                             MessageCompose.this,
                             getString(R.string.message_saved_scheduled_toast), Toast.LENGTH_LONG).show();
                     sendLaterConfirmationToast();
-
+                    setFollowUpReminderDateAndTime();
                     break;
-
                 case MSG_DISCARDED_DRAFT:
                     Toast.makeText(
                             MessageCompose.this,
