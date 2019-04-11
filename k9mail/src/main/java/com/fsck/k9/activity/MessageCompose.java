@@ -945,6 +945,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             changesMadeSinceLastSave = false;
             setProgressBarIndeterminateVisibility(true);
             currentMessageBuilder.buildAsync(this);
+            setFollowUpReminderDateAndTime();
         }
     }
 
@@ -1199,7 +1200,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 break;
             case R.id.send:
                 checkToSendMessage();
-                setFollowUpReminderDateAndTime();
                 break;
             case R.id.send_later:
                 sendMessageLater();
