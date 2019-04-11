@@ -164,6 +164,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     public static final int MSG_SAVED_DRAFT = 4;
     private static final int MSG_DISCARDED_DRAFT = 5;
     public static final int MSG_SAVED_SCHEDULED = 6;
+    public static final int FOLLOW_UP_REMINDER = 7;
 
     private static final int REQUEST_MASK_RECIPIENT_PRESENTER = (1 << 8);
     private static final int REQUEST_MASK_LOADER_HELPER = (1 << 9);
@@ -762,8 +763,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
     private void followUpReminder() {
         Intent intent = new Intent(this, SetFollowUpReminderDateAndTime.class);
-            intent.putExtra("currentDate",followUpReminderDate);
-            startActivityForResult(intent, RESULT_OK);
+        intent.putExtra("currentDate",followUpReminderDate);
+        isInSubActivity = true;
+        startActivityForResult(intent, FOLLOW_UP_REMINDER);
     }
 
     private void sendMessageLater(){
@@ -1021,7 +1023,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             checkToSaveAndConfirmScheduledSave();
         }
 
-        if (resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK && requestCode == FOLLOW_UP_REMINDER) {
             long dateInMillis = data.getLongExtra("FollowUpReminderDate", 0L);
 
             if (dateInMillis == 0L) {
