@@ -782,7 +782,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         startActivityForResult(intent, MSG_SAVED_SCHEDULED);
     }
 
-    private void followUpReminderConfirmationToast() {
+    private void setFollowUpReminderDateAndTime() {
         if (this.followUpReminderDate == null) {
             return;
         }
