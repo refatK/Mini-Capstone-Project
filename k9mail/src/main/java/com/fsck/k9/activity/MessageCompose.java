@@ -782,6 +782,40 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         startActivityForResult(intent, MSG_SAVED_SCHEDULED);
     }
 
+    private void followUpReminderConfirmationToast() {
+        if (this.followUpReminderDate == null) {
+            return;
+        }
+        Calendar followUpReminderDate = Calendar.getInstance();
+        followUpReminderDate.setTimeInMillis(this.followUpReminderDate.getTime());
+
+        Toast.makeText(getApplicationContext(), "Follow-Up Reminder will alert you at: "
+                + (followUpReminderDate.get(Calendar.MONTH) + 1) + "/"
+                + followUpReminderDate.get(Calendar.DAY_OF_MONTH) + "/"
+                + followUpReminderDate.get(Calendar.YEAR) + " @ "
+                + followUpReminderDate.get(Calendar.HOUR_OF_DAY) + ":"
+                + ((followUpReminderDate.get(Calendar.MINUTE) < 10) ? "0" : "")
+                + (followUpReminderDate.get(Calendar.MINUTE)),
+            Toast.LENGTH_LONG).show();
+
+        daoSession = ((K9)getApplication()).getDaoSession();
+        FollowUpReminderEmail followUpReminderEmail = null;
+        List<FollowUpReminderEmail> allFollowUpEmails = daoSession.getFollowUpReminderEmailDao().loadAll();
+
+        for(FollowUpReminderEmail follow: allFollowUpEmails){
+            if(follow.getEmailID() == followUpReminderId) {
+                followUpReminderEmail = follow;
+                follow.setReminderDateTime(followUpReminderDate.getTimeInMillis());
+            }
+        }
+
+        if(followUpReminderEmail == null)
+            followUpReminderEmail = new FollowUpReminderEmail(null, account.getUuid(), followUpReminderId,
+                followUpReminderDate.getTimeInMillis());
+
+        daoSession.getFollowUpReminderEmailDao().insertOrReplace(followUpReminderEmail);
+    }
+
     private void sendLaterConfirmationToast() {
         if (this.scheduledSendDate == null) {
             return;
@@ -815,37 +849,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                     scheduledSendDate.getTimeInMillis());
 
         daoSession.getScheduledEmailDao().insertOrReplace(scheduledEmail);
-        
-        //FOLLOW-UP REMINDER
-        Calendar followUpReminderDate = Calendar.getInstance();
-        followUpReminderDate.setTimeInMillis(this.followUpReminderDate.getTime());
-
-        Toast.makeText(getApplicationContext(), "Follow-Up Reminder will alert you at: "
-                + (followUpReminderDate.get(Calendar.MONTH) + 1) + "/"
-                + followUpReminderDate.get(Calendar.DAY_OF_MONTH) + "/"
-                + followUpReminderDate.get(Calendar.YEAR) + " @ "
-                + followUpReminderDate.get(Calendar.HOUR_OF_DAY) + ":"
-                + ((followUpReminderDate.get(Calendar.MINUTE) < 10) ? "0" : "")
-                + (followUpReminderDate.get(Calendar.MINUTE)),
-            Toast.LENGTH_LONG).show();
-
-        daoSession = ((K9)getApplication()).getDaoSession();
-        FollowUpReminderEmail followUpReminderEmail = null;
-        List<FollowUpReminderEmail> allFollowUpEmails = daoSession.getFollowUpReminderEmailDao().loadAll();
-
-        for(FollowUpReminderEmail follow: allFollowUpEmails){
-            if(follow.getEmailID() == followUpReminderId) {
-                followUpReminderEmail = follow;
-                follow.setReminderDateTime(followUpReminderDate.getTimeInMillis());
-            }
-        }
-
-        if(followUpReminderEmail == null)
-            followUpReminderEmail = new FollowUpReminderEmail(null, account.getUuid(), followUpReminderId,
-                followUpReminderDate.getTimeInMillis());
-
-        daoSession.getFollowUpReminderEmailDao().insertOrReplace(followUpReminderEmail);
-        //
 
 
         Intent i = new Intent(getApplicationContext(), ScheduledEmailsToSendNowService.class);
@@ -2234,9 +2237,15 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                             MessageCompose.this,
                             getString(R.string.message_saved_scheduled_toast), Toast.LENGTH_LONG).show();
                     sendLaterConfirmationToast();
-
                     break;
+                case FOLLOW_UP_REMINDER:
+                    followUpReminderId = (Long)  msg.obj;
 
+                    Toast.makeText(
+                        MessageCompose.this,
+                        getString(R.string.follow_up_reminder_toast), Toast.LENGTH_LONG).show();
+                    followUpReminderConfirmationToast();
+                    break;
                 case MSG_DISCARDED_DRAFT:
                     Toast.makeText(
                             MessageCompose.this,
