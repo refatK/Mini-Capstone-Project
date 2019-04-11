@@ -1199,6 +1199,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 break;
             case R.id.send:
                 checkToSendMessage();
+                setFollowUpReminderDateAndTime();
                 break;
             case R.id.send_later:
                 sendMessageLater();
@@ -2243,6 +2244,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                             MessageCompose.this,
                             getString(R.string.message_saved_scheduled_toast), Toast.LENGTH_LONG).show();
                     sendLaterConfirmationToast();
+                    setFollowUpReminderDateAndTime();
                     break;
                 case MSG_DISCARDED_DRAFT:
                     Toast.makeText(
