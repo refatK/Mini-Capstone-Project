@@ -786,10 +786,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         if (this.followUpReminderDate == null) {
             return;
         }
-        if (this.scheduledSendDate == null) {
-            return;
-        }
-        if (this.followUpReminderDate.before(this.scheduledSendDate)) {
+        if (this.scheduledSendDate != null && this.followUpReminderDate.before(this.scheduledSendDate)) {
             Toast.makeText(getApplicationContext(), "Please try again: Follow-up reminder"
                 + " date must be later than scheduled send date", Toast.LENGTH_LONG).show();
             return;
