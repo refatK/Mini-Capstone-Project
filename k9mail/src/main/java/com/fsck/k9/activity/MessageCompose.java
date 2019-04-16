@@ -786,6 +786,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         if (this.followUpReminderDate == null) {
             return;
         }
+
         if (this.scheduledSendDate != null && this.followUpReminderDate.before(this.scheduledSendDate)) {
             Toast.makeText(getApplicationContext(), "Please try again: Follow-up reminder"
                 + " date must be later than scheduled send date", Toast.LENGTH_LONG).show();
@@ -1928,6 +1929,11 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
     @Override
     public void onMessageBuildSuccess(MimeMessage message, boolean isDraft) {
+
+        // set Uid of message
+        // followUpReminderId = message.getMessageId();
+
+
         if (isDraft) {
             changesMadeSinceLastSave = false;
             currentMessageBuilder = null;
@@ -1940,6 +1946,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             boolean saveRemotely = recipientPresenter.shouldSaveRemotely();
 
             if (isScheduledSaved) {
+                //// save message id if reminder wanted for scheduled message
+                //setFollowUpReminderDateAndTime();
                 new SaveScheduledMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
                         message, draftId, saveRemotely, scheduledId).execute();
             } else if (action != Action.EDIT_SCHEDULED) { // never do draft saves in scheduled message editor
@@ -1954,6 +1962,10 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             }
         } else {
             currentMessageBuilder = null;
+
+            //// save message id if reminder wanted
+            //setFollowUpReminderDateAndTime();
+
             new SendMessageTask(getApplicationContext(), account, contacts, message,
                     draftId != INVALID_DRAFT_ID ? draftId : null, relatedMessageReference).execute();
             finish();
