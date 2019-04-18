@@ -42,6 +42,9 @@ public class FollowUpNotificationsListAdapter extends ArrayAdapter<FollowUpNotif
         TextView dateTime = (TextView) listItem.findViewById(R.id.follow_up_time);
         dateTime.setText("ON: "+fNH.getDateTime());
 
+        TextView subject = (TextView) listItem.findViewById(R.id.subject_follow_up);
+        subject.setText("SUBJECT: "+fNH.getSubject());
+
         return listItem;
 
     }

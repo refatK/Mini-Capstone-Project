@@ -14,10 +14,19 @@
         android:textSize="16sp"
         android:textStyle="bold"/>
     <TextView
+        android:id="@+id/subject_follow_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:layout_below="@+id/recipients"
+        android:textSize="14sp"
+        android:singleLine="true"
+        android:ellipsize="end"/>
+    <TextView
         android:id="@+id/follow_up_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/recipients"
+        android:layout_below="@id/subject_follow_up"
         android:textColor="@android:color/holo_red_dark"
         android:textSize="14sp"
         android:textStyle="italic"/>
