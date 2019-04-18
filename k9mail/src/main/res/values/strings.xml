@@ -307,6 +307,7 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="message_discarded_toast">Message discarded</string>
     <string name="message_saved_draft_toast">Message saved as draft</string>
     <string name="message_saved_scheduled_toast">Message saved in scheduled</string>
+    <string name="follow_up_reminder_toast">Follow-Up Reminder was created</string>
 
     <string name="global_settings_flag_label">Show stars</string>
     <string name="global_settings_flag_summary">Stars indicate flagged messages</string>
@@ -1327,4 +1328,8 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="title_activity_math_challenge">Math Challenge</string>
     <string name="drunk_mode_math_description">Solve The Math Problem Before Time Runs Out!</string>
     <string name="drunk_mode_math_submit">Submit Answer</string>
+    <string name="title_activity_set_follow_up_reminder_date_and_time">
+         Follow-Up Reminder
+    </string>
+    <string name="follow_up_reminder_action">Follow-Up Reminder</string>
 </resources>

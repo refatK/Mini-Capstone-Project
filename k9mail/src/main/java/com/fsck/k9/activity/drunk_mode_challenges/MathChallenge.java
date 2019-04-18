@@ -18,6 +18,7 @@ import org.jetbrains.annotations.TestOnly;
 
 /**
  * Drunk mode challenge where the user must solve a random math equation in a given time frame
+ * to win
  */
 public class MathChallenge extends DrunkModeChallengeActivity {
 
@@ -36,10 +37,28 @@ public class MathChallenge extends DrunkModeChallengeActivity {
         }
     }
 
-    public final String[] MATH_SIGNS = {"+", "-"};
-    public final int SECONDS_TO_COMPLETE_CHALLENGE = 20;
-    public final int MILLIS_DELAY_WHEN_CHALLENGE_COMPLETE = 1500;
-    public final int COMPLETED_PROGRESS_VALUE = 100;
+    public enum Sign {
+        POSITIVE("+"), NEGATIVE("-");
+
+        private String symbol;
+
+        Sign(String symbol) {
+            this.symbol = symbol;
+        }
+
+        @Override
+        public String toString() {
+            return this.symbol;
+        }
+
+        public static String[] toStringArray() {
+            return new String[]{POSITIVE.toString(), NEGATIVE.toString()};
+        }
+    }
+
+    public static final int SECONDS_TO_COMPLETE_CHALLENGE = 20;
+    public static final int MILLIS_DELAY_WHEN_CHALLENGE_COMPLETE = 1500;
+    public static final int COMPLETED_PROGRESS_VALUE = 100;
 
     private ProgressBar countdownView;
     private TextView equationView;
@@ -50,7 +69,7 @@ public class MathChallenge extends DrunkModeChallengeActivity {
     private NumberPicker rightNumberInput;
     private Button submitAnswerButton;
 
-    private String sign = "+";
+    private Sign sign = Sign.POSITIVE;
     private int leftNumber;
     private int rightNumber;
 
@@ -80,15 +99,12 @@ public class MathChallenge extends DrunkModeChallengeActivity {
         rightNumberInput = (NumberPicker) findViewById(R.id.right_number);
 
         // set the number pickers up
-        setupMathInput(signInput, MATH_SIGNS.length - 1);
+        setupMathInput(signInput, Sign.values().length - 1);
         setupMathInput(leftNumberInput, 9);
         setupMathInput(rightNumberInput, 9);
 
         // makes the input use array as display instead
-        signInput.setDisplayedValues(MATH_SIGNS);
-
-        // setup user input
-        setupInputChangeListeners();
+        signInput.setDisplayedValues(Sign.toStringArray());
 
 
         // Setup submit button
@@ -113,7 +129,7 @@ public class MathChallenge extends DrunkModeChallengeActivity {
         int secondNumber = generateRandomSingleDigitNumber();
 
         //get random operation
-        int randOperationChoice = (int)(Math.random() * Operation.values().length);
+        int randOperationChoice = (int) (Math.random() * Operation.values().length);
         Operation operation = Operation.values()[randOperationChoice];
 
         return generateEquation(operation, firstNumber, secondNumber);
@@ -121,8 +137,9 @@ public class MathChallenge extends DrunkModeChallengeActivity {
 
     /**
      * Generate a simple equation
-     * @param operation the math operation
-     * @param firstNumber number left of operator
+     *
+     * @param operation    the math operation
+     * @param firstNumber  number left of operator
      * @param secondNumber number right of operator
      * @return the equation in string form for view
      */
@@ -145,19 +162,22 @@ public class MathChallenge extends DrunkModeChallengeActivity {
 
     /**
      * Generate an integer in range [-9, 9]
+     *
      * @return the generated number
      */
     private int generateRandomSingleDigitNumber() {
         int amountOfNumbers = 19;
         int offset = -9;
 
-        return (int)(Math.random() * amountOfNumbers) + offset;
+        return (int) (Math.random() * amountOfNumbers) + offset;
     }
 
     /**
      * Handles what happens depending on if users answer was correct or not
      */
     private void checkSolution() {
+        setAnswerValuesFromInput();
+
         if (answerIsCorrect()) {
             winSound.start();
             winChallenge();
@@ -168,10 +188,19 @@ public class MathChallenge extends DrunkModeChallengeActivity {
     }
 
     /**
+     * Instead of using listeners, set value when needed
+     */
+    public void setAnswerValuesFromInput() {
+        sign = Sign.values()[signInput.getValue()];
+        leftNumber = leftNumberInput.getValue();
+        rightNumber = rightNumberInput.getValue();
+    }
+
+    /**
      * Compares users answer to actual equation solution
      */
     public boolean answerIsCorrect() {
-        int answer = Integer.parseInt(sign + leftNumber + rightNumber);
+        int answer = Integer.parseInt(sign.toString() + leftNumber + rightNumber);
         return answer == solution;
     }
 
@@ -221,33 +250,13 @@ public class MathChallenge extends DrunkModeChallengeActivity {
 
         // makes the scroll wheel input wrap if min/max val reached
         picker.setWrapSelectorWheel(true);
-    }
 
-    private void setupInputChangeListeners() {
-        signInput.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal){
-                sign = MATH_SIGNS[newVal];
-            }
-        });
-
-        leftNumberInput.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal){
-                leftNumber = newVal;
-            }
-        });
-
-        rightNumberInput.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal){
-                rightNumber = newVal;
-            }
-        });
+        // initially set value to start position
+        picker.setValue(0);
     }
 
     private void setupAndStartCountdown() {
-        countdownView = (ProgressBar)findViewById(R.id.countdown);
+        countdownView = (ProgressBar) findViewById(R.id.countdown);
 
         final long timeToCompleteMillis = SECONDS_TO_COMPLETE_CHALLENGE * 1000;
         long checkTime = timeToCompleteMillis / 100;
@@ -274,7 +283,8 @@ public class MathChallenge extends DrunkModeChallengeActivity {
 
     /**
      * Calculates percentage of completion in range [0, 100]
-     * @param total the number to reach to be considered complete
+     *
+     * @param total     the number to reach to be considered complete
      * @param remaining the amount left to complete
      */
     public int percentCompleted(long total, long remaining) {
@@ -284,9 +294,10 @@ public class MathChallenge extends DrunkModeChallengeActivity {
 
     /**
      * Change UI visuals to denote something happened
-     * @param primaryColor color that stands out, want user to notice
+     *
+     * @param primaryColor   color that stands out, want user to notice
      * @param secondaryColor color for text on top of primaryColor
-     * @param message message to use in the description area of the view
+     * @param message        message to use in the description area of the view
      */
     private void changeViewOnComplete(int primaryColor, int secondaryColor, String message) {
         descriptionView.setBackgroundColor(primaryColor);
@@ -311,7 +322,7 @@ public class MathChallenge extends DrunkModeChallengeActivity {
      * for testing
      */
     @TestOnly
-    public void setInputValues(String sign, int leftNumber, int rightNumber) {
+    public void setInputValues(Sign sign, int leftNumber, int rightNumber) {
         this.sign = sign;
         this.leftNumber = leftNumber;
         this.rightNumber = rightNumber;
