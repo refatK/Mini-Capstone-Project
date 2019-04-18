@@ -19,7 +19,7 @@ public class FollowUpNotificationsListAdapter extends ArrayAdapter<FollowUpNotif
     private Context context;
     private List<FollowUpNotificationHolder> fnHolders = new ArrayList<>();
 
-    public FollowUpNotificationsListAdapter(@NonNull Context context, ArrayList<FollowUpNotificationHolder> fnHolders) {
+    public FollowUpNotificationsListAdapter(@NonNull Context context,@LayoutRes int itemLayout, List<FollowUpNotificationHolder> fnHolders) {
         super(context, 0, fnHolders);
         this.context = context;
         this.fnHolders = fnHolders;

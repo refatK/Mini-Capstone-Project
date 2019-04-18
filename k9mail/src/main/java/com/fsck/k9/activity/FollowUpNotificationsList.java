@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import com.fsck.k9.Account;
 import com.fsck.k9.FollowUpNotificationHolder;
+import com.fsck.k9.FollowUpNotificationsListAdapter;
 import com.fsck.k9.FollowUpReminderEmail;
 import com.fsck.k9.K9;
 import com.fsck.k9.MailingList;
@@ -51,17 +52,17 @@ public class FollowUpNotificationsList extends K9ListActivity {
         followups = daoSession.getFollowUpReminderEmailDao().loadAll();
 
         for(FollowUpReminderEmail fN : followups) {
-            makeMessageStrings(fN);
+            followupHolders.add(retrieveHolder(fN));
         }
 
-        setContentView(R.layout.activity_mailing_list_menu);
+        setContentView(R.layout.activity_follow_up_notifications_list);
 
 
-        ArrayAdapter<FollowUpNotificationHolder> mailingListAdapter = new ArrayAdapter<FollowUpNotificationHolder>(
-                this, R.layout.mailing_list_menu_item,  followupHolders);
+        ArrayAdapter<FollowUpNotificationHolder> mailingListAdapter = new FollowUpNotificationsListAdapter(
+                this, R.layout.follow_up_notification_list_item,  followupHolders);
         setListAdapter(mailingListAdapter);
     }
-    public FollowUpNotificationHolder makeMessageStrings(FollowUpReminderEmail fN){
+    public FollowUpNotificationHolder retrieveHolder(FollowUpReminderEmail fN){
         String accountID = fN.getAccountID();
         Preferences prefs = Preferences.getPreferences(getApplicationContext());
         Account account = prefs.getAccount(accountID);
