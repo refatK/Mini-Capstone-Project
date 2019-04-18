@@ -3,9 +3,13 @@ package com.fsck.k9.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 
 import com.fsck.k9.Account;
 import com.fsck.k9.FollowUpNotificationHolder;
@@ -16,6 +20,8 @@ import com.fsck.k9.MailingList;
 import com.fsck.k9.Preferences;
 import com.fsck.k9.R;
 import com.fsck.k9.activity.setup.AddMailingList;
+import com.fsck.k9.activity.setup.EditQuickReply;
+import com.fsck.k9.activity.setup.RemoveQuickReply;
 import com.fsck.k9.mail.Message;
 import com.fsck.k9.mail.MessagingException;
 import com.fsck.k9.mailstore.LocalStore;
@@ -58,9 +64,10 @@ public class FollowUpNotificationsList extends K9ListActivity {
         setContentView(R.layout.activity_follow_up_notifications_list);
 
 
-        ArrayAdapter<FollowUpNotificationHolder> mailingListAdapter = new FollowUpNotificationsListAdapter(
+        ArrayAdapter<FollowUpNotificationHolder> fNListAdapter = new FollowUpNotificationsListAdapter(
                 this, R.layout.follow_up_notification_list_item,  followupHolders);
-        setListAdapter(mailingListAdapter);
+        setListAdapter(fNListAdapter);
+        registerForContextMenu(getListView());
     }
     public FollowUpNotificationHolder retrieveHolder(FollowUpReminderEmail fN){
         String accountID = fN.getAccountID();
@@ -78,6 +85,35 @@ public class FollowUpNotificationsList extends K9ListActivity {
         }
         return makeFNHolder(message, fN);
 
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+
+        getMenuInflater().inflate(R.menu.follow_up_notifications_context_menu, menu);
+        super.onCreateContextMenu(menu, v, menuInfo);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        switch(item.getItemId())
+        {
+            case R.id.reschedule:{
+                Intent intent = new Intent(this, SetFollowUpReminderDateAndTime.class);
+                intent.putExtra("fNId", followups.get(info.position).getId());
+                startActivity(intent);
+                break;
+            }
+
+            case R.id.delete:{
+
+            }
+
+        }
+        return super.onContextItemSelected(item);
     }
 
 }
