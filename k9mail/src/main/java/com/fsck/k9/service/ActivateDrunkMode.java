@@ -82,7 +82,7 @@ public class ActivateDrunkMode extends IntentService {
         boolean goTime=false;
         Date currentTimeDate = Calendar.getInstance().getTime();
 
-        if(!isItTestTime()) {
+        if(isItNotTestTime()) {
             this.currentTime=(currentTimeDate.getHours()*60+currentTimeDate.getMinutes());
             this.startTime=(drunkModeSettings.getStartTime().getHours()*60+drunkModeSettings.getStartTime().getMinutes());
             this.endTime=(drunkModeSettings.getEndTime().getHours()*60+drunkModeSettings.getEndTime().getMinutes());
@@ -99,9 +99,9 @@ public class ActivateDrunkMode extends IntentService {
         return goTime;
     }
 
-    public boolean isItTestTime(){
+    public boolean isItNotTestTime(){
         return (currentTime==INVALID_TIME || startTime==INVALID_TIME || endTime==INVALID_TIME);
-        //If a test is running, it will set custom times, otherwise this is false
+        //If a test is running, it will set custom times, otherwise this is true
         // and must grab real times
     }
 
