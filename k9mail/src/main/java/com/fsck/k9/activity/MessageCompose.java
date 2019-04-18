@@ -22,7 +22,6 @@ import android.content.IntentSender;
 import android.content.IntentSender.SendIntentException;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -56,7 +55,7 @@ import com.fsck.k9.Preferences;
 import com.fsck.k9.R;
 import com.fsck.k9.ScheduledEmail;
 import com.fsck.k9.activity.MessageLoaderHelper.MessageLoaderCallbacks;
-import com.fsck.k9.activity.compose.SendMessageTask;
+import com.fsck.k9.activity.compose.message_task.SendMessageTask;
 import com.fsck.k9.service.ActivateDrunkMode;
 import com.fsck.k9.activity.compose.AttachmentPresenter;
 import com.fsck.k9.activity.compose.AttachmentPresenter.AttachmentMvpView;
@@ -70,8 +69,8 @@ import com.fsck.k9.activity.compose.PgpInlineDialog.OnOpenPgpInlineChangeListene
 import com.fsck.k9.activity.compose.PgpSignOnlyDialog.OnOpenPgpSignOnlyChangeListener;
 import com.fsck.k9.activity.compose.RecipientMvpView;
 import com.fsck.k9.activity.compose.RecipientPresenter;
-import com.fsck.k9.activity.compose.SaveDraftMessageTask;
-import com.fsck.k9.activity.compose.SaveScheduledMessageTask;
+import com.fsck.k9.activity.compose.message_task.SaveDraftMessageTask;
+import com.fsck.k9.activity.compose.message_task.SaveScheduledMessageTask;
 import com.fsck.k9.activity.misc.Attachment;
 import com.fsck.k9.controller.MessagingController;
 import com.fsck.k9.controller.MessagingListener;
@@ -1900,7 +1899,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         } else {
             currentMessageBuilder = null;
             new SendMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
-                    message, draftId != INVALID_DRAFT_ID ? draftId : null, false, relatedMessageReference).execute();
+                    message, draftId != INVALID_DRAFT_ID ? draftId : null, relatedMessageReference).execute();
             finish();
         }
     }
@@ -2176,6 +2175,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                     setProgressBarIndeterminateVisibility(false);
                     break;
                 case MSG_SENT:
+                    draftId = INVALID_DRAFT_ID;
+
                     followUpReminderId = (Long) msg.obj;
                     setFollowUpReminderDateAndTime();
                     break;

@@ -1,4 +1,4 @@
-package com.fsck.k9.activity.compose;
+package com.fsck.k9.activity.compose.message_task;
 
 import android.content.Context;
 import android.os.Handler;
@@ -14,20 +14,21 @@ import com.fsck.k9.mailstore.LocalMessage;
 
 import timber.log.Timber;
 
-public class SendMessageTask extends SaveMessageTask {
+public class SendMessageTask extends MessageTask {
 
 
     private MessageReference messageReference;
     private long localMessageId;
 
     public SendMessageTask(Context context, Account account, Contacts contacts,
-                    Handler handler, Message message, Long draftId, boolean saveRemotely, MessageReference messageReference) {
-        super(context, account, contacts, handler, message, draftId, saveRemotely);
+                    Handler handler, Message message, Long draftId, MessageReference messageReference) {
+
+        super(context, account, contacts, handler, message, draftId);
         this.messageReference = messageReference;
     }
 
     @Override
-    protected void saveMessage() {
+    protected void handleMessageTask() {
         try {
             contacts.markAsContacted(message.getRecipients(Message.RecipientType.TO));
             contacts.markAsContacted(message.getRecipients(Message.RecipientType.CC));
@@ -43,7 +44,6 @@ public class SendMessageTask extends SaveMessageTask {
         System.err.println("454545 localID + " + localMessageId);
 
         if (draftId != null) {
-            // TODO set draft id to invalid in MessageCompose!
             MessagingController.getInstance(context).deleteDraft(account, draftId);
         }
 
