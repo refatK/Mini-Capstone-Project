@@ -9,4 +9,12 @@ public class FollowUpNotificationHolder {
     public static FollowUpNotificationHolder makeFNHolder(Message message) {
         return null;
     }
+
+    public String getRecipientAddresses() {
+        return recipientAddresses;
+    }
+
+    public String getDateTime() {
+        return dateTime;
+    }
 }

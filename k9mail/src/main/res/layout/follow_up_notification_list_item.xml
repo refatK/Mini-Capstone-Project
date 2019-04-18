@@ -5,16 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <TextView
-        android:id="@+id/recipient"
+        android:id="@+id/recipients"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/blue"
-        android:paddingBottom="8dp"
-        android:text="top"/>
+        android:paddingBottom="8dp"/>
     <TextView
+        android:id="@+id/follow_up_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/recipient"
-        android:textColor="@android:color/holo_red_dark"
-        android:text="bottom"/>
+        android:layout_below="@id/recipients"
+        android:textColor="@android:color/holo_red_dark"/>
 </RelativeLayout>
