@@ -57,11 +57,11 @@ public class FollowUpNotificationsList extends K9ListActivity {
         setContentView(R.layout.activity_mailing_list_menu);
 
 
-        ArrayAdapter<String> mailingListAdapter = new ArrayAdapter<String>(
-                this, R.layout.mailing_list_menu_item,  followupReminderStrings);
+        ArrayAdapter<FollowUpNotificationHolder> mailingListAdapter = new ArrayAdapter<FollowUpNotificationHolder>(
+                this, R.layout.mailing_list_menu_item,  followupHolders);
         setListAdapter(mailingListAdapter);
     }
-    public void makeMessageStrings(FollowUpReminderEmail fN){
+    public FollowUpNotificationHolder makeMessageStrings(FollowUpReminderEmail fN){
         String accountID = fN.getAccountID();
         Preferences prefs = Preferences.getPreferences(getApplicationContext());
         Account account = prefs.getAccount(accountID);

@@ -7,6 +7,6 @@ public class FollowUpNotificationHolder {
     private String dateTime;
 
     public static FollowUpNotificationHolder makeFNHolder(Message message) {
-
+        return null;
     }
 }
