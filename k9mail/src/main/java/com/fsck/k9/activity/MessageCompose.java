@@ -22,7 +22,6 @@ import android.content.IntentSender;
 import android.content.IntentSender.SendIntentException;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -47,7 +46,7 @@ import android.widget.Toast;
 import com.fsck.k9.Account;
 import com.fsck.k9.Account.MessageFormat;
 import com.fsck.k9.DaoSession;
-import com.fsck.k9.ScheduledEmailDao;
+import com.fsck.k9.FollowUpReminderEmail;
 import com.fsck.k9.ScheduledEmailsToSendNowService;
 import com.fsck.k9.Identity;
 import com.fsck.k9.K9;
@@ -56,6 +55,8 @@ import com.fsck.k9.Preferences;
 import com.fsck.k9.R;
 import com.fsck.k9.ScheduledEmail;
 import com.fsck.k9.activity.MessageLoaderHelper.MessageLoaderCallbacks;
+import com.fsck.k9.activity.compose.message_task.SendMessageTask;
+import com.fsck.k9.service.ActivateDrunkMode;
 import com.fsck.k9.activity.compose.AttachmentPresenter;
 import com.fsck.k9.activity.compose.AttachmentPresenter.AttachmentMvpView;
 import com.fsck.k9.activity.compose.AttachmentPresenter.WaitingAction;
@@ -68,8 +69,8 @@ import com.fsck.k9.activity.compose.PgpInlineDialog.OnOpenPgpInlineChangeListene
 import com.fsck.k9.activity.compose.PgpSignOnlyDialog.OnOpenPgpSignOnlyChangeListener;
 import com.fsck.k9.activity.compose.RecipientMvpView;
 import com.fsck.k9.activity.compose.RecipientPresenter;
-import com.fsck.k9.activity.compose.SaveDraftMessageTask;
-import com.fsck.k9.activity.compose.SaveScheduledMessageTask;
+import com.fsck.k9.activity.compose.message_task.SaveDraftMessageTask;
+import com.fsck.k9.activity.compose.message_task.SaveScheduledMessageTask;
 import com.fsck.k9.activity.misc.Attachment;
 import com.fsck.k9.controller.MessagingController;
 import com.fsck.k9.controller.MessagingListener;
@@ -87,7 +88,6 @@ import com.fsck.k9.helper.Utility;
 import com.fsck.k9.mail.Address;
 import com.fsck.k9.mail.Flag;
 import com.fsck.k9.mail.Message;
-import com.fsck.k9.mail.Message.RecipientType;
 import com.fsck.k9.mail.MessagingException;
 import com.fsck.k9.mail.internet.MimeMessage;
 import com.fsck.k9.mailstore.LocalMessage;
@@ -124,6 +124,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
     private static final long INVALID_DRAFT_ID = MessagingController.INVALID_MESSAGE_ID;
     private static final long INVALID_SCHEDULED_ID = MessagingController.INVALID_MESSAGE_ID;
+    private static final long INVALID_FOLLOW_UP_REMINDER_ID = MessagingController.INVALID_MESSAGE_ID;
 
     public static final String ACTION_COMPOSE = "com.fsck.k9.intent.action.COMPOSE";
     public static final String ACTION_REPLY = "com.fsck.k9.intent.action.REPLY";
@@ -143,6 +144,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             "com.fsck.k9.activity.MessageCompose.stateKeySourceMessageProced";
     private static final String STATE_KEY_DRAFT_ID = "com.fsck.k9.activity.MessageCompose.draftId";
     private static final String STATE_KEY_SCHEDULED_ID = "com.fsck.k9.activity.MessageCompose.scheduledId";
+    private static final String STATE_KEY_FOLLOW_UP_REMINDER_ID = "com.fsck.k9.activity.MessageCompose.followUpReminderId";
     private static final String STATE_IDENTITY_CHANGED =
             "com.fsck.k9.activity.MessageCompose.identityChanged";
     private static final String STATE_IDENTITY =
@@ -160,6 +162,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     public static final int MSG_SAVED_DRAFT = 4;
     private static final int MSG_DISCARDED_DRAFT = 5;
     public static final int MSG_SAVED_SCHEDULED = 6;
+    public static final int FOLLOW_UP_REMINDER = 7;
+    public static final int MSG_SENT = 8;
 
     private static final int REQUEST_MASK_RECIPIENT_PRESENTER = (1 << 8);
     private static final int REQUEST_MASK_LOADER_HELPER = (1 << 9);
@@ -201,7 +205,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     private MessageBuilder currentMessageBuilder;
     private boolean finishAfterDraftSaved;
     private boolean alreadyNotifiedUserOfEmptySubject = false;
-    private boolean changesMadeSinceLastSave = false;
+    public boolean changesMadeSinceLastSave = false;
 
     /**
      * The database ID of this message's draft. This is used when saving drafts so the message in
@@ -210,6 +214,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
      */
     private long draftId = INVALID_DRAFT_ID;
     private long scheduledId = INVALID_SCHEDULED_ID;
+    private long followUpReminderId = INVALID_FOLLOW_UP_REMINDER_ID;
 
     private Action action;
 
@@ -223,6 +228,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
     private DaoSession daoSession;
     private List<MailingList> mailingLists;
+
+    private Date followUpReminderDate;
 
     private Date scheduledSendDate;
     private boolean isScheduledSaved = false;
@@ -242,6 +249,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent2 = new Intent(this, ActivateDrunkMode.class);
+        startService(intent2);
 
         if (UpgradeDatabases.actionUpgradeDatabases(this, getIntent())) {
             finish();
@@ -272,10 +282,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         final Intent intent = getIntent();
 
         // Hide view if sending a quick reply so the user has no access to the view inputs
-        if (intent.getStringExtra(EXTRA_QUICK_REPLY_MESSAGE) != null) {
-            LinearLayout wholeView = (LinearLayout) findViewById(R.id.full_compose_view);
-            wholeView.setVisibility(View.INVISIBLE);
-        }
+        LinearLayout wholeView = (LinearLayout) findViewById(R.id.full_compose_view);
+        hideView(wholeView);
 
         String messageReferenceString = intent.getStringExtra(EXTRA_MESSAGE_REFERENCE);
         relatedMessageReference = MessageReference.parse(messageReferenceString);
@@ -372,7 +380,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
              */
             relatedMessageProcessed = savedInstanceState.getBoolean(STATE_KEY_SOURCE_MESSAGE_PROCED, false);
         }
-
 
         if (initFromIntent(intent)) {
             action = Action.COMPOSE;
@@ -631,6 +638,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         outState.putBoolean(STATE_KEY_SOURCE_MESSAGE_PROCED, relatedMessageProcessed);
         outState.putLong(STATE_KEY_DRAFT_ID, draftId);
         outState.putLong(STATE_KEY_SCHEDULED_ID, scheduledId);
+        outState.putLong(STATE_KEY_FOLLOW_UP_REMINDER_ID, followUpReminderId);
         outState.putSerializable(STATE_IDENTITY, identity);
         outState.putBoolean(STATE_IDENTITY_CHANGED, identityChanged);
         outState.putString(STATE_IN_REPLY_TO, repliedToMessageId);
@@ -666,6 +674,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
         draftId = savedInstanceState.getLong(STATE_KEY_DRAFT_ID);
         scheduledId = savedInstanceState.getLong(STATE_KEY_SCHEDULED_ID);
+        followUpReminderId = savedInstanceState.getLong(STATE_KEY_FOLLOW_UP_REMINDER_ID);
         identity = (Identity) savedInstanceState.getSerializable(STATE_IDENTITY);
         identityChanged = savedInstanceState.getBoolean(STATE_IDENTITY_CHANGED);
         repliedToMessageId = savedInstanceState.getString(STATE_IN_REPLY_TO);
@@ -725,7 +734,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 .setMessageReference(relatedMessageReference)
                 .setDraft(isDraft)
                 .setIsPgpInlineEnabled(cryptoStatus.isPgpInlineModeEnabled())
-                .setScheduledSendDate(scheduledSendDate);
+                .setScheduledSendDate(scheduledSendDate)
+                .setFollowUpReminderDate(followUpReminderDate);
 
         quotedMessagePresenter.builderSetProperties(builder);
 
@@ -750,6 +760,13 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         performSendAfterChecks();
     }
 
+    private void followUpReminder() {
+        Intent intent = new Intent(this, SetFollowUpReminderDateAndTime.class);
+        intent.putExtra("currentDate",followUpReminderDate);
+        isInSubActivity = true;
+        startActivityForResult(intent, FOLLOW_UP_REMINDER);
+    }
+
     private void sendMessageLater(){
         // a scheduled save should be set up with someone to send to
         if (recipientPresenter.checkRecipientsOkForSending()) {
@@ -762,6 +779,49 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         }
         isInSubActivity = true;
         startActivityForResult(intent, MSG_SAVED_SCHEDULED);
+    }
+
+    private void setFollowUpReminderDateAndTime() {
+
+        // if a follow up date wasn't set, user didn't want followups
+        if (this.followUpReminderDate == null) {
+            return;
+        }
+
+        if (this.scheduledSendDate != null && this.followUpReminderDate.before(this.scheduledSendDate)) {
+            Toast.makeText(getApplicationContext(), "Please try again: Follow-up reminder"
+                + " date must be later than scheduled send date", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Calendar followUpReminderDate = Calendar.getInstance();
+        followUpReminderDate.setTimeInMillis(this.followUpReminderDate.getTime());
+
+        Toast.makeText(getApplicationContext(), "Follow-Up Reminder will alert you at: "
+                + (followUpReminderDate.get(Calendar.MONTH) + 1) + "/"
+                + followUpReminderDate.get(Calendar.DAY_OF_MONTH) + "/"
+                + followUpReminderDate.get(Calendar.YEAR) + " @ "
+                + followUpReminderDate.get(Calendar.HOUR_OF_DAY) + ":"
+                + ((followUpReminderDate.get(Calendar.MINUTE) < 10) ? "0" : "")
+                + (followUpReminderDate.get(Calendar.MINUTE)),
+            Toast.LENGTH_LONG).show();
+
+        daoSession = ((K9)getApplication()).getDaoSession();
+        FollowUpReminderEmail followUpReminderEmail = null;
+        List<FollowUpReminderEmail> allFollowUpEmails = daoSession.getFollowUpReminderEmailDao().loadAll();
+
+        for(FollowUpReminderEmail follow: allFollowUpEmails){
+            if(follow.getEmailID() == followUpReminderId) {
+                followUpReminderEmail = follow;
+                follow.setReminderDateTime(followUpReminderDate.getTimeInMillis());
+            }
+        }
+
+        if(followUpReminderEmail == null) // new reminder
+            followUpReminderEmail = new FollowUpReminderEmail(null, account.getUuid(), followUpReminderId,
+                followUpReminderDate.getTimeInMillis());
+
+        daoSession.getFollowUpReminderEmailDao().insertOrReplace(followUpReminderEmail);
     }
 
     private void sendLaterConfirmationToast() {
@@ -797,7 +857,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                     scheduledSendDate.getTimeInMillis());
 
         daoSession.getScheduledEmailDao().insertOrReplace(scheduledEmail);
-
 
 
         Intent i = new Intent(getApplicationContext(), ScheduledEmailsToSendNowService.class);
@@ -900,6 +959,11 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             MessagingController.getInstance(getApplication()).deleteScheduled(account, scheduledId);
             scheduledId = INVALID_SCHEDULED_ID;
         }
+
+        if (followUpReminderId != INVALID_FOLLOW_UP_REMINDER_ID) {
+            MessagingController.getInstance(getApplication()).deleteFollowUpReminder(account, followUpReminderId);
+            followUpReminderId = INVALID_FOLLOW_UP_REMINDER_ID;
+        }
         internalMessageHandler.sendEmptyMessage(MSG_DISCARDED_DRAFT);
         changesMadeSinceLastSave = false;
         goBack();
@@ -968,6 +1032,18 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
             this.scheduledSendDate = new Date(dateInMillis);
             checkToSaveAndConfirmScheduledSave();
+        }
+
+        if (resultCode == RESULT_OK && requestCode == FOLLOW_UP_REMINDER) {
+            long dateInMillis = data.getLongExtra("FollowUpReminderDate", 0L);
+
+            if (dateInMillis == 0L) {
+                Toast.makeText(getApplicationContext(), "The follow-up reminder date seems to be invalid",
+                    Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            this.followUpReminderDate = new Date(dateInMillis);
         }
     }
 
@@ -1128,6 +1204,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 break;
             case R.id.send_later:
                 sendMessageLater();
+                break;
+            case R.id.follow_up_reminder:
+                followUpReminder();
                 break;
             case R.id.save:
                 checkToSaveDraftAndSave();
@@ -1499,7 +1578,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
         // If its a quick reply, set the message body and send immediatley
         String predefinedMessageBody = getIntent().getStringExtra(EXTRA_QUICK_REPLY_MESSAGE);
-        if (predefinedMessageBody!=null) {
+        if (predefinedMessageBody != null) {
             messageContentView.setCharacters(predefinedMessageBody);
             handleQuickReplySend();
         }
@@ -1511,7 +1590,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
      * Once a quick reply is set up, handle the sending with a delay so that it is ensured
      * the message is fully prepped to send
      */
-    private void handleQuickReplySend() {
+    public void handleQuickReplySend() {
         new Handler().postDelayed(new Runnable() {
             public void run() {
                 Timber.d("Sending Quick Reply");
@@ -1520,7 +1599,16 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         }, 2000);
     }
 
-    
+    /**
+     * When doing a quick reply, hide the specified view
+     * @param view The view that is set to be hidden
+     */
+    public void hideView(View view) {
+        if (getIntent().getStringExtra(EXTRA_QUICK_REPLY_MESSAGE) != null) {
+            view.setVisibility(View.INVISIBLE);
+        }
+    }
+
     private void processMessageToForward(MessageViewInfo messageViewInfo, boolean asAttachment) throws MessagingException {
         Message message = messageViewInfo.message;
 
@@ -1720,64 +1808,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         return this.mailingLists;
     }
 
-    static class SendMessageTask extends AsyncTask<Void, Void, Void> {
-        final Context context;
-        final Account account;
-        final Contacts contacts;
-        final Message message;
-        final Long draftId;
-        final MessageReference messageReference;
-
-        SendMessageTask(Context context, Account account, Contacts contacts, Message message,
-                Long draftId, MessageReference messageReference) {
-            this.context = context;
-            this.account = account;
-            this.contacts = contacts;
-            this.message = message;
-            this.draftId = draftId;
-            this.messageReference = messageReference;
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                contacts.markAsContacted(message.getRecipients(RecipientType.TO));
-                contacts.markAsContacted(message.getRecipients(RecipientType.CC));
-                contacts.markAsContacted(message.getRecipients(RecipientType.BCC));
-                updateReferencedMessage();
-            } catch (Exception e) {
-                Timber.e(e, "Failed to mark contact as contacted.");
-            }
-
-            MessagingController.getInstance(context).sendMessage(account, message, null);
-            if (draftId != null) {
-                // TODO set draft id to invalid in MessageCompose!
-                MessagingController.getInstance(context).deleteDraft(account, draftId);
-            }
-
-            return null;
-        }
-
-        /**
-         * Set the flag on the referenced message(indicated we replied / forwarded the message)
-         **/
-        private void updateReferencedMessage() {
-            if (messageReference != null && messageReference.getFlag() != null) {
-                Timber.d("Setting referenced message (%s, %s) flag to %s",
-                        messageReference.getFolderName(),
-                        messageReference.getUid(),
-                        messageReference.getFlag());
-
-                final Account account = Preferences.getPreferences(context)
-                        .getAccount(messageReference.getAccountUuid());
-                final String folderName = messageReference.getFolderName();
-                final String sourceMessageUid = messageReference.getUid();
-                MessagingController.getInstance(context).setFlag(account, folderName,
-                        sourceMessageUid, messageReference.getFlag(), true);
-            }
-        }
-    }
-
     /**
      * When we are launched with an intent that includes a mailto: URI, we can actually
      * gather quite a few of our message fields from it.
@@ -1841,6 +1871,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
     @Override
     public void onMessageBuildSuccess(MimeMessage message, boolean isDraft) {
+
         if (isDraft) {
             changesMadeSinceLastSave = false;
             currentMessageBuilder = null;
@@ -1867,8 +1898,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             }
         } else {
             currentMessageBuilder = null;
-            new SendMessageTask(getApplicationContext(), account, contacts, message,
-                    draftId != INVALID_DRAFT_ID ? draftId : null, relatedMessageReference).execute();
+            new SendMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
+                    message, draftId != INVALID_DRAFT_ID ? draftId : null, relatedMessageReference).execute();
             finish();
         }
     }
@@ -2143,6 +2174,12 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 case MSG_PROGRESS_OFF:
                     setProgressBarIndeterminateVisibility(false);
                     break;
+                case MSG_SENT:
+                    draftId = INVALID_DRAFT_ID;
+
+                    followUpReminderId = (Long) msg.obj;
+                    setFollowUpReminderDateAndTime();
+                    break;
                 case MSG_SAVED_DRAFT:
                     draftId = (Long) msg.obj;
                     Toast.makeText(
@@ -2157,9 +2194,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                             MessageCompose.this,
                             getString(R.string.message_saved_scheduled_toast), Toast.LENGTH_LONG).show();
                     sendLaterConfirmationToast();
-
+                    followUpReminderId = scheduledId;
+                    setFollowUpReminderDateAndTime();
                     break;
-
                 case MSG_DISCARDED_DRAFT:
                     Toast.makeText(
                             MessageCompose.this,

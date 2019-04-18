@@ -2466,18 +2466,19 @@ public class MessagingController {
      * Stores the given message in the Outbox and starts a sendPendingMessages command to
      * attempt to send the message.
      */
-    public void sendMessage(final Account account,
-            final Message message,
-            MessagingListener listener) {
+    public LocalMessage sendMessage(final Account account, final Message message, MessagingListener listener) {
         try {
             LocalStore localStore = account.getLocalStore();
             LocalFolder localFolder = localStore.getFolder(account.getOutboxFolderName());
             localFolder.open(Folder.OPEN_MODE_RW);
             localFolder.appendMessages(Collections.singletonList(message));
-            Message localMessage = localFolder.getMessage(message.getUid());
+            LocalMessage localMessage = localFolder.getMessage(message.getUid());
             localMessage.setFlag(Flag.X_DOWNLOADED_FULL, true);
             localFolder.close();
             sendPendingMessages(account, listener);
+
+            return localMessage;
+
         } catch (Exception e) {
             /*
             for (MessagingListener l : getListeners())
@@ -2487,6 +2488,7 @@ public class MessagingController {
             */
             Timber.e(e, "Error sending message");
 
+            return null;
         }
     }
 
@@ -3123,6 +3125,25 @@ public class MessagingController {
             }
         } catch (MessagingException me) {
             Timber.e(me, "Error deleting scheduled");
+        } finally {
+            closeFolder(localFolder);
+        }
+    }
+
+    public void deleteFollowUpReminder(final Account account, long id) {
+        LocalFolder localFolder = null;
+        try {
+            LocalStore localStore = account.getLocalStore();
+            localFolder = localStore.getFolder(account.getInboxFolderName());
+            localFolder.open(Folder.OPEN_MODE_RW);
+            String uid = localFolder.getMessageUidById(id);
+            if (uid != null) {
+                MessageReference messageReference = new MessageReference(
+                    account.getUuid(), account.getInboxFolderName(), uid, null);
+                deleteMessage(messageReference, null);
+            }
+        } catch (MessagingException me) {
+            Timber.e(me, "Error deleting follow-up reminder");
         } finally {
             closeFolder(localFolder);
         }

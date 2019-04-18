@@ -57,9 +57,37 @@
         android:label="@string/app_name"
         android:resizeableActivity="true"
         android:theme="@style/Theme.K9.Startup">
+        <activity
+            android:name=".activity.FollowUpNotificationsList"
+            android:label="@string/title_activity_follow_up_notifications_list"></activity>
+        <activity
+            android:name=".activity.SetFollowUpReminderDateAndTime"
+            android:label="@string/title_activity_set_follow_up_reminder_date_and_time"
+            android:parentActivityName=".activity.K9Activity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.fsck.k9.activity.K9Activity" />
+        </activity>
+        <activity
+            android:name=".activity.drunk_mode_challenges.AudioChallenge"
+            android:label="Audio Challenge" />
+
+        <service
+            android:name=".service.ActivateDrunkMode"
+            android:exported="true" />
+
+        <activity
+            android:name=".activity.drunk_mode_challenges.PhotoChallenge"
+            android:icon="@drawable/colorful"
+            android:label="@string/title_activity_photo_challenge" />
+        <activity
+            android:name=".activity.drunk_mode_challenges.MathChallenge"
+            android:configChanges="locale"
+            android:label="@string/title_activity_math_challenge" />
+
         <service
             android:name=".SendQuickReplyService"
-            android:exported="false"></service>
+            android:exported="false" />
 
         <activity android:name=".activity.setup.QuickRepliesMenu" />
         <activity
@@ -93,6 +121,8 @@
             android:name=".activity.setup.RenameMailingList"
             android:theme="@style/Theme.AppCompat.Light.Dialog.Alert" />
         <activity android:name=".activity.SetDateAndTime" />
+        <activity android:name=".activity.SetDrunkModeTime" />
+
         <meta-data
             android:name="android.app.default_searchable"
             android:value="com.fsck.k9.activity.Search" />
@@ -190,6 +220,9 @@
             android:launchMode="singleTop"
             android:taskAffinity=""
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name=".activity.setup.DrunkModeSettings"
+            android:label="@string/drunk_mode_settings_title" />
         <!--
  XXX Note: this activity is hacked to ignore config changes,
              since it doesn't currently handle them correctly in code.

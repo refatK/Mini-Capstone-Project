@@ -41,9 +41,9 @@ import com.fsck.k9.R;
 import com.fsck.k9.activity.compose.MessageActions;
 import com.fsck.k9.activity.misc.SwipeGestureDetector.OnSwipeGestureListener;
 import com.fsck.k9.activity.setup.AccountSettings;
+import com.fsck.k9.activity.setup.DrunkModeSettings;
 import com.fsck.k9.activity.setup.FolderSettings;
 import com.fsck.k9.activity.setup.MailingListMenu;
-import com.fsck.k9.activity.setup.QuickRepliesMenu;
 import com.fsck.k9.activity.setup.Prefs;
 import com.fsck.k9.fragment.MessageListFragment;
 import com.fsck.k9.fragment.MessageListFragment.MessageListFragmentListener;
@@ -943,6 +943,10 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
                 updateMenu();
                 return true;
             }
+            case R.id.follow_up:
+                Intent viewFollowUps = new Intent(this, FollowUpNotificationsList.class);
+                startActivity(viewFollowUps);
+                break;
             case R.id.mailing_lists:
                 Intent viewMailLists = new Intent(this, MailingListMenu.class);
                 startActivity(viewMailLists);

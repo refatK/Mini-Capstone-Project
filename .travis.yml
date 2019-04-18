@@ -14,11 +14,17 @@ before_install:
 
 jobs:
   include:
+# Build and test in one script for faster builds
+  - stage: Build And Test
+    language: android
+    script: ./gradlew assemble testDebugUnitTest
+
+#=============================================
+
 # Build of app without any other task
   - stage: Build
     language: android
     script: ./gradlew assemble
-
 
 # After Build, run all our tests first to ensure we wrote passing tests
   - stage: Test
@@ -27,8 +33,8 @@ jobs:
     script: ./gradlew testDebugUnitTest -Prelease="one"
   - script: ./gradlew testDebugUnitTest -Prelease="two"
     name: "Release Two Tests"
-#  - script: ./gradlew testDebugUnitTest -Prelease="three"
-#    name: "Release Three Tests"
+  - script: ./gradlew testDebugUnitTest -Prelease="three"
+    name: "Release Three Tests"
   - script: ./gradlew test
     name: "All Tests"
 
@@ -39,11 +45,18 @@ jobs:
     script: ./gradlew lint
   - script: ./gradlew jacocoTestReport
     name: "Test Coverage"
-    after_success:
-    - bash <(curl -s https://codecov.io/bash)
+
+
 stages:
-  - Build
-  - Test
+# Non-master builds (need speed)
+  - name: Build And Test
+    if: branch != master
+
+# For master builds
+  - name: Build
+    if: branch = master
+  - name: Test
+    if: branch = master
   - name: Analyze
     if: branch = master
 

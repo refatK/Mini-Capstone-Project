@@ -365,6 +365,11 @@
     </PreferenceScreen>
 
     <PreferenceScreen
+        android:title = "Drunk Mode"
+        android:key="drunk_mode_settings">
+    </PreferenceScreen>
+
+    <PreferenceScreen
         android:title="@string/miscellaneous_preferences"
         android:key="misc_preferences">
 
