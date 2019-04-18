@@ -1,36 +1,25 @@
 package com.fsck.k9.activity;
 
 import org.junit.Before;
-import org.junit.After;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.robolectric.Robolectric;
 
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.os.Handler;
 
 import com.fsck.k9.Account;
-import com.fsck.k9.K9RobolectricTestRunner;
-import com.fsck.k9.Preferences;
-import com.fsck.k9.activity.compose.MessageActions;
 import com.fsck.k9.activity.compose.RecipientPresenter;
-import com.fsck.k9.activity.compose.SaveScheduledMessageTask;
+import com.fsck.k9.activity.compose.message_task.SaveScheduledMessageTask;
 import org.junit.runner.RunWith;
 import static junit.framework.Assert.assertEquals;
 
-import com.fsck.k9.controller.MessagingController;
 import com.fsck.k9.helper.Contacts;
 import com.fsck.k9.mail.internet.MimeMessage;
-import timber.log.Timber;
-import java.util.UUID;
 
 
 @RunWith(MockitoJUnitRunner.class)
