@@ -73,8 +73,9 @@ public class FollowUpNotificationsList extends K9ListActivity {
                     getApplicationContext()).getLocalMessageByMessageId(emailID);
         } catch (MessagingException e) {
             e.printStackTrace();
+            return new FollowUpNotificationHolder();
         }
-        return makeFNHolder(message);
+        return makeFNHolder(message, fN);
 
     }
 
