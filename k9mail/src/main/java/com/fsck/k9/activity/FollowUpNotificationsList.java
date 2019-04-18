@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 
 import com.fsck.k9.Account;
+import com.fsck.k9.FollowUpNotificationHolder;
 import com.fsck.k9.FollowUpReminderEmail;
 import com.fsck.k9.K9;
 import com.fsck.k9.MailingList;
@@ -18,6 +19,7 @@ import com.fsck.k9.mail.Message;
 import com.fsck.k9.mail.MessagingException;
 import com.fsck.k9.mailstore.LocalStore;
 import com.fsck.k9.service.ActivateDrunkMode;
+import static com.fsck.k9.FollowUpNotificationHolder.makeFNHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +29,9 @@ import static com.fsck.k9.K9.daoSession;
 public class FollowUpNotificationsList extends K9ListActivity {
 
     private List<FollowUpReminderEmail> followups;
-    private List<String> followupReminderStrings = new ArrayList<String>();
+    private List<FollowUpNotificationHolder> followupHolders
+            = new ArrayList<FollowUpNotificationHolder>();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +74,7 @@ public class FollowUpNotificationsList extends K9ListActivity {
         } catch (MessagingException e) {
             e.printStackTrace();
         }
+        return makeFNHolder(message);
 
     }
 
