@@ -82,9 +82,7 @@ public class ActivateDrunkMode extends IntentService {
         boolean goTime=false;
         Date currentTimeDate = Calendar.getInstance().getTime();
 
-        //If a test is running, it will set custom times, otherwise this gets the real times if fallback is present
-        // statement checks if any of the values are a fallback
-        if(currentTime==INVALID_TIME || startTime==INVALID_TIME || endTime==INVALID_TIME) {
+        if(!isItTestTime()) {
             this.currentTime=(currentTimeDate.getHours()*60+currentTimeDate.getMinutes());
             this.startTime=(drunkModeSettings.getStartTime().getHours()*60+drunkModeSettings.getStartTime().getMinutes());
             this.endTime=(drunkModeSettings.getEndTime().getHours()*60+drunkModeSettings.getEndTime().getMinutes());
@@ -99,6 +97,12 @@ public class ActivateDrunkMode extends IntentService {
             goTime=true;
         }
         return goTime;
+    }
+
+    public boolean isItTestTime(){
+        return (currentTime==INVALID_TIME || startTime==INVALID_TIME || endTime==INVALID_TIME);
+        //If a test is running, it will set custom times, otherwise this is false
+        // and must grab real times
     }
 
     public void setCurrentTime(int t){
