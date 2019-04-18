@@ -783,6 +783,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     }
 
     private void setFollowUpReminderDateAndTime() {
+
+        // if a follow up date wasn't set, user didnt want followups
         if (this.followUpReminderDate == null) {
             return;
         }
@@ -816,7 +818,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             }
         }
 
-        if(followUpReminderEmail == null)
+        if(followUpReminderEmail == null) // new reminder
             followUpReminderEmail = new FollowUpReminderEmail(null, account.getUuid(), followUpReminderId,
                 followUpReminderDate.getTimeInMillis());
 
@@ -946,7 +948,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             changesMadeSinceLastSave = false;
             setProgressBarIndeterminateVisibility(true);
             currentMessageBuilder.buildAsync(this);
-            setFollowUpReminderDateAndTime();
         }
     }
 
@@ -1837,7 +1838,10 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 Timber.e(e, "Failed to mark contact as contacted.");
             }
 
-            MessagingController.getInstance(context).sendMessage(account, message, null);
+
+            LocalMessage messageSent = MessagingController.getInstance(context).sendMessage(account, message, null);
+            // get Id here of message sent
+
             if (draftId != null) {
                 // TODO set draft id to invalid in MessageCompose!
                 MessagingController.getInstance(context).deleteDraft(account, draftId);
@@ -1930,10 +1934,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     @Override
     public void onMessageBuildSuccess(MimeMessage message, boolean isDraft) {
 
-        // set Uid of message
-        // followUpReminderId = message.getMessageId();
-
-
         if (isDraft) {
             changesMadeSinceLastSave = false;
             currentMessageBuilder = null;
@@ -1946,8 +1946,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             boolean saveRemotely = recipientPresenter.shouldSaveRemotely();
 
             if (isScheduledSaved) {
-                //// save message id if reminder wanted for scheduled message
-                //setFollowUpReminderDateAndTime();
                 new SaveScheduledMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
                         message, draftId, saveRemotely, scheduledId).execute();
             } else if (action != Action.EDIT_SCHEDULED) { // never do draft saves in scheduled message editor
@@ -1962,10 +1960,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             }
         } else {
             currentMessageBuilder = null;
-
-            //// save message id if reminder wanted
-            //setFollowUpReminderDateAndTime();
-
             new SendMessageTask(getApplicationContext(), account, contacts, message,
                     draftId != INVALID_DRAFT_ID ? draftId : null, relatedMessageReference).execute();
             finish();
@@ -2256,6 +2250,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                             MessageCompose.this,
                             getString(R.string.message_saved_scheduled_toast), Toast.LENGTH_LONG).show();
                     sendLaterConfirmationToast();
+                    followUpReminderId = scheduledId;
                     setFollowUpReminderDateAndTime();
                     break;
                 case MSG_DISCARDED_DRAFT:
