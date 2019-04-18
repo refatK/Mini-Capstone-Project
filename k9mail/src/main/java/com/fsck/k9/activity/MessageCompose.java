@@ -48,7 +48,6 @@ import com.fsck.k9.Account;
 import com.fsck.k9.Account.MessageFormat;
 import com.fsck.k9.DaoSession;
 import com.fsck.k9.FollowUpReminderEmail;
-import com.fsck.k9.ScheduledEmailDao;
 import com.fsck.k9.ScheduledEmailsToSendNowService;
 import com.fsck.k9.Identity;
 import com.fsck.k9.K9;
@@ -57,6 +56,7 @@ import com.fsck.k9.Preferences;
 import com.fsck.k9.R;
 import com.fsck.k9.ScheduledEmail;
 import com.fsck.k9.activity.MessageLoaderHelper.MessageLoaderCallbacks;
+import com.fsck.k9.activity.compose.SendMessageTask;
 import com.fsck.k9.service.ActivateDrunkMode;
 import com.fsck.k9.activity.compose.AttachmentPresenter;
 import com.fsck.k9.activity.compose.AttachmentPresenter.AttachmentMvpView;
@@ -89,7 +89,6 @@ import com.fsck.k9.helper.Utility;
 import com.fsck.k9.mail.Address;
 import com.fsck.k9.mail.Flag;
 import com.fsck.k9.mail.Message;
-import com.fsck.k9.mail.Message.RecipientType;
 import com.fsck.k9.mail.MessagingException;
 import com.fsck.k9.mail.internet.MimeMessage;
 import com.fsck.k9.mailstore.LocalMessage;
@@ -165,6 +164,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     private static final int MSG_DISCARDED_DRAFT = 5;
     public static final int MSG_SAVED_SCHEDULED = 6;
     public static final int FOLLOW_UP_REMINDER = 7;
+    public static final int MSG_SENT = 8;
 
     private static final int REQUEST_MASK_RECIPIENT_PRESENTER = (1 << 8);
     private static final int REQUEST_MASK_LOADER_HELPER = (1 << 9);
@@ -784,7 +784,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
     private void setFollowUpReminderDateAndTime() {
 
-        // if a follow up date wasn't set, user didnt want followups
+        // if a follow up date wasn't set, user didn't want followups
         if (this.followUpReminderDate == null) {
             return;
         }
@@ -1809,67 +1809,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         return this.mailingLists;
     }
 
-    static class SendMessageTask extends AsyncTask<Void, Void, Void> {
-        final Context context;
-        final Account account;
-        final Contacts contacts;
-        final Message message;
-        final Long draftId;
-        final MessageReference messageReference;
-
-        SendMessageTask(Context context, Account account, Contacts contacts, Message message,
-                Long draftId, MessageReference messageReference) {
-            this.context = context;
-            this.account = account;
-            this.contacts = contacts;
-            this.message = message;
-            this.draftId = draftId;
-            this.messageReference = messageReference;
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                contacts.markAsContacted(message.getRecipients(RecipientType.TO));
-                contacts.markAsContacted(message.getRecipients(RecipientType.CC));
-                contacts.markAsContacted(message.getRecipients(RecipientType.BCC));
-                updateReferencedMessage();
-            } catch (Exception e) {
-                Timber.e(e, "Failed to mark contact as contacted.");
-            }
-
-
-            LocalMessage messageSent = MessagingController.getInstance(context).sendMessage(account, message, null);
-            // get Id here of message sent
-
-            if (draftId != null) {
-                // TODO set draft id to invalid in MessageCompose!
-                MessagingController.getInstance(context).deleteDraft(account, draftId);
-            }
-
-            return null;
-        }
-
-        /**
-         * Set the flag on the referenced message(indicated we replied / forwarded the message)
-         **/
-        private void updateReferencedMessage() {
-            if (messageReference != null && messageReference.getFlag() != null) {
-                Timber.d("Setting referenced message (%s, %s) flag to %s",
-                        messageReference.getFolderName(),
-                        messageReference.getUid(),
-                        messageReference.getFlag());
-
-                final Account account = Preferences.getPreferences(context)
-                        .getAccount(messageReference.getAccountUuid());
-                final String folderName = messageReference.getFolderName();
-                final String sourceMessageUid = messageReference.getUid();
-                MessagingController.getInstance(context).setFlag(account, folderName,
-                        sourceMessageUid, messageReference.getFlag(), true);
-            }
-        }
-    }
-
     /**
      * When we are launched with an intent that includes a mailto: URI, we can actually
      * gather quite a few of our message fields from it.
@@ -1960,8 +1899,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             }
         } else {
             currentMessageBuilder = null;
-            new SendMessageTask(getApplicationContext(), account, contacts, message,
-                    draftId != INVALID_DRAFT_ID ? draftId : null, relatedMessageReference).execute();
+            new SendMessageTask(getApplicationContext(), account, contacts, internalMessageHandler,
+                    message, draftId != INVALID_DRAFT_ID ? draftId : null, false, relatedMessageReference).execute();
             finish();
         }
     }
@@ -2235,6 +2174,10 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                     break;
                 case MSG_PROGRESS_OFF:
                     setProgressBarIndeterminateVisibility(false);
+                    break;
+                case MSG_SENT:
+                    followUpReminderId = (Long) msg.obj;
+                    setFollowUpReminderDateAndTime();
                     break;
                 case MSG_SAVED_DRAFT:
                     draftId = (Long) msg.obj;

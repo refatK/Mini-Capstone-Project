@@ -34,7 +34,7 @@ public abstract class SaveMessageTask extends AsyncTask<Void, Void, Void> {
     protected abstract void returnNotificationToMessageHandler();
 
     @Override
-    protected Void doInBackground(Void... params) {
+    final protected Void doInBackground(Void... params) {
         saveMessage();
         returnNotificationToMessageHandler();
         return null;
