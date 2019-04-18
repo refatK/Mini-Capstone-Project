@@ -8,6 +8,7 @@ import com.fsck.k9.R;
 import com.fsck.k9.activity.SetFollowUpReminderDateAndTime;
 import com.fsck.k9.activity.drunk_mode_challenges.AudioChallenge;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -34,4 +35,18 @@ public class SetFollowUpReminderDateAndTimeTests {
     private int hour;
     private int minute;
     private Intent intent;
+
+    @Before
+    public void initialize(){
+        calendar = Calendar.getInstance();
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        hour = calendar.get(Calendar.HOUR_OF_DAY);
+        minute = calendar.get(Calendar.MINUTE);
+
+        intent = new Intent();
+        intent.putExtra("testingSetFollowUpReminderDateAndTime", true);
+        testRule.launchActivity(intent);
+    }
 }
