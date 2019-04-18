@@ -14,9 +14,12 @@ import org.junit.Test;
 
 import java.util.Calendar;
 
+import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeTextIntoFocusedView;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
@@ -48,5 +51,14 @@ public class SetFollowUpReminderDateAndTimeTests {
         intent = new Intent();
         intent.putExtra("testingSetFollowUpReminderDateAndTime", true);
         testRule.launchActivity(intent);
+    }
+
+    @Test
+    public void selectNothing(){
+        strDate = "MM/DD/YYYY";
+        strTime = "hh:mm";
+        onView(withId(R.id.reminder_set_date_and_time_button)).perform(click());
+        onView(withId(R.id.reminder_date)).check(matches(withText(strDate)));
+        onView(withId(R.id.reminder_time)).check(matches(withText(strTime)));
     }
 }
