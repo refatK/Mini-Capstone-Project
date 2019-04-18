@@ -943,6 +943,10 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
                 updateMenu();
                 return true;
             }
+            case R.id.follow_up:
+                Intent viewFollowUps = new Intent(this, FollowUpNotificationsList.class);
+                startActivity(viewFollowUps);
+                break;
             case R.id.mailing_lists:
                 Intent viewMailLists = new Intent(this, MailingListMenu.class);
                 startActivity(viewMailLists);
