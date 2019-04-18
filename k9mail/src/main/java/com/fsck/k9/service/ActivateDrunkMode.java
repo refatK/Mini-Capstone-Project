@@ -20,10 +20,9 @@ public class ActivateDrunkMode extends IntentService {
     private DrunkMode drunkModeSettings;
 
     public final int MIDNIGHT = 1440;
-    public int currentTime = 8000;
-    public int startTime = 8000;
-    public int endTime = 8000;
-    //The amount of minutes in a day does not exceed 2880; 8000 is a fallback value
+    public int currentTime = null;
+    public int startTime = null;
+    public int endTime = null;
     public boolean drunkModeEnabled;
     public boolean isTest;
     public final Class<?>[] drunkModeChallenges = {
@@ -81,9 +80,8 @@ public class ActivateDrunkMode extends IntentService {
         boolean goTime=false;
         Date currentTimeDate = Calendar.getInstance().getTime();
 
-        //If a test is running, it will set custom times, otherwise this gets the real times if fallback is present
-        // statement checks if any of the values are a fallback
-        if(currentTime==8000 || startTime==8000 || endTime==8000) {
+        //If a test is running, it will set custom times, otherwise this gets the real times if the value is null
+        if(currentTime==null || startTime==null || endTime==null) {
             this.currentTime=(currentTimeDate.getHours()*60+currentTimeDate.getMinutes());
             this.startTime=(drunkModeSettings.getStartTime().getHours()*60+drunkModeSettings.getStartTime().getMinutes());
             this.endTime=(drunkModeSettings.getEndTime().getHours()*60+drunkModeSettings.getEndTime().getMinutes());
