@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:595426210233:android:c5197b51b4a58381",
         "android_client_info": {
-          "package_name": "com.fsck.k9"
+          "package_name": "com.fsck.k9.debug"
         }
       },
       "oauth_client": [
