@@ -287,12 +287,6 @@ public class RecipientPresenterTest {
     }
 
     @Test
-    public void onCcTokenChanged_notifiesListenerOfRecipientChange() {
-        recipientPresenter.onCcTokenChanged();
-        verify(listener).onRecipientsChanged();
-    }
-
-    @Test
     public void onCcTokenRemoved_notifiesListenerOfRecipientChange() {
         recipientPresenter.onCcTokenRemoved();
         verify(listener).onRecipientsChanged();
