@@ -3801,6 +3801,16 @@ public class MessagingController {
 
 
     public boolean shouldNotifyForMessage(Account account, LocalFolder localFolder, Message message) {
+
+        //TODO complete here
+
+        System.err.println("4545 SHOULD NOTIFY: new message: " + message.getSubject() + " ");
+        int i = 0;
+        for (Address rec : message.getRecipients(RecipientType.TO)) {
+            ++i;
+            System.err.println("4545 SHOULD NOTIFY: reci number " + i + " email is " + rec.getAddress() + " ");
+        }
+
         // If we don't even have an account name, don't show the notification.
         // (This happens during initial account setup)
         if (account.getName() == null) {
