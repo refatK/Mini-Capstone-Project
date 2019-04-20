@@ -2,9 +2,11 @@
 package com.fsck.k9.mail;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 
 import android.support.annotation.NonNull;
@@ -48,8 +50,17 @@ public abstract class Message implements Part, Body {
      * @return true if it is a reply
      */
     public boolean isRepliedBy(Message message) {
-        return message.getSubject().equalsIgnoreCase("RE: " + this.getSubject()) ||
+
+        // check by id reference metadata
+        List<String> referenceIds = Arrays.asList(message.getReferences());
+        boolean isReferenced = referenceIds.contains(this.getMessageId());
+
+        // check if subject in reply format
+        boolean isSubjectReply = message.getSubject().equalsIgnoreCase("RE: " + this.getSubject()) ||
                 message.getSubject().equalsIgnoreCase("RE:" + this.getSubject());
+
+
+        return isReferenced || isSubjectReply;
     }
 
     @Override

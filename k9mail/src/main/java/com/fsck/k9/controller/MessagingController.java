@@ -3904,6 +3904,9 @@ public class MessagingController {
             return;
         }
 
+        System.err.println("4545 id is: " + messageReceived.getMessageId());
+        System.err.println("4545 get refs: " + Arrays.asList(messageReceived.getReferences()));
+
         LocalStore localStore;
         try {
             localStore = account.getLocalStore();
