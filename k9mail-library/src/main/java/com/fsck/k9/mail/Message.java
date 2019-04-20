@@ -42,6 +42,16 @@ public abstract class Message implements Part, Body {
         return false;
     }
 
+    /**
+     * Checks if the passed message is a reply to this message
+     * @param message the potential repy message
+     * @return true if it is a reply
+     */
+    public boolean isRepliedBy(Message message) {
+        return message.getSubject().equalsIgnoreCase("RE: " + this.getSubject()) ||
+                message.getSubject().equalsIgnoreCase("RE:" + this.getSubject());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || !(o instanceof Message)) {
@@ -243,5 +253,6 @@ public abstract class Message implements Part, Body {
      */
     @Override
     public abstract Message clone();
+
 
 }

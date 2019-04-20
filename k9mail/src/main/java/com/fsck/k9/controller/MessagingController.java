@@ -3899,8 +3899,6 @@ public class MessagingController {
      */
     private void removeSatisfiedFollowUps(Account account, LocalFolder localFolder, Message messageReceived) {
 
-        //TODO handle Undeliverable
-
         // ignore messages that are not being loaded from inbox (as they wont be new)
         if(!localFolder.getName().equals(account.getInboxFolderName())) {
             return;
@@ -3914,23 +3912,43 @@ public class MessagingController {
             return;
         }
 
+        // get followups for account
         List<FollowUpReminderEmail> followUps = K9.daoSession.getFollowUpReminderEmailDao().queryBuilder()
                 .where(FollowUpReminderEmailDao.Properties.AccountID.eq(account.getUuid()))
                 .list();
 
+        // Setup Data
+        List<LocalMessage> followUpsMessages = new ArrayList<>();
+        List<List<String>> followUpsEmailsSentTo = new ArrayList<>();
+
         for (FollowUpReminderEmail followup : followUps) {
-
             LocalMessage sentMessage = localStore.getLocalMessageByMessageId(followup.getEmailID());
-            List<String> emailsSentTo = Address.toListOfEmails(sentMessage.getRecipients(RecipientType.TO));
-
-            // keep reminder if received email was not sent the reminder set email
-            if (!emailsSentTo.contains(messageReceived.getFrom()[0].getAddress())) {
-                continue;
-            }
-
-            // if all checks past, delete followup
-            K9.daoSession.getFollowUpReminderEmailDao().delete(followup);
+            followUpsMessages.add(sentMessage);
+            followUpsEmailsSentTo.add(Address.toListOfEmails(sentMessage.getRecipients(RecipientType.TO)));
         }
+
+        // If received email has reply format to a follow up, delete that follow up
+        for (int i = 0; i < followUpsMessages.size(); i++) {
+            LocalMessage followUpsMessage = followUpsMessages.get(i);
+
+            // TODO check email still?
+
+            if (followUpsMessage.isRepliedBy(messageReceived)) {
+                K9.daoSession.getFollowUpReminderEmailDao().delete(followUps.get(i));
+                return;
+            }
+        }
+
+        // If no other info, simply delete all followups relating to the sender of the received message
+        for (int i = 0; i < followUpsEmailsSentTo.size(); i++) {
+            List<String> emailsSentTo = followUpsEmailsSentTo.get(i);
+
+            // delete followup if
+            if (emailsSentTo.contains(messageReceived.getFrom()[0].getAddress())) {
+                K9.daoSession.getFollowUpReminderEmailDao().delete(followUps.get(i));
+            }
+        }
+
     }
 
     public void deleteAccount(Account account) {
