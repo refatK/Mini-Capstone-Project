@@ -43,6 +43,8 @@ import com.fsck.k9.Account.DeletePolicy;
 import com.fsck.k9.Account.Expunge;
 import com.fsck.k9.AccountStats;
 import com.fsck.k9.BuildConfig;
+import com.fsck.k9.FollowUpReminderEmail;
+import com.fsck.k9.FollowUpReminderEmailDao;
 import com.fsck.k9.K9;
 import com.fsck.k9.K9.Intents;
 import com.fsck.k9.Preferences;
@@ -3802,20 +3804,23 @@ public class MessagingController {
 
     public boolean shouldNotifyForMessage(Account account, LocalFolder localFolder, Message message) {
 
-        //TODO complete here
-
         System.err.println("4545 SHOULD NOTIFY: new message: " + message.getSubject() + " ");
         int i = 0;
         for (Address rec : message.getRecipients(RecipientType.TO)) {
             ++i;
             System.err.println("4545 SHOULD NOTIFY: reci number " + i + " email is " + rec.getAddress() + " ");
         }
+        System.err.println("4545 sender " + message.getFrom().length);
 
         // If we don't even have an account name, don't show the notification.
         // (This happens during initial account setup)
         if (account.getName() == null) {
             return false;
         }
+
+        // remove followups that have been fulfilled on time
+        removeSatisfiedFollowUps(account, localFolder, message);
+
 
         // Do not notify if the user does not have notifications enabled or if the message has
         // been read.
@@ -3883,6 +3888,49 @@ public class MessagingController {
         }
 
         return true;
+    }
+
+
+    /**
+     * Deletes a followup if the expected reply was received
+     * @param account the account that received the message
+     * @param localFolder the folder the loaded message was synced to
+     * @param messageReceived the newly received email to check
+     */
+    private void removeSatisfiedFollowUps(Account account, LocalFolder localFolder, Message messageReceived) {
+
+        //TODO handle Undeliverable
+
+        // ignore messages that are not being loaded from inbox (as they wont be new)
+        if(!localFolder.getName().equals(account.getInboxFolderName())) {
+            return;
+        }
+
+        LocalStore localStore;
+        try {
+            localStore = account.getLocalStore();
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        List<FollowUpReminderEmail> followUps = K9.daoSession.getFollowUpReminderEmailDao().queryBuilder()
+                .where(FollowUpReminderEmailDao.Properties.AccountID.eq(account.getUuid()))
+                .list();
+
+        for (FollowUpReminderEmail followup : followUps) {
+
+            LocalMessage sentMessage = localStore.getLocalMessageByMessageId(followup.getEmailID());
+            List<String> emailsSentTo = Address.toListOfEmails(sentMessage.getRecipients(RecipientType.TO));
+
+            // keep reminder if received email was not sent the reminder set email
+            if (!emailsSentTo.contains(messageReceived.getFrom()[0].getAddress())) {
+                continue;
+            }
+
+            // if all checks past, delete followup
+            K9.daoSession.getFollowUpReminderEmailDao().delete(followup);
+        }
     }
 
     public void deleteAccount(Account account) {
