@@ -95,13 +95,13 @@ public class FollowUpNotificationsList extends K9ListActivity {
 
         switch(item.getItemId())
         {
-            case R.id.reschedule:{
+            /*case R.id.reschedule:{
                 Intent intent = new Intent(this, SetFollowUpReminderDateAndTime.class);
                 intent.putExtra("fNId", followups.get(info.position).getId());
                 intent.putExtra("currentDate", new Date(followups.get(info.position).getReminderDateTime()));
                 startActivity(intent);
                 break;
-            }
+            }*/
 
             case R.id.delete:{
                 Intent intent = new Intent(this, RemoveFollowUpNotification.class);
