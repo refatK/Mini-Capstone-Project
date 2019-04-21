@@ -3953,7 +3953,7 @@ public class MessagingController {
      * @param account the sender's account
      * @return true if message only for sender, else false
      */
-    private boolean isToSelf(Message message, Account account) {
+    public static boolean isToSelf(Message message, Account account) {
         boolean isFromSelf = account.isAnIdentity(message.getFrom());
 
         Address[] to = message.getRecipients(RecipientType.TO);
