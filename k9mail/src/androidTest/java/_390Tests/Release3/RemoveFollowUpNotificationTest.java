@@ -1,10 +1,12 @@
 package _390Tests.Release3;
 
+import android.content.Intent;
 import android.support.test.espresso.Espresso;
 import android.support.test.rule.ActivityTestRule;
 
 import com.fsck.k9.activity.FollowUpNotificationsList;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -17,7 +19,16 @@ import static org.hamcrest.CoreMatchers.anything;
 
 public class RemoveFollowUpNotificationTest {
     @Rule
-    public ActivityTestRule<FollowUpNotificationsList> testRule = new ActivityTestRule<>(FollowUpNotificationsList.class);
+    public ActivityTestRule<FollowUpNotificationsList> activityTestRule = new ActivityTestRule<>(FollowUpNotificationsList.class, true, false);
+
+    private Intent intent;
+
+    @Before
+    public void setup(){
+        intent = new Intent();
+        intent.putExtra("test remove", true);
+        activityTestRule.launchActivity(intent);
+    }
 
     @Test
     public void removeFollowUpNotificationTest()

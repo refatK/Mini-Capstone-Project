@@ -54,10 +54,16 @@ public class FollowUpNotificationsList extends K9ListActivity {
 
         followups = daoSession.getFollowUpReminderEmailDao().loadAll();
 
+        //When list is empty, it shouldn't try to create objects of type FNHolder
+        if(!followups.isEmpty()){
+            for(FollowUpReminderEmail fN : followups) {
+                followupHolders.add(retrieveHolder(fN));
+            }
+        }
+
         //Designed for testing remove function when list is empty
-        if(followups.isEmpty() && savedInstanceState != null &&
-                savedInstanceState.containsKey("test remove") &&
-                savedInstanceState.getBoolean("test remove")){
+        if(followups.isEmpty() &&
+                getIntent().getBooleanExtra("test remove", false)){
 
             SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy @ hh:mm a",
                     Locale.CANADA);
@@ -68,18 +74,14 @@ public class FollowUpNotificationsList extends K9ListActivity {
                     null, Calendar.getInstance().getTimeInMillis());
             fNH.setDateTime(sdf.format(new Date(fN.getReminderDateTime())));
 
+            //Update the followups
             daoSession.getFollowUpReminderEmailDao().insert(fN);
+            followups = daoSession.getFollowUpReminderEmailDao().loadAll();
             followupHolders.add(fNH);
 
-            savedInstanceState.putBoolean("test remove", false);
+            getIntent().putExtra("test remove", false);
         }
 
-        //When list is empty, it shouldn't try to create objects of type FNHolder
-        if(!followups.isEmpty()){
-            for(FollowUpReminderEmail fN : followups) {
-                followupHolders.add(retrieveHolder(fN));
-            }
-        }
         setContentView(R.layout.activity_follow_up_notifications_list);
 
         ArrayAdapter<FollowUpNotificationHolder> fNListAdapter = new FollowUpNotificationsListAdapter(
