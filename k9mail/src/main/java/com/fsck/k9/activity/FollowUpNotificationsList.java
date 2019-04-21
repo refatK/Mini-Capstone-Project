@@ -21,6 +21,7 @@ import com.fsck.k9.Preferences;
 import com.fsck.k9.R;
 import com.fsck.k9.activity.setup.AddMailingList;
 import com.fsck.k9.activity.setup.EditQuickReply;
+import com.fsck.k9.activity.setup.RemoveFollowUpNotification;
 import com.fsck.k9.activity.setup.RemoveQuickReply;
 import com.fsck.k9.mail.Message;
 import com.fsck.k9.mail.MessagingException;
@@ -111,7 +112,10 @@ public class FollowUpNotificationsList extends K9ListActivity {
             }
 
             case R.id.delete:{
-
+                Intent intent = new Intent(this, RemoveFollowUpNotification.class);
+                intent.putExtra("fNId", followups.get(info.position).getId());
+                startActivity(intent);
+                break;
             }
 
         }
