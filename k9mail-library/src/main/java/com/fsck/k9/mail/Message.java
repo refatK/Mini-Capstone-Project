@@ -265,5 +265,4 @@ public abstract class Message implements Part, Body {
     @Override
     public abstract Message clone();
 
-
 }

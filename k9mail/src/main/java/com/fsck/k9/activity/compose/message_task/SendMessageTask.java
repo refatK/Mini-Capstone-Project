@@ -38,13 +38,8 @@ public class SendMessageTask extends MessageTask {
             Timber.e(e, "Failed to mark contact as contacted.");
         }
 
-        System.err.println("456456 sending with id " + message.getMessageId());
-
         LocalMessage messageSent = MessagingController.getInstance(context).sendMessage(account, message, null);
         localMessageId = messageSent.getDatabaseId();
-
-        System.err.println("456456 sent with id " + messageSent.getMessageId());
-
 
         if (draftId != null) {
             MessagingController.getInstance(context).deleteDraft(account, draftId);

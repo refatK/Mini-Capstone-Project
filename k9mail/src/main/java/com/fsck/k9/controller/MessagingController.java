@@ -3803,15 +3803,6 @@ public class MessagingController {
 
 
     public boolean shouldNotifyForMessage(Account account, LocalFolder localFolder, Message message) {
-
-        System.err.println("4545 SHOULD NOTIFY: new message: " + message.getSubject() + " ");
-        int i = 0;
-        for (Address rec : message.getRecipients(RecipientType.TO)) {
-            ++i;
-            System.err.println("4545 SHOULD NOTIFY: reci number " + i + " email is " + rec.getAddress() + " ");
-        }
-        System.err.println("4545 sender " + message.getFrom().length);
-
         // If we don't even have an account name, don't show the notification.
         // (This happens during initial account setup)
         if (account.getName() == null) {
@@ -3904,9 +3895,7 @@ public class MessagingController {
             return;
         }
 
-        System.err.println("4545 id is: " + messageReceived.getMessageId());
-        System.err.println("4545 get refs: " + Arrays.asList(messageReceived.getReferences()));
-
+        // get localStorage for getting followup message info
         LocalStore localStore;
         try {
             localStore = account.getLocalStore();
