@@ -54,9 +54,10 @@ public class FollowUpNotificationsList extends K9ListActivity {
 
         followups = daoSession.getFollowUpReminderEmailDao().loadAll();
 
-        //Designed for testing remove function
-        if(savedInstanceState != null && savedInstanceState.containsKey("test remove") &&
-                savedInstanceState.getBoolean("test remove") && followups.isEmpty()){
+        //Designed for testing remove function when list is empty
+        if(followups.isEmpty() && savedInstanceState != null &&
+                savedInstanceState.containsKey("test remove") &&
+                savedInstanceState.getBoolean("test remove")){
 
             SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy @ hh:mm a",
                     Locale.CANADA);

@@ -15,12 +15,12 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.anything;
 
-public class RemoveFollowUpNotification {
+public class RemoveFollowUpNotificationTest {
     @Rule
     public ActivityTestRule<FollowUpNotificationsList> testRule = new ActivityTestRule<>(FollowUpNotificationsList.class);
 
     @Test
-    public void removeQuickReplyTest()
+    public void removeFollowUpNotificationTest()
     {
         Espresso.onView(withId(android.R.id.list));
         onData(anything()).inAdapterView(withId(android.R.id.list)).atPosition(0).perform(longClick());
