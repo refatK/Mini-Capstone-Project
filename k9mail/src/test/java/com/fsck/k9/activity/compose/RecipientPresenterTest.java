@@ -269,6 +269,12 @@ public class RecipientPresenterTest {
     }
 
     @Test
+    public void onCcTokenChanged_notifiesListenerOfRecipientChange() {
+        recipientPresenter.onCcTokenChanged();
+        verify(listener).onRecipientsChanged();
+    }
+
+    @Test
     public void onToTokenChanged_notifiesListenerOfRecipientChange() {
         recipientPresenter.onToTokenChanged();
         verify(listener).onRecipientsChanged();
@@ -283,12 +289,6 @@ public class RecipientPresenterTest {
     @Test
     public void onCcTokenAdded_notifiesListenerOfRecipientChange() {
         recipientPresenter.onCcTokenAdded();
-        verify(listener).onRecipientsChanged();
-    }
-
-    @Test
-    public void onCcTokenChanged_notifiesListenerOfRecipientChange() {
-        recipientPresenter.onCcTokenChanged();
         verify(listener).onRecipientsChanged();
     }
 

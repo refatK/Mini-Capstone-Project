@@ -1,6 +1,8 @@
 
 package com.fsck.k9;
 
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -536,6 +538,9 @@ public class K9 extends Application {
         PRNGFixes.apply();
 
         super.onCreate();
+        if (!BuildConfig.DEBUG) {
+            Fabric.with(this, new Crashlytics());
+        }
 
         daoSession = new DaoMaster(
                 new DaoMaster.DevOpenHelper(
