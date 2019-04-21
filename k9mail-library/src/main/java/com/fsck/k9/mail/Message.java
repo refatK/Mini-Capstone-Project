@@ -46,7 +46,7 @@ public abstract class Message implements Part, Body {
 
     /**
      * Checks if the passed message is a reply to this message
-     * @param message the potential repy message
+     * @param message the potential reply message
      * @return true if it is a reply
      */
     public boolean isRepliedBy(Message message) {

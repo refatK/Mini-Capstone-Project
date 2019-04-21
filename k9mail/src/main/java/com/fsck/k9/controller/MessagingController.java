@@ -3930,11 +3930,10 @@ public class MessagingController {
             followUpsEmailsSentTo.add(Address.toListOfEmails(sentMessage.getRecipients(RecipientType.TO)));
         }
 
-        // If received email has reply format to a follow up, delete that follow up
+
+        // If received email has reply format to a follow up, delete that follow up, even if to self
         for (int i = 0; i < followUpsMessages.size(); i++) {
             LocalMessage followUpsMessage = followUpsMessages.get(i);
-
-            // TODO check email still?
 
             if (followUpsMessage.isRepliedBy(messageReceived)) {
                 K9.daoSession.getFollowUpReminderEmailDao().delete(followUps.get(i));
@@ -3942,16 +3941,38 @@ public class MessagingController {
             }
         }
 
+        // If message to self, treat as a reminder and don't delete (not including reply specific messages)
+        if(isToSelf(messageReceived, account)) {
+            return;
+        }
+
         // If no other info, simply delete all followups relating to the sender of the received message
         for (int i = 0; i < followUpsEmailsSentTo.size(); i++) {
             List<String> emailsSentTo = followUpsEmailsSentTo.get(i);
 
-            // delete followup if
+            // delete followup if got message from expected sender
             if (emailsSentTo.contains(messageReceived.getFrom()[0].getAddress())) {
                 K9.daoSession.getFollowUpReminderEmailDao().delete(followUps.get(i));
             }
         }
 
+    }
+
+    /**
+     * Checks if the message was only for sender and from sender
+     * @param message the potential self message
+     * @param account the sender's account
+     * @return true if message only for sender, else false
+     */
+    private boolean isToSelf(Message message, Account account) {
+        boolean isFromSelf = account.isAnIdentity(message.getFrom());
+
+        Address[] to = message.getRecipients(RecipientType.TO);
+        boolean onlyForSelf = to.length == 1 && to[0].getAddress().equals(account.getEmail())
+                && message.getRecipients(RecipientType.CC).length == 0
+                && message.getRecipients(RecipientType.BCC).length == 0;
+
+        return isFromSelf && onlyForSelf;
     }
 
     public void deleteAccount(Account account) {
