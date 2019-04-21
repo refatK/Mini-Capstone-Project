@@ -71,6 +71,16 @@ public class EmailProviderCacheTest {
     }
 
     @Test
+    public void getValueForUnknownMessage_returnsNullWhenRemoved() {
+        cache.setValueForMessages(Collections.singletonList(1L), "subject", "Subject");
+        cache.removeValueForMessages(Collections.singletonList(1L), "subject");
+
+        String result = cache.getValueForMessage(1L, "subject");
+
+        assertNull(result);
+    }
+
+    @Test
     public void getValueForUnknownMessage_returnsNull() {
         String result = cache.getValueForMessage(1L, "subject");
 
