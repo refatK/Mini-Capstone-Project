@@ -20,7 +20,6 @@ import com.fsck.k9.mail.MessagingException;
 import com.fsck.k9.mailstore.LocalStore;
 import com.fsck.k9.service.ActivateDrunkMode;
 import static com.fsck.k9.FollowUpNotificationHolder.makeFNHolder;
-import java.util.Date;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,12 +50,22 @@ public class FollowUpNotificationsList extends K9ListActivity {
 
         followups = daoSession.getFollowUpReminderEmailDao().loadAll();
 
-        for(FollowUpReminderEmail fN : followups) {
-            followupHolders.add(retrieveHolder(fN));
+        if(savedInstanceState != null &&
+                savedInstanceState.containsKey("test remove") &&
+                savedInstanceState.getBoolean("test remove") &&
+                followups.isEmpty()){
+            daoSession.getFollowUpReminderEmailDao().insert(new FollowUpReminderEmail(null, null,
+                    null, null));
+            followupHolders.add(new FollowUpNotificationHolder("Doctor Styles", "Aug 08, 2888 @ 12:21 PM", "We need help"));
+            savedInstanceState.putBoolean("test remove", false);
         }
 
+        if(!followups.isEmpty()){
+            for(FollowUpReminderEmail fN : followups) {
+                followupHolders.add(retrieveHolder(fN));
+            }
+        }
         setContentView(R.layout.activity_follow_up_notifications_list);
-
 
         ArrayAdapter<FollowUpNotificationHolder> fNListAdapter = new FollowUpNotificationsListAdapter(
                 this, R.layout.follow_up_notification_list_item,  followupHolders);
