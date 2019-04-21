@@ -21,8 +21,12 @@ import com.fsck.k9.mailstore.LocalStore;
 import com.fsck.k9.service.ActivateDrunkMode;
 import static com.fsck.k9.FollowUpNotificationHolder.makeFNHolder;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static com.fsck.k9.K9.daoSession;
 
@@ -30,7 +34,7 @@ public class FollowUpNotificationsList extends K9ListActivity {
 
     private List<FollowUpReminderEmail> followups;
     private List<FollowUpNotificationHolder> followupHolders
-            = new ArrayList<FollowUpNotificationHolder>();
+            = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,16 +54,26 @@ public class FollowUpNotificationsList extends K9ListActivity {
 
         followups = daoSession.getFollowUpReminderEmailDao().loadAll();
 
-        if(savedInstanceState != null &&
-                savedInstanceState.containsKey("test remove") &&
-                savedInstanceState.getBoolean("test remove") &&
-                followups.isEmpty()){
-            daoSession.getFollowUpReminderEmailDao().insert(new FollowUpReminderEmail(null, null,
-                    null, null));
-            followupHolders.add(new FollowUpNotificationHolder("Doctor Styles", "Aug 08, 2888 @ 12:21 PM", "We need help"));
+        //Designed for testing remove function
+        if(savedInstanceState != null && savedInstanceState.containsKey("test remove") &&
+                savedInstanceState.getBoolean("test remove") && followups.isEmpty()){
+
+            SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy @ hh:mm a",
+                    Locale.CANADA);
+
+            FollowUpNotificationHolder fNH = new FollowUpNotificationHolder(
+                    "Doctor Styles", null, "We need help");
+            FollowUpReminderEmail fN = new FollowUpReminderEmail(null, null,
+                    null, Calendar.getInstance().getTimeInMillis());
+            fNH.setDateTime(sdf.format(new Date(fN.getReminderDateTime())));
+
+            daoSession.getFollowUpReminderEmailDao().insert(fN);
+            followupHolders.add(fNH);
+
             savedInstanceState.putBoolean("test remove", false);
         }
 
+        //When list is empty, it shouldn't try to create objects of type FNHolder
         if(!followups.isEmpty()){
             for(FollowUpReminderEmail fN : followups) {
                 followupHolders.add(retrieveHolder(fN));
