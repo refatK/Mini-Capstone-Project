@@ -33,7 +33,6 @@ public class FollowUpNotificationsToSendNowService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent i) {
-        Log.d(null, "Hit FR start");
         daoSession = ((K9)getApplication()).getDaoSession();
         allFollowUpReminders = daoSession.getFollowUpReminderEmailDao().loadAll();
 
@@ -80,7 +79,6 @@ public class FollowUpNotificationsToSendNowService extends IntentService {
     }
 
     private void sendReminders(List<FollowUpReminderEmail> remindersToSendNow) {
-        Log.d(null, "Hit sendReminders");
         String notificationText;
         String accountID;
         Preferences prefs;
@@ -91,7 +89,6 @@ public class FollowUpNotificationsToSendNowService extends IntentService {
 
         //Loop to send each reminder in the remindersToSendNow list
         for (int i = 0; i < remindersToSendNow.size(); i++) {
-            Log.d(null, "In sendReminders loop");
 
             accountID = remindersToSendNow.get(i).getAccountID();
             prefs = Preferences.getPreferences(getApplicationContext());
