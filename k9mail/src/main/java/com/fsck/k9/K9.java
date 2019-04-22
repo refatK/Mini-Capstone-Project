@@ -538,9 +538,6 @@ public class K9 extends Application {
         PRNGFixes.apply();
 
         super.onCreate();
-        if (!BuildConfig.DEBUG) {
-            Fabric.with(this, new Crashlytics());
-        }
 
         daoSession = new DaoMaster(
                 new DaoMaster.DevOpenHelper(
