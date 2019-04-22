@@ -7,8 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
+
 
 import com.fsck.k9.Account;
 import com.fsck.k9.FollowUpNotificationHolder;
@@ -25,14 +24,11 @@ import static com.fsck.k9.FollowUpNotificationHolder.makeFNHolder;
 
 import java.util.Calendar;
 import java.util.Date;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import timber.log.Timber;
 
 import static com.fsck.k9.K9.daoSession;
 
