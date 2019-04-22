@@ -129,8 +129,8 @@ public class FollowUpNotificationsList extends K9ListActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (resultCode == RESULT_OK && requestCode == EDIT_TIME ) {
-            Long fNId = getIntent().getLongExtra("fNId", 0L);
-            Long newDateInMillis = getIntent().getLongExtra("newFollowUpReminderDate", 0L);
+            Long fNId = data.getLongExtra("fNId", 1L);
+            Long newDateInMillis = data.getLongExtra("newFollowUpReminderDate", 1L);
             setFollowUpReminderDateAndTime(fNId, newDateInMillis);
 
         }
@@ -140,24 +140,11 @@ public class FollowUpNotificationsList extends K9ListActivity {
         Calendar followUpReminderDate = Calendar.getInstance();
         followUpReminderDate.setTimeInMillis(DateInMillis);
 
-        Toast.makeText(getApplicationContext(), "Follow-Up Reminder will alert you at: "
-                        + (followUpReminderDate.get(Calendar.MONTH) + 1) + "/"
-                        + followUpReminderDate.get(Calendar.DAY_OF_MONTH) + "/"
-                        + followUpReminderDate.get(Calendar.YEAR) + " @ "
-                        + followUpReminderDate.get(Calendar.HOUR_OF_DAY) + ":"
-                        + ((followUpReminderDate.get(Calendar.MINUTE) < 10) ? "0" : "")
-                        + (followUpReminderDate.get(Calendar.MINUTE)),
-                Toast.LENGTH_LONG).show();
+        FollowUpReminderEmail followup = daoSession.getFollowUpReminderEmailDao().load(fNid);
+        followup.setReminderDateTime(followUpReminderDate.getTimeInMillis());
+        daoSession.getFollowUpReminderEmailDao().update(followup);
+        recreate();
 
-        FollowUpReminderEmail followUpReminderEmail = null;
-
-        for(FollowUpReminderEmail followup: followups){
-            if(followup.getEmailID() == fNid) {
-                followUpReminderEmail = followup;
-                followup.setReminderDateTime(followUpReminderDate.getTimeInMillis());
-            }
-        }
-        daoSession.getFollowUpReminderEmailDao().insertOrReplace(followUpReminderEmail);
     }
 
 }

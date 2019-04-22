@@ -104,7 +104,7 @@ public class SetFollowUpReminderDateAndTime extends K9Activity implements DatePi
                 Toast.LENGTH_SHORT).show();
         }
         else {
-            Toast.makeText(getApplicationContext(), "Setting time to: "
+            Toast.makeText(getApplicationContext(),  "Follow-Up Reminder will alert you at: "
                     + (chosenDateAndTime.get(Calendar.MONTH) + 1) + "/"
                     + chosenDateAndTime.get(Calendar.DAY_OF_MONTH) + "/"
                     + chosenDateAndTime.get(Calendar.YEAR) + " @ "
@@ -139,7 +139,8 @@ public class SetFollowUpReminderDateAndTime extends K9Activity implements DatePi
     }
 
     public void saveAndFinish() {
-        Intent data = getIntent();
+        Intent data = new Intent() ;
+        data.putExtras(getIntent());
         data.putExtra("newFollowUpReminderDate", chosenDateAndTime.getTimeInMillis());
         setResult(RESULT_OK, data);
         super.finish();
