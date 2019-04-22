@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.fsck.k9.Account;
 import com.fsck.k9.FollowUpNotificationHolder;
@@ -27,14 +28,20 @@ import com.fsck.k9.mail.MessagingException;
 import com.fsck.k9.mailstore.LocalStore;
 import com.fsck.k9.service.ActivateDrunkMode;
 import static com.fsck.k9.FollowUpNotificationHolder.makeFNHolder;
+
+import java.util.Calendar;
 import java.util.Date;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 import static com.fsck.k9.K9.daoSession;
 
 public class FollowUpNotificationsList extends K9ListActivity {
+
+    public static final int EDIT_TIME = 1;
 
     private List<FollowUpReminderEmail> followups;
     private List<FollowUpNotificationHolder> followupHolders
@@ -106,7 +113,7 @@ public class FollowUpNotificationsList extends K9ListActivity {
                 Intent intent = new Intent(this, SetFollowUpReminderDateAndTime.class);
                 intent.putExtra("fNId", followups.get(info.position).getId());
                 intent.putExtra("currentDate", new Date(followups.get(info.position).getReminderDateTime()));
-                startActivity(intent);
+                startActivityForResult(intent,EDIT_TIME);
                 break;
             }
 
@@ -116,6 +123,41 @@ public class FollowUpNotificationsList extends K9ListActivity {
 
         }
         return super.onContextItemSelected(item);
+    }
+    @Override
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (resultCode == RESULT_OK && requestCode == EDIT_TIME ) {
+            Long fNId = getIntent().getLongExtra("fNId", 0L);
+            Long newDateInMillis = getIntent().getLongExtra("newFollowUpReminderDate", 0L);
+            setFollowUpReminderDateAndTime(fNId, newDateInMillis);
+
+        }
+    }
+    private void setFollowUpReminderDateAndTime(Long fNid, Long DateInMillis) {
+
+        Calendar followUpReminderDate = Calendar.getInstance();
+        followUpReminderDate.setTimeInMillis(DateInMillis);
+
+        Toast.makeText(getApplicationContext(), "Follow-Up Reminder will alert you at: "
+                        + (followUpReminderDate.get(Calendar.MONTH) + 1) + "/"
+                        + followUpReminderDate.get(Calendar.DAY_OF_MONTH) + "/"
+                        + followUpReminderDate.get(Calendar.YEAR) + " @ "
+                        + followUpReminderDate.get(Calendar.HOUR_OF_DAY) + ":"
+                        + ((followUpReminderDate.get(Calendar.MINUTE) < 10) ? "0" : "")
+                        + (followUpReminderDate.get(Calendar.MINUTE)),
+                Toast.LENGTH_LONG).show();
+
+        FollowUpReminderEmail followUpReminderEmail = null;
+
+        for(FollowUpReminderEmail followup: followups){
+            if(followup.getEmailID() == fNid) {
+                followUpReminderEmail = followup;
+                followup.setReminderDateTime(followUpReminderDate.getTimeInMillis());
+            }
+        }
+        daoSession.getFollowUpReminderEmailDao().insertOrReplace(followUpReminderEmail);
     }
 
 }

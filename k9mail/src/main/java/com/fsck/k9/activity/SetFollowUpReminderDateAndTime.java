@@ -139,9 +139,11 @@ public class SetFollowUpReminderDateAndTime extends K9Activity implements DatePi
     }
 
     public void saveAndFinish() {
-        Intent data = new Intent();
-        data.putExtra("FollowUpReminderDate", chosenDateAndTime.getTimeInMillis());
+        Intent data = getIntent();
+        data.putExtra("newFollowUpReminderDate", chosenDateAndTime.getTimeInMillis());
         setResult(RESULT_OK, data);
         super.finish();
     }
+
+
 }

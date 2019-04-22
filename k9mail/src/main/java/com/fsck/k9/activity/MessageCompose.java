@@ -1035,7 +1035,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         }
 
         if (resultCode == RESULT_OK && requestCode == FOLLOW_UP_REMINDER) {
-            long dateInMillis = data.getLongExtra("FollowUpReminderDate", 0L);
+            long dateInMillis = data.getLongExtra("newFollowUpReminderDate", 0L);
 
             if (dateInMillis == 0L) {
                 Toast.makeText(getApplicationContext(), "The follow-up reminder date seems to be invalid",
