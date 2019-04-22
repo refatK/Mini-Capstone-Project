@@ -74,4 +74,21 @@ public class FollowupCancelWhenSatisfiedTest {
         when(messageMock.getRecipients(Message.RecipientType.TO)).thenReturn(new Address[]{self, other});
         assertFalse(MessagingController.isToSelf(messageMock, accountMock));
     }
+
+    @Test
+    public void isToSelf_failsWhenCCOrBCCNonEmpty() {
+        when(messageMock.getFrom()).thenReturn(new Address[]{self});
+        when(accountMock.getEmail()).thenReturn(self.getAddress());
+
+        when(messageMock.getRecipients(Message.RecipientType.TO)).thenReturn(new Address[]{self});
+        when(messageMock.getRecipients(Message.RecipientType.CC)).thenReturn(new Address[]{other});
+        when(messageMock.getRecipients(Message.RecipientType.BCC)).thenReturn(EMPTY_ADDRESSES);
+
+        assertFalse(MessagingController.isToSelf(messageMock, accountMock));
+
+        // also check non empty BCC case
+        when(messageMock.getRecipients(Message.RecipientType.CC)).thenReturn(EMPTY_ADDRESSES);
+        when(messageMock.getRecipients(Message.RecipientType.BCC)).thenReturn(new Address[]{other});
+        assertFalse(MessagingController.isToSelf(messageMock, accountMock));
+    }
 }
