@@ -113,7 +113,6 @@ public class FollowUpNotificationsToSendNowService extends IntentService {
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setContentIntent(pendingIntent)
                     .setAutoCancel(true);
-            notificationId = account.getAccountNumber()*(17+i);
             //builder.build() generates the Notification object itself, .notify displays it
             notificationManager.notify(notificationId, builder.build());
 

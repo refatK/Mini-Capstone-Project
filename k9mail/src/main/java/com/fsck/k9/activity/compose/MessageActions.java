@@ -98,7 +98,6 @@ public class MessageActions {
         i.putExtra(MessageCompose.EXTRA_MESSAGE_DECRYPTION_RESULT, decryptionResult);
         i.putExtra(MessageCompose.EXTRA_IS_FOLLOWUP, isFollowUp);
         i.setAction(MessageCompose.ACTION_FORWARD);
-        context.startActivity(i);
         return i;
     }
 
