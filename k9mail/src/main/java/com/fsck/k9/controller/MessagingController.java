@@ -3938,9 +3938,11 @@ public class MessagingController {
         // If no other info, simply delete all followups relating to the sender of the received message
         for (int i = 0; i < followUpsEmailsSentTo.size(); i++) {
             List<String> emailsSentTo = followUpsEmailsSentTo.get(i);
+            String followUpFolderName = followUpsMessages.get(i).getFolder().getName();
 
-            // delete followup if got message from expected sender
-            if (emailsSentTo.contains(messageReceived.getFrom()[0].getAddress())) {
+            // delete followup if got message from expected sender and not a unsent scheduled mail
+            if (emailsSentTo.contains(messageReceived.getFrom()[0].getAddress())
+                    && !followUpFolderName.equals(account.getScheduledFolderName())) {
                 K9.daoSession.getFollowUpReminderEmailDao().delete(followUps.get(i));
             }
         }
