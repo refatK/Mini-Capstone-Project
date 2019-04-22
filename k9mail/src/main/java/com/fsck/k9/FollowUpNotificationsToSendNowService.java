@@ -46,8 +46,7 @@ public class FollowUpNotificationsToSendNowService extends IntentService {
         if (!remindersToSendNow.isEmpty()) {
             sendReminders(remindersToSendNow);
         }
-        else
-        {
+        else {
             stopSelf();
         }
     }
