@@ -71,9 +71,10 @@ public class FollowupCancelWhenSatisfiedTest {
         when(messageMock.getRecipients(Message.RecipientType.CC)).thenReturn(EMPTY_ADDRESSES);
         when(messageMock.getRecipients(Message.RecipientType.BCC)).thenReturn(EMPTY_ADDRESSES);
 
+        // message to another email
         assertFalse(MessagingController.isToSelf(messageMock, accountMock));
 
-        // also check if email has both to self and other
+        // should still fail when email has both to self and another email
         when(messageMock.getRecipients(Message.RecipientType.TO)).thenReturn(new Address[]{self, other});
         assertFalse(MessagingController.isToSelf(messageMock, accountMock));
     }
@@ -87,6 +88,7 @@ public class FollowupCancelWhenSatisfiedTest {
         when(messageMock.getRecipients(Message.RecipientType.CC)).thenReturn(new Address[]{other});
         when(messageMock.getRecipients(Message.RecipientType.BCC)).thenReturn(EMPTY_ADDRESSES);
 
+        // non-empty CC case
         assertFalse(MessagingController.isToSelf(messageMock, accountMock));
 
         // also check non empty BCC case
@@ -126,5 +128,36 @@ public class FollowupCancelWhenSatisfiedTest {
         // but re: format still works for base message with RE: if in expected format
         replyMessage.setSubject("RE: RE: Subject");
         assertTrue(message.isRepliedBy(replyMessage));
+    }
+
+    @Test
+    public void isRepliedBy_passesWhenReferencedByRepliedMessage() {
+        LocalMessage message = new LocalMessage(mock(LocalStore.class), "0", mock(Folder.class));
+        message.setMessageId("0");
+        message.setSubject("Subject");
+
+        LocalMessage replyMessage = new LocalMessage(mock(LocalStore.class), "1", mock(Folder.class));
+        replyMessage.setMessageId("1");
+        replyMessage.setSubject("Reply to Subject Not In reply format");
+        replyMessage.setReferences("0");
+
+        assertTrue(message.isRepliedBy(replyMessage));
+
+        // should still work with a deeper reference
+        replyMessage.setReferences("1, 2, 3, 0, 5");
+        assertTrue(message.isRepliedBy(replyMessage));
+    }
+
+    @Test
+    public void isRepliedBy_failsWhenNeitherReferencedNorReFormat() {
+        LocalMessage message = new LocalMessage(mock(LocalStore.class), "0", mock(Folder.class));
+        message.setMessageId("0");
+        message.setSubject("Subject");
+
+        LocalMessage replyMessage = new LocalMessage(mock(LocalStore.class), "1", mock(Folder.class));
+        replyMessage.setMessageId("1");
+        replyMessage.setSubject("Reply to Subject Not In reply format");
+
+        assertFalse(message.isRepliedBy(replyMessage));
     }
 }
