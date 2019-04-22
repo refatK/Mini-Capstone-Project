@@ -2,13 +2,11 @@ package com.fsck.k9.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.Activity;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -16,13 +14,9 @@ import com.fsck.k9.Account;
 import com.fsck.k9.FollowUpNotificationHolder;
 import com.fsck.k9.FollowUpNotificationsListAdapter;
 import com.fsck.k9.FollowUpReminderEmail;
-import com.fsck.k9.K9;
-import com.fsck.k9.MailingList;
 import com.fsck.k9.Preferences;
 import com.fsck.k9.R;
-import com.fsck.k9.activity.setup.AddMailingList;
-import com.fsck.k9.activity.setup.EditQuickReply;
-import com.fsck.k9.activity.setup.RemoveQuickReply;
+import com.fsck.k9.activity.setup.RemoveFollowUpNotification;
 import com.fsck.k9.mail.Message;
 import com.fsck.k9.mail.MessagingException;
 import com.fsck.k9.mailstore.LocalStore;
@@ -32,8 +26,11 @@ import static com.fsck.k9.FollowUpNotificationHolder.makeFNHolder;
 import java.util.Calendar;
 import java.util.Date;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -45,7 +42,7 @@ public class FollowUpNotificationsList extends K9ListActivity {
 
     private List<FollowUpReminderEmail> followups;
     private List<FollowUpNotificationHolder> followupHolders
-            = new ArrayList<FollowUpNotificationHolder>();
+            = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,12 +62,40 @@ public class FollowUpNotificationsList extends K9ListActivity {
 
         followups = daoSession.getFollowUpReminderEmailDao().loadAll();
 
-        for(FollowUpReminderEmail fN : followups) {
-            followupHolders.add(retrieveHolder(fN));
+        //Designed for testing remove function when list is empty
+        if(getIntent().getBooleanExtra("test remove", false) &&
+                followups.isEmpty()){
+
+            SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy @ hh:mm a",
+                    Locale.CANADA);
+
+            FollowUpNotificationHolder fNH = new FollowUpNotificationHolder(
+                    "Doctor Styles", null, "We need help");
+            FollowUpReminderEmail fN = new FollowUpReminderEmail(null, null,
+                    null, Calendar.getInstance().getTimeInMillis());
+            fNH.setDateTime(sdf.format(new Date(fN.getReminderDateTime())));
+
+            //Update the followups
+            daoSession.getFollowUpReminderEmailDao().insert(fN);
+            followupHolders.add(fNH);
+
+            getIntent().putExtra("test remove", false);
+        }else if(getIntent().getBooleanExtra("test remove", false)
+                && followups.size() == 1){
+            //We don't want it to add something to the list after it's empty
+            getIntent().putExtra("test remove", false);
+        }
+
+        if(!followups.isEmpty()){
+            for(FollowUpReminderEmail fN : followups) {
+                followupHolders.add(retrieveHolder(fN));
+            }
+        }else{
+            //Refreshes the list if it's empty just in case it's a test
+            followups = daoSession.getFollowUpReminderEmailDao().loadAll();
         }
 
         setContentView(R.layout.activity_follow_up_notifications_list);
-
 
         ArrayAdapter<FollowUpNotificationHolder> fNListAdapter = new FollowUpNotificationsListAdapter(
                 this, R.layout.follow_up_notification_list_item,  followupHolders);
@@ -118,7 +143,10 @@ public class FollowUpNotificationsList extends K9ListActivity {
             }
 
             case R.id.delete:{
-
+                Intent intent = new Intent(this, RemoveFollowUpNotification.class);
+                intent.putExtra("fNId", followups.get(info.position).getId());
+                startActivity(intent);
+                break;
             }
 
         }
