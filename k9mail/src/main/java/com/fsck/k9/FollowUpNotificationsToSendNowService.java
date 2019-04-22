@@ -14,6 +14,7 @@ import com.fsck.k9.mail.Message;
 import com.fsck.k9.mail.MessagingException;
 import com.fsck.k9.mailstore.LocalMessage;
 import com.fsck.k9.mailstore.LocalStore;
+import com.fsck.k9.notification.NotificationIds;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -97,10 +98,10 @@ public class FollowUpNotificationsToSendNowService extends IntentService {
             account = prefs.getAccount(accountID);
             notificationManager = NotificationManagerCompat.from(this);
 
+            notificationId = NotificationIds.getFollowUpReminderNotificationId(account);
             notificationText = generatePushNotificationString(remindersToSendNow.get(i), account);
 
-            Intent intent = getIntentToFollowUp(remindersToSendNow.get(i), account);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+            PendingIntent pendingIntent = getIntentToFollowUp(remindersToSendNow.get(i), account, notificationId);
 
             //builder is used to forge to grab the parts of a Notification object
             builder = new NotificationCompat.Builder(this)
@@ -123,7 +124,7 @@ public class FollowUpNotificationsToSendNowService extends IntentService {
         remindersToSendNow.clear();
     }
 
-    private Intent getIntentToFollowUp(FollowUpReminderEmail email, Account account) {
+    private PendingIntent getIntentToFollowUp(FollowUpReminderEmail email, Account account, int notificationId) {
 
         LocalMessage message = null;
 
@@ -134,6 +135,9 @@ public class FollowUpNotificationsToSendNowService extends IntentService {
         }
 
         MessageReference ref = message.makeMessageReference();
-        return MessageActions.getActionForwardIntent(this, ref, null, true);
+        Intent intent = MessageActions.getActionForwardIntent(this, ref, null, true);
+
+        return PendingIntent.getActivity(this, notificationId, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
     }
 }
