@@ -1,6 +1,8 @@
 
 package com.fsck.k9;
 
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "595426210233",
+    "firebase_url": "https://k9-mail-soen-390.firebaseio.com",
+    "project_id": "k9-mail-soen-390",
+    "storage_bucket": "k9-mail-soen-390.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:595426210233:android:c5197b51b4a58381",
+        "android_client_info": {
+          "package_name": "com.fsck.k9"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "595426210233-4klvrj44ithok4udd608s88lq4lj1f17.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSTOEULaj8XLiOsHe0w7iLvKjKAyiQKJU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
