@@ -4,7 +4,10 @@ import com.fsck.k9.Account;
 import com.fsck.k9.K9RobolectricTestRunner;
 import com.fsck.k9.controller.MessagingController;
 import com.fsck.k9.mail.Address;
+import com.fsck.k9.mail.Folder;
 import com.fsck.k9.mail.Message;
+import com.fsck.k9.mailstore.LocalMessage;
+import com.fsck.k9.mailstore.LocalStore;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -76,7 +79,7 @@ public class FollowupCancelWhenSatisfiedTest {
     }
 
     @Test
-    public void isToSelf_failsWhenCCOrBCCNonEmpty() {
+    public void isToSelf_failsWhenCcOrBccNonEmpty() {
         when(messageMock.getFrom()).thenReturn(new Address[]{self});
         when(accountMock.getEmail()).thenReturn(self.getAddress());
 
@@ -90,5 +93,38 @@ public class FollowupCancelWhenSatisfiedTest {
         when(messageMock.getRecipients(Message.RecipientType.CC)).thenReturn(EMPTY_ADDRESSES);
         when(messageMock.getRecipients(Message.RecipientType.BCC)).thenReturn(new Address[]{other});
         assertFalse(MessagingController.isToSelf(messageMock, accountMock));
+    }
+
+    @Test
+    public void isRepliedBy_passesWhenReplyUsesReFormat() {
+        LocalMessage message = new LocalMessage(mock(LocalStore.class), "0", mock(Folder.class));
+        message.setMessageId("0");
+        message.setSubject("Subject");
+
+        LocalMessage replyMessage = new LocalMessage(mock(LocalStore.class), "1", mock(Folder.class));
+        replyMessage.setMessageId("1");
+        replyMessage.setSubject("RE: Subject");
+
+        assertTrue(message.isRepliedBy(replyMessage));
+
+        // case shouldn't matter either
+        replyMessage.setSubject("re: Subject");
+        assertTrue(message.isRepliedBy(replyMessage));
+
+        // space shouldn't matter
+        replyMessage.setSubject("RE:Subject");
+        assertTrue(message.isRepliedBy(replyMessage));
+
+        // shouldn't work if check is flipped
+        replyMessage.setSubject("RE: Subject");
+        assertFalse(replyMessage.isRepliedBy(message));
+
+        // shouldn't work just because base message starts with RE:
+        message.setSubject("RE: Subject");
+        assertFalse(message.isRepliedBy(replyMessage));
+
+        // but re: format still works for base message with RE: if in expected format
+        replyMessage.setSubject("RE: RE: Subject");
+        assertTrue(message.isRepliedBy(replyMessage));
     }
 }
