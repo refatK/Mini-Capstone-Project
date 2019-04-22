@@ -95,10 +95,11 @@ public class MessageActions {
     /**
      * Compose a new message as a forward of the given message.
      */
-    public static void actionForward(Context context, MessageReference messageReference, Parcelable decryptionResult) {
+    public static void actionForward(Context context, MessageReference messageReference, Parcelable decryptionResult, boolean isFollowUp) {
         Intent i = new Intent(context, MessageCompose.class);
         i.putExtra(MessageCompose.EXTRA_MESSAGE_REFERENCE, messageReference.toIdentityString());
         i.putExtra(MessageCompose.EXTRA_MESSAGE_DECRYPTION_RESULT, decryptionResult);
+        i.putExtra(MessageCompose.EXTRA_IS_FOLLOWUP, isFollowUp);
         i.setAction(MessageCompose.ACTION_FORWARD);
         context.startActivity(i);
     }

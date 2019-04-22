@@ -140,6 +140,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     public static final String EXTRA_MESSAGE_REFERENCE = "message_reference";
     public static final String EXTRA_MESSAGE_DECRYPTION_RESULT = "message_decryption_result";
     public static final String EXTRA_QUICK_REPLY_MESSAGE = "quickReply";
+    public static final String EXTRA_IS_FOLLOWUP = "isFollowup";
 
     private static final String STATE_KEY_SOURCE_MESSAGE_PROCED =
             "com.fsck.k9.activity.MessageCompose.stateKeySourceMessageProced";
@@ -1626,12 +1627,18 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
     private void processMessageToForward(MessageViewInfo messageViewInfo, boolean asAttachment) throws MessagingException {
         Message message = messageViewInfo.message;
+        boolean isFollowUp = getIntent().getBooleanExtra(MessageCompose.EXTRA_IS_FOLLOWUP, false);
 
         String subject = message.getSubject();
         if (subject != null && !subject.toLowerCase(Locale.US).startsWith("fwd:")) {
             subjectView.setText("Fwd: " + subject);
         } else {
             subjectView.setText(subject);
+        }
+
+        if (isFollowUp) {
+            subjectView.setText(getString(R.string.followup_message_subject_front) + subject);
+            recipientPresenter.initFromReplyToMessage(message, true);
         }
 
         // "Be Like Thunderbird" - on forwarded messages, set the message ID
