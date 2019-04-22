@@ -46,6 +46,7 @@ import android.widget.Toast;
 import com.fsck.k9.Account;
 import com.fsck.k9.Account.MessageFormat;
 import com.fsck.k9.DaoSession;
+import com.fsck.k9.FollowUpNotificationsToSendNowService;
 import com.fsck.k9.FollowUpReminderEmail;
 import com.fsck.k9.ScheduledEmailsToSendNowService;
 import com.fsck.k9.Identity;
@@ -822,6 +823,20 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 followUpReminderDate.getTimeInMillis());
 
         daoSession.getFollowUpReminderEmailDao().insertOrReplace(followUpReminderEmail);
+
+
+        Intent i = new Intent(getApplicationContext(), FollowUpNotificationsToSendNowService.class);
+
+        Context context = getApplicationContext();
+
+        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        long frequency = 10 * 1000;
+
+        PendingIntent pi = PendingIntent.getService(context,0, i,
+                PendingIntent.FLAG_CANCEL_CURRENT);
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+                Calendar.getInstance().getTimeInMillis(),frequency,pi);
     }
 
     private void sendLaterConfirmationToast() {
