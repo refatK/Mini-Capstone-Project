@@ -1,19 +1,18 @@
 package com.fsck.k9;
 
 import android.app.IntentService;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
-import com.fsck.k9.activity.Accounts;
+import com.fsck.k9.activity.MessageReference;
+import com.fsck.k9.activity.compose.MessageActions;
 import com.fsck.k9.mail.Address;
 import com.fsck.k9.mail.Message;
 import com.fsck.k9.mail.MessagingException;
+import com.fsck.k9.mailstore.LocalMessage;
 import com.fsck.k9.mailstore.LocalStore;
 
 import java.util.ArrayList;
@@ -88,8 +87,6 @@ public class FollowUpNotificationsToSendNowService extends IntentService {
         NotificationCompat.Builder builder;
         NotificationManagerCompat notificationManager;
         int notificationId;
-        Intent intent = new Intent(getApplicationContext(), Accounts.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
         //Loop to send each reminder in the remindersToSendNow list
         for (int i = 0; i < remindersToSendNow.size(); i++) {
@@ -101,6 +98,9 @@ public class FollowUpNotificationsToSendNowService extends IntentService {
             notificationManager = NotificationManagerCompat.from(this);
 
             notificationText = generatePushNotificationString(remindersToSendNow.get(i), account);
+
+            Intent intent = getIntentToFollowUp(remindersToSendNow.get(i), account);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
             //builder is used to forge to grab the parts of a Notification object
             builder = new NotificationCompat.Builder(this)
@@ -121,5 +121,19 @@ public class FollowUpNotificationsToSendNowService extends IntentService {
         }
 
         remindersToSendNow.clear();
+    }
+
+    private Intent getIntentToFollowUp(FollowUpReminderEmail email, Account account) {
+
+        LocalMessage message = null;
+
+        try {
+            message = account.getLocalStore().getLocalMessageByMessageId(email.getEmailID());
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+
+        MessageReference ref = message.makeMessageReference();
+        return MessageActions.getActionForwardIntent(this, ref, null, true);
     }
 }

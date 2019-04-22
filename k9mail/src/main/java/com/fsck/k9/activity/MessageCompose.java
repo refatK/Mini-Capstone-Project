@@ -1637,7 +1637,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         }
 
         if (isFollowUp) {
-            subjectView.setText(getString(R.string.followup_message_subject_front) + subject);
+            subjectView.setText(getString(R.string.followup_message_subject_front) + " " + subject);
             recipientPresenter.initFromReplyToMessage(message, true);
         }
 
