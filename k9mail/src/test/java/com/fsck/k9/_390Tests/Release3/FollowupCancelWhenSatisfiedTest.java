@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static junit.framework.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -44,5 +45,33 @@ public class FollowupCancelWhenSatisfiedTest {
         when(messageMock.getRecipients(Message.RecipientType.BCC)).thenReturn(EMPTY_ADDRESSES);
 
         assertTrue(MessagingController.isToSelf(messageMock, accountMock));
+    }
+
+    @Test
+    public void isToSelf_failsWhenMessageFromAnotherEmail() {
+        when(messageMock.getFrom()).thenReturn(new Address[]{other});
+        when(accountMock.getEmail()).thenReturn(other.getAddress());
+
+        when(messageMock.getRecipients(Message.RecipientType.TO)).thenReturn(new Address[]{self});
+        when(messageMock.getRecipients(Message.RecipientType.CC)).thenReturn(EMPTY_ADDRESSES);
+        when(messageMock.getRecipients(Message.RecipientType.BCC)).thenReturn(EMPTY_ADDRESSES);
+
+        assertFalse(MessagingController.isToSelf(messageMock, accountMock));
+    }
+
+    @Test
+    public void isToSelf_failsWhenToDifferentUser() {
+        when(messageMock.getFrom()).thenReturn(new Address[]{self});
+        when(accountMock.getEmail()).thenReturn(self.getAddress());
+
+        when(messageMock.getRecipients(Message.RecipientType.TO)).thenReturn(new Address[]{other});
+        when(messageMock.getRecipients(Message.RecipientType.CC)).thenReturn(EMPTY_ADDRESSES);
+        when(messageMock.getRecipients(Message.RecipientType.BCC)).thenReturn(EMPTY_ADDRESSES);
+
+        assertFalse(MessagingController.isToSelf(messageMock, accountMock));
+
+        // also check if email has both to self and other
+        when(messageMock.getRecipients(Message.RecipientType.TO)).thenReturn(new Address[]{self, other});
+        assertFalse(MessagingController.isToSelf(messageMock, accountMock));
     }
 }
