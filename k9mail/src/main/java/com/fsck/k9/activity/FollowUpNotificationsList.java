@@ -56,7 +56,20 @@ public class FollowUpNotificationsList extends K9ListActivity {
             recreate();
         }
         if(getIntent().getBooleanExtra("test", false)) {
+            //aiatro test
             followupHolders.add(new FollowUpNotificationHolder("Test@hotmail.com", "Mar 9, 2099 @ 1:20AM", "TEST"));
+
+            //sebdezl test
+            SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy @ hh:mm a",
+                    Locale.CANADA);
+
+            FollowUpNotificationHolder fNH = new FollowUpNotificationHolder(
+                    "Doctor Styles", null, "We need help");
+            FollowUpReminderEmail fN = new FollowUpReminderEmail(null, null,
+                    null, Calendar.getInstance().getTimeInMillis());
+            fNH.setDateTime(sdf.format(new Date(fN.getReminderDateTime())));
+
+            followupHolders.add(fNH);
         }
         else {
             followups = daoSession.getFollowUpReminderEmailDao().loadAll();
