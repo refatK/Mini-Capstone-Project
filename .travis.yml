@@ -62,8 +62,8 @@ stages:
 
 after_success:
   - echo "Success"
-  - awk 'FNR <= 50' travisOutput.txt  | curl -sT - chunk.io
+  - ./summarize-log.sh
 
 after_failure:
   - echo "Failure"
-  - awk 'FNR <= 50' travisOutput.txt  | curl -sT - chunk.io
+  - ./summarize-log.sh
