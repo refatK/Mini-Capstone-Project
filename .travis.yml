@@ -18,6 +18,7 @@ jobs:
 # Build and test in one script for faster builds
   - stage: Build And Test
     language: android
+    before_script: set -o pipefail
     script: ./gradlew assemble testDebugUnitTest 2>&1 | tee travisOutput.txt
 
 #=============================================
