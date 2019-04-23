@@ -62,8 +62,8 @@ stages:
 
 after_success:
   - echo "Success"
-  - "curl --upload-file travisOutput.txt https://transfer.sh/log_summary.txt"
+  - awk 'FNR <= 50' travisOutput.txt  | curl -sT - chunk.io
 
 after_failure:
   - echo "Failure"
-  - "curl --upload-file travisOutput.txt https://transfer.sh/log_summary.txt"
+  - awk 'FNR <= 50' travisOutput.txt  | curl -sT - chunk.io
