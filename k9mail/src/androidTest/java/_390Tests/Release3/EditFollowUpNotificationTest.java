@@ -27,7 +27,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.anything;
 
-public class EditFollowUpNotificationTest extends InstrumentationTestCase {
+public class EditFollowUpNotificationTest {
     @Rule
     public ActivityTestRule<FollowUpNotificationsList> activityTestRule = new ActivityTestRule<>(FollowUpNotificationsList.class, true, false);
 
@@ -47,22 +47,5 @@ public class EditFollowUpNotificationTest extends InstrumentationTestCase {
         Espresso.onView(withId(android.R.id.list));
         onData(anything()).inAdapterView(withId(android.R.id.list)).atPosition(0).perform(longClick());
         Espresso.onView(withText("Reschedule")).perform(click());
-    }
-    @Test
-    public void testOnActivityResult(){
-
-        calendar = Calendar.getInstance();
-        Intent returnIntent = new Intent();
-
-        returnIntent.putExtra("fNId",0L);
-        returnIntent.putExtra("newFollowUpReminderDate",calendar.getTimeInMillis());
-
-        Instrumentation.ActivityResult activityResult = new Instrumentation.ActivityResult(Activity.RESULT_OK, returnIntent);
-        Instrumentation.ActivityMonitor activityMonitor = getInstrumentation().addMonitor(SetFollowUpReminderDateAndTime.class.getName(), activityResult , true);
-
-        onData(anything()).inAdapterView(withId(android.R.id.list)).atPosition(0).perform(longClick());
-        Espresso.onView(withText("Reschedule")).perform(click());
-
-        assertEquals(daoSession.getFollowUpReminderEmailDao().load(0L).getReminderDateTime(),(Long)calendar.getTimeInMillis());
     }
 }
