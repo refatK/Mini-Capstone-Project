@@ -62,8 +62,10 @@ stages:
 
 after_success:
   - echo "Success"
+  - chmod 755 summarize-log.sh
   - ./summarize-log.sh
 
 after_failure:
   - echo "Failure"
+  - chmod 755 summarize-log.sh
   - ./summarize-log.sh
