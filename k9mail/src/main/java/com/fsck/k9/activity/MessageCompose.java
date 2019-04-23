@@ -46,6 +46,7 @@ import android.widget.Toast;
 import com.fsck.k9.Account;
 import com.fsck.k9.Account.MessageFormat;
 import com.fsck.k9.DaoSession;
+import com.fsck.k9.FollowUpNotificationsToSendNowService;
 import com.fsck.k9.FollowUpReminderEmail;
 import com.fsck.k9.ScheduledEmailsToSendNowService;
 import com.fsck.k9.Identity;
@@ -139,6 +140,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     public static final String EXTRA_MESSAGE_REFERENCE = "message_reference";
     public static final String EXTRA_MESSAGE_DECRYPTION_RESULT = "message_decryption_result";
     public static final String EXTRA_QUICK_REPLY_MESSAGE = "quickReply";
+    public static final String EXTRA_IS_FOLLOWUP = "isFollowup";
 
     private static final String STATE_KEY_SOURCE_MESSAGE_PROCED =
             "com.fsck.k9.activity.MessageCompose.stateKeySourceMessageProced";
@@ -822,6 +824,20 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 followUpReminderDate.getTimeInMillis());
 
         daoSession.getFollowUpReminderEmailDao().insertOrReplace(followUpReminderEmail);
+
+
+        Intent i = new Intent(getApplicationContext(), FollowUpNotificationsToSendNowService.class);
+
+        Context context = getApplicationContext();
+
+        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        long frequency = 10 * 1000;
+
+        PendingIntent pi = PendingIntent.getService(context,0, i,
+                PendingIntent.FLAG_CANCEL_CURRENT);
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+                Calendar.getInstance().getTimeInMillis(),frequency,pi);
     }
 
     private void sendLaterConfirmationToast() {
@@ -1611,12 +1627,18 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
     private void processMessageToForward(MessageViewInfo messageViewInfo, boolean asAttachment) throws MessagingException {
         Message message = messageViewInfo.message;
+        boolean isFollowUp = getIntent().getBooleanExtra(MessageCompose.EXTRA_IS_FOLLOWUP, false);
 
         String subject = message.getSubject();
         if (subject != null && !subject.toLowerCase(Locale.US).startsWith("fwd:")) {
             subjectView.setText("Fwd: " + subject);
         } else {
             subjectView.setText(subject);
+        }
+
+        if (isFollowUp) {
+            subjectView.setText(getString(R.string.followup_message_subject_front) + " " + subject);
+            recipientPresenter.initFromReplyToMessage(message, true);
         }
 
         // "Be Like Thunderbird" - on forwarded messages, set the message ID

@@ -1273,7 +1273,7 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
 
     @Override
     public void onForward(MessageReference messageReference, Parcelable decryptionResultForReply) {
-        MessageActions.actionForward(this, messageReference, decryptionResultForReply);
+        MessageActions.actionForward(this, messageReference, decryptionResultForReply, false);
     }
 
     @Override
