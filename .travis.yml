@@ -65,6 +65,4 @@ stages:
 # If there was a failure, show a summary of what happened
 after_failure:
   - chmod 755 summarize-log.sh
-  - echo "\n\n\nThere was a failure, view the URL below for a summary of what happened:"
-  - echo "-----------------------------------------------------------------------"
   - ./summarize-log.sh

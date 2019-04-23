@@ -25,5 +25,7 @@ awk '/> Task :k9mail:compileDebugJavaWithJavac FAILED|> Task :k9mail:testDebugUn
 echo "**************************" >> ${SUMMARY}
 
 # print to an outside source to view summary
+echo "There was a failure, view the URL below for a summary of what happened:"
+echo "-----------------------------------------------------------------------"
 RESPONSE=$(curl -# -F "file=@${SUMMARY}" "${URL}")
 echo "${RESPONSE}"
