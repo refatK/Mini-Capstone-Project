@@ -226,6 +226,20 @@ public class Address implements Serializable {
         return sb.toString();
     }
 
+    /**
+     * Converts and Address array to a String list of emails
+     * @param addresses The recipient addresses
+     * @return Simple string emails as a list
+     */
+    public static List<String> toListOfEmails(Address[] addresses) {
+        List<String> listOfEmails = new ArrayList<>();
+
+        for (Address address : addresses) {
+            listOfEmails.add(address.mAddress);
+        }
+
+        return listOfEmails;
+    }
 
     /**
      * Unpacks an address list previously packed with packAddressList()
