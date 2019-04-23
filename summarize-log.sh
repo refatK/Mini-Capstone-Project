@@ -13,7 +13,8 @@ echo "Summary of Travis Log for Test/Build Failures" >> ${SUMMARY}
 echo "----------------------------------------------" >> ${SUMMARY}
 echo "" >> ${SUMMARY}
 echo "Branch: ${TRAVIS_BRANCH}" >> ${SUMMARY}
-echo "Commit: ${TRAVIS_COMMIT} - ${TRAVIS_COMMIT_MESSAGE}" >> ${SUMMARY}
+echo "Commit ID: ${TRAVIS_COMMIT}" >> ${SUMMARY}
+echo "Commit Message: ${TRAVIS_COMMIT_MESSAGE}" >> ${SUMMARY}
 echo "Caused By: ${AUTHOR_NAME}" >> ${SUMMARY}
 echo "" >> ${SUMMARY}
 echo "" >> ${SUMMARY}
@@ -21,7 +22,6 @@ echo "--- FAILURE ---" >> ${SUMMARY}
 echo "**************************" >> ${SUMMARY}
 echo "" >> ${SUMMARY}
 awk '/> Task :k9mail:compileDebugJavaWithJavac FAILED|> Task :k9mail:testDebugUnitTest/{flag=1} /FAILURE: Build failed with an exception./{flag=0} flag' ${FILE} >> ${SUMMARY}
-echo "" >> ${SUMMARY}
 echo "**************************" >> ${SUMMARY}
 
 # print to an outside source to view summary
