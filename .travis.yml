@@ -62,12 +62,9 @@ stages:
   - name: Analyze
     if: branch = master
 
-after_success:
-  - echo "Success"
-  - chmod 755 summarize-log.sh
-  - ./summarize-log.sh
-
+# If there was a failure, show a summary of what happened
 after_failure:
-  - echo "Failure"
   - chmod 755 summarize-log.sh
+  - echo "\n\n\nThere was a failure, view the URL below for a summary of what happened:"
+  - echo "-----------------------------------------------------------------------"
   - ./summarize-log.sh
