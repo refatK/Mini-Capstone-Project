@@ -2,12 +2,16 @@ package _390Tests.Release3;
 
 import android.content.Intent;
 import android.support.test.espresso.Espresso;
+import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.rule.ActivityTestRule;
+import android.widget.DatePicker;
+import android.widget.TimePicker;
 
 import com.fsck.k9.R;
 import com.fsck.k9.activity.SetFollowUpReminderDateAndTime;
 import com.fsck.k9.activity.drunk_mode_challenges.AudioChallenge;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,8 +22,12 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeTextIntoFocusedView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
@@ -60,5 +68,27 @@ public class SetFollowUpReminderDateAndTimeTests {
         onView(withId(R.id.reminder_set_date_and_time_button)).perform(click());
         onView(withId(R.id.reminder_date)).check(matches(withText(strDate)));
         onView(withId(R.id.reminder_time)).check(matches(withText(strTime)));
+    }
+
+    @Test
+    public void selectNow(){
+        strDate = (month + 1) + "/" + day + "/" + year;
+        strTime = (hour%12) + ":" + ((minute < 10) ? "0" + minute : minute) + (hour > 12 ? "PM" : "AM");
+
+        onView(withId(R.id.reminder_set_date_button)).perform(click());
+        onView(withClassName((Matchers.equalTo(DatePicker.class.getName())))).perform(PickerActions.setDate(year, month + 1, day));
+        onView(withId(android.R.id.button1)).perform(click());
+
+        onView(withId(R.id.reminder_set_time_button)).perform(click());
+        onView(withClassName(Matchers.equalTo(TimePicker.class.getName()))).perform(PickerActions.setTime(hour, minute));
+        onView(withId(android.R.id.button1)).perform(click());
+
+        onView(withId(R.id.reminder_date)).check(matches(withText(strDate)));
+        onView(withId(R.id.reminder_time)).check(matches(withText(strTime)));
+
+        onView(withId(R.id.reminder_set_date_and_time_button)).perform(click());
+        onView(withText("Please choose another date."))
+            .inRoot(withDecorView(not(testRule.getActivity().getWindow().getDecorView())))
+            .check(matches(isDisplayed()));
     }
 }
