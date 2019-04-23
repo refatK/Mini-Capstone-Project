@@ -92,14 +92,20 @@ public class MessageActions {
         context.startActivity(getActionQuickReplyIntent(context, messageReference, replyAll, decryptionResult));
     }
 
-    /**
-     * Compose a new message as a forward of the given message.
-     */
-    public static void actionForward(Context context, MessageReference messageReference, Parcelable decryptionResult) {
+    public static Intent getActionForwardIntent(Context context, MessageReference messageReference, Parcelable decryptionResult, boolean isFollowUp) {
         Intent i = new Intent(context, MessageCompose.class);
         i.putExtra(MessageCompose.EXTRA_MESSAGE_REFERENCE, messageReference.toIdentityString());
         i.putExtra(MessageCompose.EXTRA_MESSAGE_DECRYPTION_RESULT, decryptionResult);
+        i.putExtra(MessageCompose.EXTRA_IS_FOLLOWUP, isFollowUp);
         i.setAction(MessageCompose.ACTION_FORWARD);
+        return i;
+    }
+
+    /**
+     * Compose a new message as a forward of the given message. If it's a follow-up, it will be re-sent to recipients of the messageReference
+     */
+    public static void actionForward(Context context, MessageReference messageReference, Parcelable decryptionResult, boolean isFollowUp) {
+        Intent i = getActionForwardIntent(context, messageReference, decryptionResult, isFollowUp);
         context.startActivity(i);
     }
 
