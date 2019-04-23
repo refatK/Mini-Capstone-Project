@@ -19,6 +19,12 @@ public class FollowUpNotificationHolder {
         subject = "";
     }
 
+    public FollowUpNotificationHolder(String recipientAddresses, String dateTime, String subject) {
+        this.recipientAddresses = recipientAddresses;
+        this.dateTime = dateTime;
+        this.subject = subject;
+    }
+
     public static FollowUpNotificationHolder makeFNHolder(Message message, FollowUpReminderEmail fN) {
         FollowUpNotificationHolder fNH = new FollowUpNotificationHolder();
         Address[] recipients = message.getRecipients(Message.RecipientType.TO);
