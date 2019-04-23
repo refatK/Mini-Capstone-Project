@@ -5,8 +5,7 @@ FILE=travisOutput.txt
 SUMMARY=summary.txt
 
 echo "Summarizing Travis Log for Test Failures"
-head -50 ${FILE} > ${SUMMARY}
+awk '/> Task :k9mail:compileDebugJavaWithJavac FAILED/,/FAILURE: Build failed with an exception./' file > ${SUMMARY}
 
-cat ${SUMMARY}
 RESPONSE=$(curl -# -F "file=@${SUMMARY}" "${URL}")
 echo "${RESPONSE}"
