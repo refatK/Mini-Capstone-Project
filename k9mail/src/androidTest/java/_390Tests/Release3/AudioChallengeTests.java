@@ -15,7 +15,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class AudioChallengeTests {
 
@@ -38,7 +37,6 @@ public class AudioChallengeTests {
         Espresso.onView(withId(R.id.button_sound_ok)).perform(click());
 
         assertTrue(testRule.getActivity().getWin());
-        fail();
     }
 
     @Test

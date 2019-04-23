@@ -13,7 +13,6 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;

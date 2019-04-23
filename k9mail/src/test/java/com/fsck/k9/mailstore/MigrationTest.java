@@ -216,6 +216,7 @@ public class MigrationTest {
         copyAttachmentFromFile("k9small.png", 5, 2250);
     }
 
+    @Test
     public void migrateMixedWithAttachments() throws Exception {
         SQLiteDatabase db = createV50Database();
         insertMixedWithAttachments(db);

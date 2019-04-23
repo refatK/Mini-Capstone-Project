@@ -19,7 +19,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.fail;
 
 public class DrunkModeSettingsTest {
 
@@ -43,8 +42,6 @@ public class DrunkModeSettingsTest {
         onData(withKey("drunk_mode_settings_toggle")).check(matches(isDisplayed()));
         onData(withKey("drunk_mode_settings_toggle")).perform(click());
         onData(withKey("drunk_mode_settings_toggle")).perform(click());
-        fail();
-
     }
 
     //Makes sure that state corresponds to the toggle's state
