@@ -1,11 +1,9 @@
 #!/bin/sh
 
+# defined variables
 URL="https://0x0.st"
 FILE=travisOutput.txt
 SUMMARY=summary.txt
-
-START_PAT="/> Task :k9mail:compileDebugJavaWithJavac FAILED|> Task :k9mail:testDebugUnitTest/"
-END_PAT="/FAILURE: Build failed with an exception./"
 
 # remove the summary if it already exists
 rm -f summary.txt
@@ -22,7 +20,7 @@ echo "" >> ${SUMMARY}
 echo "--- FAILURE ---" >> ${SUMMARY}
 echo "**************************" >> ${SUMMARY}
 echo "" >> ${SUMMARY}
-awk '${START_PAT}{flag=1} ${END_PAT}{flag=0} flag' ${FILE} >> ${SUMMARY}
+awk '/> Task :k9mail:compileDebugJavaWithJavac FAILED|> Task :k9mail:testDebugUnitTest/{flag=1} /FAILURE: Build failed with an exception./{flag=0} flag' ${FILE} >> ${SUMMARY}
 echo "" >> ${SUMMARY}
 echo "**************************" >> ${SUMMARY}
 
