@@ -943,6 +943,10 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
                 updateMenu();
                 return true;
             }
+            case R.id.follow_up:
+                Intent viewFollowUps = new Intent(this, FollowUpNotificationsList.class);
+                startActivity(viewFollowUps);
+                break;
             case R.id.mailing_lists:
                 Intent viewMailLists = new Intent(this, MailingListMenu.class);
                 startActivity(viewMailLists);
@@ -1269,7 +1273,7 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
 
     @Override
     public void onForward(MessageReference messageReference, Parcelable decryptionResultForReply) {
-        MessageActions.actionForward(this, messageReference, decryptionResultForReply);
+        MessageActions.actionForward(this, messageReference, decryptionResultForReply, false);
     }
 
     @Override

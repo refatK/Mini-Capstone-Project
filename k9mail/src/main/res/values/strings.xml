@@ -1332,4 +1332,6 @@ Please submit bug reports, contribute new features and ask questions at
          Follow-Up Reminder
     </string>
     <string name="follow_up_reminder_action">Follow-Up Reminder</string>
+    <string name="title_activity_follow_up_notifications_list">Follow-Up Notifications</string>
+    <string name="followup_message_subject_front">Reminder To Reply:</string>
 </resources>

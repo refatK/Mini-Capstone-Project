@@ -58,6 +58,9 @@
         android:resizeableActivity="true"
         android:theme="@style/Theme.K9.Startup">
         <activity
+            android:name=".activity.FollowUpNotificationsList"
+            android:label="@string/title_activity_follow_up_notifications_list"></activity>
+        <activity
             android:name=".activity.SetFollowUpReminderDateAndTime"
             android:label="@string/title_activity_set_follow_up_reminder_date_and_time"
             android:parentActivityName=".activity.K9Activity">
@@ -123,6 +126,9 @@
         <meta-data
             android:name="android.app.default_searchable"
             android:value="com.fsck.k9.activity.Search" />
+        <meta-data
+            android:name="firebase_performance_logcat_enabled"
+            android:value="true" />
 
         <activity
             android:name=".activity.Accounts"
@@ -427,6 +433,9 @@
             android:name=".ScheduledEmailsToSendNowService"
             android:exported="false" />
         <service
+            android:name=".FollowUpNotificationsToSendNowService"
+            android:exported="false" />
+        <service
             android:name=".widget.list.MessageListWidgetService"
             android:enabled="true"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
@@ -500,6 +509,9 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/temp_file_provider_paths" />
         </provider>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="817359b8d4bc6f98e5460b6a0fcc62273aceaa01" />
     </application>
 
 </manifest>
