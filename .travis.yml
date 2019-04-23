@@ -17,7 +17,7 @@ jobs:
 # Build and test in one script for faster builds
   - stage: Build And Test
     language: android
-    script: ./gradlew assemble testDebugUnitTest
+    script: ./gradlew assemble testDebugUnitTest 2>&1 | tee travisOutput.txt
 
 #=============================================
 
@@ -61,4 +61,9 @@ stages:
     if: branch = master
 
 after_success:
-  - "curl --upload-file $TRAVIS_BUILD_WEB_URL https://transfer.sh/log_summary.txt"
+#  - ls
+#  - "curl --upload-file ./travisOutput.txt https://transfer.sh/log_summary.txt"
+  - find /home -name travisOutput.txt
+
+after_failure:
+  - find /home -name travisOutput.txt

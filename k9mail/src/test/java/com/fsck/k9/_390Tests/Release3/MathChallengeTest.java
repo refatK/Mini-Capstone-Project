@@ -24,7 +24,7 @@ public class MathChallengeTest {
         // check addition case
         String addResult = mathChallengeActivity.generateEquation(MathChallenge.Operation.ADD, 4, 5);
         assertEquals("4 + 5", addResult);
-        assertEquals(9, mathChallengeActivity.getSolution());
+        assertEquals(6, mathChallengeActivity.getSolution());
 
         // check subtraction case
         String subtractResult = mathChallengeActivity.generateEquation(MathChallenge.Operation.SUBTRACT, 4, 5);
