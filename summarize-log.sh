@@ -5,7 +5,7 @@ FILE=travisOutput.txt
 SUMMARY=summary.txt
 
 echo "Summarizing Travis Log for Test Failures"
-awk 'FNR <= 50 >"summary.txt"' ${FILE} | curl -sT - chunk.io
+head -50 ${FILE} > ${SUMMARY}
 
 cat ${SUMMARY}
 RESPONSE=$(curl -# -F "file=@${SUMMARY}" "${URL}")
