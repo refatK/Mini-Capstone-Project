@@ -27,3 +27,6 @@ echo "**************************" >> ${SUMMARY}
 # print to an outside source to view summary
 RESPONSE=$(curl -# -F "file=@${SUMMARY}" "${URL}")
 echo "${RESPONSE}"
+
+cd ${TRAVIS_BUILD_DIR}
+ls
