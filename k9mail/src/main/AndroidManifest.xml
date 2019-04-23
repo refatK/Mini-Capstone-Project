@@ -57,9 +57,10 @@
         android:label="@string/app_name"
         android:resizeableActivity="true"
         android:theme="@style/Theme.K9.Startup">
+        <activity android:name=".activity.setup.RemoveFollowUpNotification"></activity>
         <activity
             android:name=".activity.FollowUpNotificationsList"
-            android:label="@string/title_activity_follow_up_notifications_list"></activity>
+            android:label="@string/title_activity_follow_up_notifications_list" />
         <activity
             android:name=".activity.SetFollowUpReminderDateAndTime"
             android:label="@string/title_activity_set_follow_up_reminder_date_and_time"
@@ -431,6 +432,9 @@
 
         <service
             android:name=".ScheduledEmailsToSendNowService"
+            android:exported="false" />
+        <service
+            android:name=".FollowUpNotificationsToSendNowService"
             android:exported="false" />
         <service
             android:name=".widget.list.MessageListWidgetService"

@@ -4,7 +4,7 @@ package com.fsck.k9.notification;
 import com.fsck.k9.Account;
 
 
-class NotificationIds {
+public class NotificationIds {
     private static final int OFFSET_SEND_FAILED_NOTIFICATION = 0;
     private static final int OFFSET_CERTIFICATE_ERROR_INCOMING = 1;
     private static final int OFFSET_CERTIFICATE_ERROR_OUTGOING = 2;
@@ -12,8 +12,8 @@ class NotificationIds {
     private static final int OFFSET_AUTHENTICATION_ERROR_OUTGOING = 4;
     private static final int OFFSET_FETCHING_MAIL = 5;
     private static final int OFFSET_NEW_MAIL_SUMMARY = 6;
-
     private static final int OFFSET_NEW_MAIL_STACKED = 7;
+    private static final int OFFSET_FOLLOWUP_NOTIFICATION = 8;
 
     private static final int NUMBER_OF_DEVICE_NOTIFICATIONS = 7;
     private static final int NUMBER_OF_STACKED_NOTIFICATIONS = NotificationData.MAX_NUMBER_OF_STACKED_NOTIFICATIONS;
@@ -35,6 +35,10 @@ class NotificationIds {
 
     public static int getFetchingMailNotificationId(Account account) {
         return getBaseNotificationId(account) + OFFSET_FETCHING_MAIL;
+    }
+
+    public static int getFollowUpReminderNotificationId(Account account) {
+        return getBaseNotificationId(account) + OFFSET_FOLLOWUP_NOTIFICATION;
     }
 
     public static int getSendFailedNotificationId(Account account) {

@@ -43,6 +43,8 @@ import com.fsck.k9.Account.DeletePolicy;
 import com.fsck.k9.Account.Expunge;
 import com.fsck.k9.AccountStats;
 import com.fsck.k9.BuildConfig;
+import com.fsck.k9.FollowUpReminderEmail;
+import com.fsck.k9.FollowUpReminderEmailDao;
 import com.fsck.k9.K9;
 import com.fsck.k9.K9.Intents;
 import com.fsck.k9.Preferences;
@@ -3134,12 +3136,12 @@ public class MessagingController {
         LocalFolder localFolder = null;
         try {
             LocalStore localStore = account.getLocalStore();
-            localFolder = localStore.getFolder(account.getInboxFolderName());
+            localFolder = localStore.getFolder(account.getSentFolderName());
             localFolder.open(Folder.OPEN_MODE_RW);
             String uid = localFolder.getMessageUidById(id);
             if (uid != null) {
                 MessageReference messageReference = new MessageReference(
-                    account.getUuid(), account.getInboxFolderName(), uid, null);
+                    account.getUuid(), account.getSentFolderName(), uid, null);
                 deleteMessage(messageReference, null);
             }
         } catch (MessagingException me) {
@@ -3807,6 +3809,10 @@ public class MessagingController {
             return false;
         }
 
+        // remove followups that have been fulfilled on time
+        removeSatisfiedFollowUps(account, localFolder, message);
+
+
         // Do not notify if the user does not have notifications enabled or if the message has
         // been read.
         if (!account.isNotifyNewMail() || message.isSet(Flag.SEEN)) {
@@ -3873,6 +3879,91 @@ public class MessagingController {
         }
 
         return true;
+    }
+
+
+    /**
+     * Deletes a followup if the expected reply was received
+     * @param account the account that received the message
+     * @param localFolder the folder the loaded message was synced to
+     * @param messageReceived the newly received email to check
+     */
+    private void removeSatisfiedFollowUps(Account account, LocalFolder localFolder, Message messageReceived) {
+
+        // ignore messages that are not being loaded from inbox (as they wont be new)
+        if(!localFolder.getName().equals(account.getInboxFolderName())) {
+            return;
+        }
+
+        // get localStorage for getting followup message info
+        LocalStore localStore;
+        try {
+            localStore = account.getLocalStore();
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        // get followups for account
+        List<FollowUpReminderEmail> followUps = K9.daoSession.getFollowUpReminderEmailDao().queryBuilder()
+                .where(FollowUpReminderEmailDao.Properties.AccountID.eq(account.getUuid()))
+                .list();
+
+        // Setup Data
+        List<LocalMessage> followUpsMessages = new ArrayList<>();
+        List<List<String>> followUpsEmailsSentTo = new ArrayList<>();
+
+        for (FollowUpReminderEmail followup : followUps) {
+            LocalMessage sentMessage = localStore.getLocalMessageByMessageId(followup.getEmailID());
+            followUpsMessages.add(sentMessage);
+            followUpsEmailsSentTo.add(Address.toListOfEmails(sentMessage.getRecipients(RecipientType.TO)));
+        }
+
+
+        // If received email has reply format to a follow up, delete that follow up, even if to self
+        for (int i = 0; i < followUpsMessages.size(); i++) {
+            LocalMessage followUpsMessage = followUpsMessages.get(i);
+
+            if (followUpsMessage.isRepliedBy(messageReceived)) {
+                K9.daoSession.getFollowUpReminderEmailDao().delete(followUps.get(i));
+                return;
+            }
+        }
+
+        // If message to self, treat as a reminder and don't delete (not including reply specific messages)
+        if(isToSelf(messageReceived, account)) {
+            return;
+        }
+
+        // If no other info, simply delete all followups relating to the sender of the received message
+        for (int i = 0; i < followUpsEmailsSentTo.size(); i++) {
+            List<String> emailsSentTo = followUpsEmailsSentTo.get(i);
+            String followUpFolderName = followUpsMessages.get(i).getFolder().getName();
+
+            // delete followup if got message from expected sender and not a unsent scheduled mail
+            if (emailsSentTo.contains(messageReceived.getFrom()[0].getAddress())
+                    && !followUpFolderName.equals(account.getScheduledFolderName())) {
+                K9.daoSession.getFollowUpReminderEmailDao().delete(followUps.get(i));
+            }
+        }
+
+    }
+
+    /**
+     * Checks if the message was only for sender and from sender
+     * @param message the potential self message
+     * @param account the sender's account
+     * @return true if message only for sender, else false
+     */
+    public static boolean isToSelf(Message message, Account account) {
+        boolean isFromSelf = account.isAnIdentity(message.getFrom());
+
+        Address[] to = message.getRecipients(RecipientType.TO);
+        boolean onlyForSelf = to.length == 1 && to[0].getAddress().equals(account.getEmail())
+                && message.getRecipients(RecipientType.CC).length == 0
+                && message.getRecipients(RecipientType.BCC).length == 0;
+
+        return isFromSelf && onlyForSelf;
     }
 
     public void deleteAccount(Account account) {
