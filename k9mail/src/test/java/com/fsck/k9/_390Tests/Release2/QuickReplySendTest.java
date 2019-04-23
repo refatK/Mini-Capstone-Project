@@ -41,8 +41,6 @@ public class QuickReplySendTest {
         messageComposeActivity.hideView(messageComposeView);
         // If there was, do hide
         verify(messageComposeView).setVisibility(View.INVISIBLE);
-
-        fail();
     }
 
 

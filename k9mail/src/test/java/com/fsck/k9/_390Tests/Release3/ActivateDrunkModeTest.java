@@ -49,8 +49,6 @@ public class ActivateDrunkModeTest {
         activateDrunkModeTest.setEndTime(360);
         activateDrunkModeTest.setCurrentTime(100);
         assertTrue(activateDrunkModeTest.isItGoTime());
-
-        fail();
     }
 
 }

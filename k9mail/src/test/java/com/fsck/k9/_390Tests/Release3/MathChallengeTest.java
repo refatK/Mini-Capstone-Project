@@ -36,8 +36,6 @@ public class MathChallengeTest {
         String multiplyResult = mathChallengeActivity.generateEquation(MathChallenge.Operation.MULTIPLY, 4, 5);
         assertEquals("4 x 5", multiplyResult);
         assertEquals(20, mathChallengeActivity.getSolution());
-
-        fail();
     }
 
     @Test
@@ -91,8 +89,6 @@ public class MathChallengeTest {
         assertEquals(4, mathChallengeActivity.getSolution());
         mathChallengeActivity.setInputValues(MathChallenge.Sign.POSITIVE, 0, 4);
         assertTrue(mathChallengeActivity.answerIsCorrect());
-
-        fail();
     }
 
     @Test
