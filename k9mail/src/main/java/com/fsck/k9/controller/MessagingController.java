@@ -3136,12 +3136,12 @@ public class MessagingController {
         LocalFolder localFolder = null;
         try {
             LocalStore localStore = account.getLocalStore();
-            localFolder = localStore.getFolder(account.getInboxFolderName());
+            localFolder = localStore.getFolder(account.getSentFolderName());
             localFolder.open(Folder.OPEN_MODE_RW);
             String uid = localFolder.getMessageUidById(id);
             if (uid != null) {
                 MessageReference messageReference = new MessageReference(
-                    account.getUuid(), account.getInboxFolderName(), uid, null);
+                    account.getUuid(), account.getSentFolderName(), uid, null);
                 deleteMessage(messageReference, null);
             }
         } catch (MessagingException me) {
