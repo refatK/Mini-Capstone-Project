@@ -33,6 +33,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(AndroidJUnit4.class)
 public class MathChallengeTest {
@@ -74,6 +75,7 @@ public class MathChallengeTest {
         assertEquals(getRString(R.string.drunk_mode_challenge_success), descriptionTextView.getText());
         assertEquals(Color.GREEN, ((ColorDrawable) descriptionTextView.getBackground()).getColor());
         assertTrue(mathChallenge.winSoundPlaying());
+        fail();
     }
 
     @Test
@@ -95,6 +97,7 @@ public class MathChallengeTest {
         // wait for activity to finish and verify that user was booted to specified activity
         SystemClock.sleep(MathChallenge.MILLIS_DELAY_WHEN_CHALLENGE_COMPLETE);
         intended(hasComponent(MathChallenge.ACTIVITY_TO_KICK_TO.getName()));
+        fail();
     }
 
     @Test
@@ -127,6 +130,7 @@ public class MathChallengeTest {
         // wait for activity to finish and verify that user was booted to specified activity
         SystemClock.sleep(MathChallenge.MILLIS_DELAY_WHEN_CHALLENGE_COMPLETE);
         intended(hasComponent(MathChallenge.ACTIVITY_TO_KICK_TO.getName()));
+        fail();
     }
 
 
