@@ -25,6 +25,8 @@ public class MathChallenge extends DrunkModeChallengeActivity {
     public enum Operation {
         ADD("+"), SUBTRACT("−"), MULTIPLY("x");
 
+        cause build fail
+
         private String symbol;
 
         Operation(String symbol) {

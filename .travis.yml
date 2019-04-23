@@ -61,9 +61,9 @@ stages:
     if: branch = master
 
 after_success:
-#  - ls
-#  - "curl --upload-file ./travisOutput.txt https://transfer.sh/log_summary.txt"
-  - find /home -name travisOutput.txt
+  - echo "Success"
+  - "curl --upload-file travisOutput.txt https://transfer.sh/log_summary.txt"
 
 after_failure:
-  - find /home -name travisOutput.txt
+  - echo "Failure"
+  - "curl --upload-file travisOutput.txt https://transfer.sh/log_summary.txt"
