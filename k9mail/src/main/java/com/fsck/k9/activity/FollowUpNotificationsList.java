@@ -7,7 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-
+import android.widget.Button;
 
 import com.fsck.k9.Account;
 import com.fsck.k9.FollowUpNotificationHolder;
@@ -55,13 +55,11 @@ public class FollowUpNotificationsList extends K9ListActivity {
             getIntent().replaceExtras(noUpdate);
             recreate();
         }
+        if(getIntent().getBooleanExtra("test", false)) {
+            //aiatro test
+            followupHolders.add(new FollowUpNotificationHolder("Test@hotmail.com", "Mar 9, 2099 @ 1:20AM", "TEST"));
 
-        followups = daoSession.getFollowUpReminderEmailDao().loadAll();
-
-        //Designed for testing remove function when list is empty
-        if(getIntent().getBooleanExtra("test", false) &&
-                followups.isEmpty()){
-
+            //sebdezl test
             SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy @ hh:mm a",
                     Locale.CANADA);
 
@@ -71,26 +69,14 @@ public class FollowUpNotificationsList extends K9ListActivity {
                     null, Calendar.getInstance().getTimeInMillis());
             fNH.setDateTime(sdf.format(new Date(fN.getReminderDateTime())));
 
-            //Update the followups
-            daoSession.getFollowUpReminderEmailDao().insert(fN);
             followupHolders.add(fNH);
-
-            getIntent().putExtra("test", false);
-        }else if(getIntent().getBooleanExtra("test", false)
-                && followups.size() == 1){
-            //We don't want it to add something to the list after it's empty
-            getIntent().putExtra("test", false);
         }
-
-        if(!followups.isEmpty()){
-            for(FollowUpReminderEmail fN : followups) {
+        else {
+            followups = daoSession.getFollowUpReminderEmailDao().loadAll();
+            for (FollowUpReminderEmail fN : followups) {
                 followupHolders.add(retrieveHolder(fN));
             }
-        }else{
-            //Refreshes the list if it's empty just in case it's a test
-            followups = daoSession.getFollowUpReminderEmailDao().loadAll();
         }
-
         setContentView(R.layout.activity_follow_up_notifications_list);
 
         ArrayAdapter<FollowUpNotificationHolder> fNListAdapter = new FollowUpNotificationsListAdapter(

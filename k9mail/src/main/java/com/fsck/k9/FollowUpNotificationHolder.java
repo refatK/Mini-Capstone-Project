@@ -14,11 +14,8 @@ public class FollowUpNotificationHolder {
 
 
     public FollowUpNotificationHolder() {
-        recipientAddresses = "";
-        dateTime = "";
-        subject = "";
+        this("", "", "");
     }
-
     public FollowUpNotificationHolder(String recipientAddresses, String dateTime, String subject) {
         this.recipientAddresses = recipientAddresses;
         this.dateTime = dateTime;
