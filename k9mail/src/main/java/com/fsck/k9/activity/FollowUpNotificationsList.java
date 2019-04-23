@@ -48,19 +48,21 @@ public class FollowUpNotificationsList extends K9ListActivity {
             getIntent().replaceExtras(noUpdate);
             recreate();
         }
-
-        followups = daoSession.getFollowUpReminderEmailDao().loadAll();
-
-        for(FollowUpReminderEmail fN : followups) {
-            followupHolders.add(retrieveHolder(fN));
+        if(getIntent().getBooleanExtra("test", false)) {
+            followupHolders.add(new FollowUpNotificationHolder("Test@hotmail.com", "Mar 9, 2099 @ 1:20AM", "TEST"));
         }
-
+        else {
+            followups = daoSession.getFollowUpReminderEmailDao().loadAll();
+            for (FollowUpReminderEmail fN : followups) {
+                followupHolders.add(retrieveHolder(fN));
+            }
+        }
         setContentView(R.layout.activity_follow_up_notifications_list);
 
 
-        ArrayAdapter<FollowUpNotificationHolder> mailingListAdapter = new FollowUpNotificationsListAdapter(
+        ArrayAdapter<FollowUpNotificationHolder> followUpAdapter = new FollowUpNotificationsListAdapter(
                 this, R.layout.follow_up_notification_list_item,  followupHolders);
-        setListAdapter(mailingListAdapter);
+        setListAdapter(followUpAdapter);
     }
     public FollowUpNotificationHolder retrieveHolder(FollowUpReminderEmail fN){
         String accountID = fN.getAccountID();
