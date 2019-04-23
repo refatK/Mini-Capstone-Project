@@ -11,13 +11,15 @@ android:
 before_install:
 - yes | sdkmanager "platforms;android-27"
 - chmod +x gradlew
+- export AUTHOR_NAME="$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
 
 jobs:
   include:
 # Build and test in one script for faster builds
   - stage: Build And Test
     language: android
-    script: ./gradlew assemble testDebugUnitTest
+    before_script: set -o pipefail
+    script: ./gradlew assemble testDebugUnitTest 2>&1 | tee travisOutput.txt
 
 #=============================================
 
@@ -60,3 +62,7 @@ stages:
   - name: Analyze
     if: branch = master
 
+# If there was a failure, show a summary of what happened
+after_failure:
+  - chmod 755 summarize-log.sh
+  - ./summarize-log.sh
