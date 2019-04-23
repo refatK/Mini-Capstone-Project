@@ -113,4 +113,27 @@ public class SetFollowUpReminderDateAndTimeTests {
             .inRoot(withDecorView(not(testRule.getActivity().getWindow().getDecorView())))
             .check(matches(isDisplayed()));
     }
+
+    @Test
+    public void selectAfter(){
+        strDate = (month + 1) + "/" + day + "/" + (year+1);
+        strTime = (hour%12 == 0 ? "12" : hour%12) + ":" + ((minute < 10) ? "0" + minute : minute) + (hour >= 12 ? "PM" : "AM");
+
+        onView(withId(R.id.reminder_set_date_button)).perform(click());
+        onView(withClassName((Matchers.equalTo(DatePicker.class.getName())))).perform(PickerActions.setDate(year+1, month + 1, day));
+        onView(withId(android.R.id.button1)).perform(click());
+
+        onView(withId(R.id.reminder_set_time_button)).perform(click());
+        onView(withClassName(Matchers.equalTo(TimePicker.class.getName()))).perform(PickerActions.setTime(hour, minute));
+        onView(withId(android.R.id.button1)).perform(click());
+
+        onView(withId(R.id.reminder_date)).check(matches(withText(strDate)));
+        onView(withId(R.id.reminder_time)).check(matches(withText(strTime)));
+
+        String strDateAndTime = "Setting time to: " + strDate + " @ " + strTime;
+        onView(withId(R.id.reminder_set_date_and_time_button)).perform(click());
+        onView(withText(strDateAndTime))
+            .inRoot(withDecorView(not(testRule.getActivity().getWindow().getDecorView())))
+            .check(matches(isDisplayed()));
+    }
 }
