@@ -26,7 +26,7 @@ public class RemoveFollowUpNotificationTest {
     @Before
     public void setup(){
         intent = new Intent();
-        intent.putExtra("test remove", true);
+        intent.putExtra("test", true);
         activityTestRule.launchActivity(intent);
     }
 

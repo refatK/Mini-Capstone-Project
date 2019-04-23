@@ -59,7 +59,7 @@ public class FollowUpNotificationsList extends K9ListActivity {
         followups = daoSession.getFollowUpReminderEmailDao().loadAll();
 
         //Designed for testing remove function when list is empty
-        if(getIntent().getBooleanExtra("test remove", false) &&
+        if(getIntent().getBooleanExtra("test", false) &&
                 followups.isEmpty()){
 
             SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy @ hh:mm a",
@@ -75,11 +75,11 @@ public class FollowUpNotificationsList extends K9ListActivity {
             daoSession.getFollowUpReminderEmailDao().insert(fN);
             followupHolders.add(fNH);
 
-            getIntent().putExtra("test remove", false);
-        }else if(getIntent().getBooleanExtra("test remove", false)
+            getIntent().putExtra("test", false);
+        }else if(getIntent().getBooleanExtra("test", false)
                 && followups.size() == 1){
             //We don't want it to add something to the list after it's empty
-            getIntent().putExtra("test remove", false);
+            getIntent().putExtra("test", false);
         }
 
         if(!followups.isEmpty()){
