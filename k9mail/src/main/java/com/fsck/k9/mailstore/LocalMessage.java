@@ -46,7 +46,7 @@ public class LocalMessage extends MimeMessage {
         this.localStore = localStore;
     }
 
-    LocalMessage(LocalStore localStore, String uid, Folder folder) {
+    public LocalMessage(LocalStore localStore, String uid, Folder folder) {
         this.localStore = localStore;
         this.mUid = uid;
         this.mFolder = folder;
