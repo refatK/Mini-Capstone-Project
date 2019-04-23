@@ -8,7 +8,6 @@ import android.app.Instrumentation;
 import android.test.InstrumentationTestCase;
 
 import static com.fsck.k9.K9.daoSession;
-import static org.mockito.Mockito.*;
 
 import com.fsck.k9.activity.FollowUpNotificationsList;
 import com.fsck.k9.activity.SetFollowUpReminderDateAndTime;
@@ -43,22 +42,22 @@ public class EditFollowUpNotificationTest extends InstrumentationTestCase {
     }
 
     @Test
-    public void editFollowUpNotificationTest()
+    public void testEditFollowUpNotification()
     {
         Espresso.onView(withId(android.R.id.list));
         onData(anything()).inAdapterView(withId(android.R.id.list)).atPosition(0).perform(longClick());
         Espresso.onView(withText("Reschedule")).perform(click());
     }
     @Test
-    public void onActivityResultTest(){
+    public void testOnActivityResult(){
 
         calendar = Calendar.getInstance();
-        Intent mockIntent = mock(Intent.class);
+        Intent returnIntent = new Intent();
 
-        when(mockIntent.getLongExtra("fNId",1L)).thenReturn(0L);
-        when(mockIntent.getLongExtra("newFollowUpReminderDate",1L)).thenReturn(calendar.getTimeInMillis());
+        returnIntent.putExtra("fNId",0L);
+        returnIntent.putExtra("newFollowUpReminderDate",calendar.getTimeInMillis());
 
-        Instrumentation.ActivityResult activityResult = new Instrumentation.ActivityResult(Activity.RESULT_OK, mockIntent);
+        Instrumentation.ActivityResult activityResult = new Instrumentation.ActivityResult(Activity.RESULT_OK, returnIntent);
         Instrumentation.ActivityMonitor activityMonitor = getInstrumentation().addMonitor(SetFollowUpReminderDateAndTime.class.getName(), activityResult , true);
 
         onData(anything()).inAdapterView(withId(android.R.id.list)).atPosition(0).perform(longClick());
