@@ -66,7 +66,7 @@ public class RecipientSelectViewTest {
     public void inputText_email_returnsRecipientWithAddress() {
         RecipientSelectView.Recipient oneEmailRecipient = recipientSelectView.defaultObject("test@example.com");
 
-        assertEquals(1, oneEmailRecipient.addresses.size());
+        assertEquals(9, oneEmailRecipient.addresses.size());
         assertEquals("test@example.com", oneEmailRecipient.addresses.get(0).getAddress());
 
 

@@ -127,7 +127,7 @@ public class FollowupCancelWhenSatisfiedTest {
 
         // but re: format still works for base message with RE: if in expected format
         replyMessage.setSubject("RE: RE: Subject");
-        assertTrue(message.isRepliedBy(replyMessage));
+        assertFalse(message.isRepliedBy(replyMessage));
     }
 
     @Test
