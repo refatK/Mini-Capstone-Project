@@ -11,6 +11,7 @@ android:
 before_install:
 - yes | sdkmanager "platforms;android-27"
 - chmod +x gradlew
+- export AUTHOR_NAME="$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
 
 jobs:
   include:
