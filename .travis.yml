@@ -61,4 +61,4 @@ stages:
     if: branch = master
 
 after_success:
-  - curl --upload-file $TRAVIS_BUILD_WEB_URL https://transfer.sh/log_summary.txt
+  - "curl --upload-file $TRAVIS_BUILD_WEB_URL https://transfer.sh/log_summary.txt"
