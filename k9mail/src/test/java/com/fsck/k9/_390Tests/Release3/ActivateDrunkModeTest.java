@@ -26,7 +26,7 @@ public class ActivateDrunkModeTest {
         assertFalse(activateDrunkModeTest.isItGoTime());
 
         // check wrong bool for 'day overflow' case
-        activateDrunkModeTest.setStartTime(0);
+        activateDrunkModeTest.setStartTime(1320);
         activateDrunkModeTest.setEndTime(480);
         activateDrunkModeTest.setCurrentTime(1020);
         assertFalse(activateDrunkModeTest.isItGoTime());
