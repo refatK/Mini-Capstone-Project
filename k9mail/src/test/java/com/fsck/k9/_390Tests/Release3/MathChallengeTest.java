@@ -8,6 +8,7 @@ import org.junit.Test;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class MathChallengeTest {
 
@@ -24,7 +25,7 @@ public class MathChallengeTest {
         // check addition case
         String addResult = mathChallengeActivity.generateEquation(MathChallenge.Operation.ADD, 4, 5);
         assertEquals("4 + 5", addResult);
-        assertEquals(6, mathChallengeActivity.getSolution());
+        assertEquals(9, mathChallengeActivity.getSolution());
 
         // check subtraction case
         String subtractResult = mathChallengeActivity.generateEquation(MathChallenge.Operation.SUBTRACT, 4, 5);
@@ -35,6 +36,8 @@ public class MathChallengeTest {
         String multiplyResult = mathChallengeActivity.generateEquation(MathChallenge.Operation.MULTIPLY, 4, 5);
         assertEquals("4 x 5", multiplyResult);
         assertEquals(20, mathChallengeActivity.getSolution());
+
+        fail();
     }
 
     @Test
@@ -88,6 +91,8 @@ public class MathChallengeTest {
         assertEquals(4, mathChallengeActivity.getSolution());
         mathChallengeActivity.setInputValues(MathChallenge.Sign.POSITIVE, 0, 4);
         assertTrue(mathChallengeActivity.answerIsCorrect());
+
+        fail();
     }
 
     @Test

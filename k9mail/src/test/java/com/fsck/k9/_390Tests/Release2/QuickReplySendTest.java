@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -40,6 +41,8 @@ public class QuickReplySendTest {
         messageComposeActivity.hideView(messageComposeView);
         // If there was, do hide
         verify(messageComposeView).setVisibility(View.INVISIBLE);
+
+        fail();
     }
 
 
