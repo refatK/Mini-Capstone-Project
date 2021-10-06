@@ -1,5 +1,6 @@
-### Team North Star - SOEN 390 Project - K9Mail
+## Team North Star - Mini Capstone Project - K9Mail
 
+- #### Built off [K-9 Mail -  Open Source Email App for Android](https://github.com/k9mail/k-9)
 
 
 ### Team Members
